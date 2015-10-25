@@ -1,0 +1,86 @@
+{
+    "active_notebook": 1, 
+    "always_show_tabs": false, 
+    "button_relief": false, 
+    "confirmations": {
+        "delete_items": true
+    }, 
+    "create_dialog": {
+        "directory_mode": 493, 
+        "edit_file": false, 
+        "file_mode": 420
+    }, 
+    "editor": {
+        "application": "gedit", 
+        "default_editor": "/home/kostafey/.emacs.d/launcher/switch-to-emacsclient -n %U", 
+        "external_command": "/home/kostafey/.emacs.d/launcher/switch-to-emacsclient -n %U", 
+        "terminal_command": false, 
+        "type": 1
+    }, 
+    "expand_tabs": 0, 
+    "focus_new_tab": true, 
+    "history_file": ".bash_history", 
+    "item_list": {
+        "breadcrumbs": 2, 
+        "case_sensitive_sort": true, 
+        "force_directories": false, 
+        "grid_lines": 0, 
+        "headers_visible": true, 
+        "hide_horizontal_scrollbar": false, 
+        "left_directories": [], 
+        "mode_format": 1, 
+        "number_sensitive_sort": false, 
+        "right_click_select": false, 
+        "right_directories": [], 
+        "row_hinting": false, 
+        "search_modifier": "000", 
+        "selection_color": "#100336a5d62f", 
+        "selection_indicator": "\u2731", 
+        "show_expanders": false, 
+        "show_hidden": true, 
+        "single_click_navigation": false, 
+        "time_format": "%H:%M %d-%m-%y"
+    }, 
+    "last_version": 0, 
+    "media_preview": false, 
+    "multiple_instances": false, 
+    "operations": {
+        "automount_insert": false, 
+        "automount_start": false, 
+        "hide_on_minimize": false, 
+        "merge_in_silent": true, 
+        "overwrite_in_silent": true, 
+        "reserve_size": false, 
+        "set_mode": true, 
+        "set_owner": false, 
+        "set_timestamp": true, 
+        "silent": false, 
+        "trash_files": true
+    }, 
+    "plugins": [
+        "default_toolbar", 
+        "file_list", 
+        "system_terminal"
+    ], 
+    "show_command_bar": false, 
+    "show_command_entry": true, 
+    "show_notifications": true, 
+    "show_status_bar": 0, 
+    "show_toolbar": false, 
+    "size_format": 1, 
+    "superuser_notification": true, 
+    "tab_button_icons": true, 
+    "tab_close_button": true, 
+    "terminal": {
+        "allow_bold": true, 
+        "command": "xterm -into {0}", 
+        "command2": "xterm -into {0} -e \"{1}\"", 
+        "cursor_shape": 0, 
+        "font": "Monospace 12", 
+        "mouse_autohide": false, 
+        "show_scrollbars": true, 
+        "type": 0, 
+        "use_system_font": true
+    }, 
+    "ubuntu_coloring": false
+}

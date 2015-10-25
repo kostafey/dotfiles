@@ -1,0 +1,42 @@
+;;;; change the prefix key to something else
+(set-prefix-key (kbd "C-e"))
+
+;;;; Default terminal emulator
+(setq *terminal* "urxvt")
+
+;;;; Default Browser
+ (setq *browser* "google-chrome")
+
+;;; Lock screen
+(defparameter *my-lock-command*
+  "xlock")
+(defcommand lock-screen () ()
+  "Lock my screen."
+  (run-shell-command *my-lock-command* t))
+(define-key *top-map* (kbd "C-M-l") "lock-screen")
+
+(defmacro bind-shell-to-key (key command &optional (map *root-map*))
+  `(define-key ,map (kbd ,key) (concatenate 'string
+                                            "run-shell-command "
+                                            ,command)))
+(bind-shell-to-key "D" "/opt/deadbeef/bin/deadbeef")
+(bind-shell-to-key "M" "sunflower")
+
+(define-key *top-map* (kbd "C-M-e") "emacs")
+(define-key *top-map* (kbd "M-Tab") "windowlist")
+
+;;;; Style of window borders
+(setf *mouse-focus-policy* :click
+      *window-border-style* :none)
+
+;;;; Message window gravity
+;; ; :top-left :top-right :bottom-left :bottom-right :center
+ (setq *message-window-gravity* :center)
+
+;;;; Input window gravity
+;; ; :top-left :top-right :bottom-left :bottom-right :center
+ (setq *input-window-gravity* :center)
+
+(set-bg-color "#F0FFF0")
+(set-fg-color "#326B6B")
+(set-border-color "#555555")
