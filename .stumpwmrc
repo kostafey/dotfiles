@@ -1,11 +1,11 @@
 ;;;; change the prefix key to something else
-(set-prefix-key (kbd "C-e"))
+(set-prefix-key (kbd "C-d"))
 
 ;;;; Default terminal emulator
 (setq *terminal* "urxvt")
 
 ;;;; Default Browser
- (setq *browser* "google-chrome")
+(setq *browser* "google-chrome")
 
 ;;; Lock screen
 (defparameter *my-lock-command*
@@ -21,6 +21,7 @@
                                             ,command)))
 (bind-shell-to-key "D" "/opt/deadbeef/bin/deadbeef")
 (bind-shell-to-key "M" "sunflower")
+(bind-shell-to-key "G" "google-chrome")
 
 (define-key *top-map* (kbd "C-M-e") "emacs")
 (define-key *top-map* (kbd "M-Tab") "windowlist")

@@ -1,0 +1,21 @@
+export CATALINA_HOME=/opt/apache-tomcat-7.0.32
+
+PATH=$PATH:/opt/java/64/jdk1.7.0_09/bin
+PATH=$PATH:PATH=$PATH:/opt/scala-2.11.2/bin
+PATH=$PATH:/opt/sbcl/bin
+
+export JAVA_HOME=/opt/java/64/jdk1.7.0_09
+
+export GOROOT=/opt/golang/go
+export GOPATH=/opt/go
+PATH=$PATH:$GOROOT/bin:$GOPATH/bin/
+
+export PATH
+
+xrandr --output LVDS1 --off
+xrandr --output VGA1 --mode 1680x1050
+
+xset fp+ /home/kostafey/.fonts
+xset fp rehash
+
+/usr/local/bin/stumpwm

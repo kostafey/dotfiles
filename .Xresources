@@ -1,7 +1,15 @@
+Xft.dpi:	96
+Xft.antialias:	true
+Xft.hinting:	true
+Xft.hintstyle:	hintslight
+Xft.rgba:	rgb
+Xft.lcdfilter:	lcddefault
+
 URxvt*geometry:                152x50
 URxvt*scrollBar_right:         true
 URxvt*iconFile:                /usr/share/icons/Mint-X/apps/scalable/Terminal.svg
 URxvt*font:                    xft:FiraMono:size=12:antialias=true:hinting=true
+emacs*font:                    FiraMono:size=12:antialias=true:hinting=true
 
 URxvt*perl-ext-common:         fullscreen,default,clipboard,keyboard-select
 URxvt.keysym.F11:              perl:fullscreen:switch
