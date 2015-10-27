@@ -25,6 +25,11 @@
 
 (define-key *top-map* (kbd "C-M-e") "emacs")
 (define-key *top-map* (kbd "M-Tab") "windowlist")
+(define-key *top-map* (kbd "M-C-z") "pull-hidden-next")
+(define-key *top-map* (kbd "M-z") "pull-hidden-previous")
+(define-key *top-map* (kbd "M-F4") "delete")
+
+(set-font "-*-terminus-*-*-*-*-18-*-*-*-*-*-iso10646-*")
 
 ;;;; Style of window borders
 (setf *mouse-focus-policy* :click
@@ -41,3 +46,17 @@
 (set-bg-color "#F0FFF0")
 (set-fg-color "#326B6B")
 (set-border-color "#555555")
+
+(stumpwm:toggle-mode-line (stumpwm:current-screen)
+                          (stumpwm:current-head))
+
+(setf stumpwm:*screen-mode-line-format*
+      (list ""
+            '(:eval (stumpwm:run-shell-command "date" t))))
+
+(setf *mode-line-timeout* 60)
+
+(setf *mode-line-position* :bottom)
+
+(setf *mode-line-background-color* "#DCDAD5")
+(setf *mode-line-foreground-color* "#222222")
