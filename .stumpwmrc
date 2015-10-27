@@ -26,9 +26,11 @@
 
 (define-key *top-map* (kbd "C-M-e") "emacs")
 (define-key *top-map* (kbd "M-Tab") "windowlist")
-(define-key *top-map* (kbd "M-C-z") "pull-hidden-next")
+(define-key *top-map* (kbd "M-Z") "pull-hidden-next")
 (define-key *top-map* (kbd "M-z") "pull-hidden-previous")
 (define-key *top-map* (kbd "M-F4") "delete")
+(define-key *top-map* (kbd "C-F12") "loadrc")
+(define-key *top-map* (kbd "C-F11") "restart-hard")
 
 (set-font "-*-terminus-*-*-*-*-18-*-*-*-*-*-iso10646-*")
 
@@ -48,16 +50,21 @@
 (set-fg-color "#326B6B")
 (set-border-color "#555555")
 
-(stumpwm:toggle-mode-line (stumpwm:current-screen)
-                          (stumpwm:current-head))
-
-(setf stumpwm:*screen-mode-line-format*
-      (list ""
-            '(:eval (stumpwm:run-shell-command "date" t))))
-
+;; ------------------------------------------------------------
+;; modeline
 (setf *mode-line-timeout* 60)
 
 (setf *mode-line-position* :bottom)
 
 (setf *mode-line-background-color* "#DCDAD5")
 (setf *mode-line-foreground-color* "#222222")
+(setf *mode-line-border-width* 1)
+
+(setf stumpwm:*screen-mode-line-format*
+      (list ""
+            '(:eval (stumpwm:run-shell-command "date" t))))
+
+(stumpwm:toggle-mode-line (stumpwm:current-screen)
+                          (stumpwm:current-head))
+;;
+;; ------------------------------------------------------------
