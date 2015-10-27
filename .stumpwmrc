@@ -22,6 +22,7 @@
 (bind-shell-to-key "D" "/opt/deadbeef/bin/deadbeef")
 (bind-shell-to-key "M" "sunflower")
 (bind-shell-to-key "G" "google-chrome")
+(bind-shell-to-key "C-M-z" "goldendict" *top-map*)
 
 (define-key *top-map* (kbd "C-M-e") "emacs")
 (define-key *top-map* (kbd "M-Tab") "windowlist")
