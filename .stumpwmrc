@@ -82,7 +82,7 @@
 ;; Set the border color for focused windows. This is only used when there is
 ;; more than one frame.
 (set-focus-color "#555555")
-
+(set-unfocus-color "#999999")
 ;; ------------------------------------------------------------
 ;; modeline
 (setf *mode-line-timeout* 60)
@@ -92,6 +92,7 @@
 (setf *mode-line-background-color* "#DCDAD5")
 (setf *mode-line-foreground-color* "#222222")
 (setf *mode-line-border-width* 1)
+(setf *mode-line-border-color* "#999999")
 
 (setf stumpwm:*screen-mode-line-format*
       (list "^>"
