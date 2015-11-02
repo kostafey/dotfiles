@@ -19,6 +19,4 @@ xset fp+ /home/kostafey/.fonts
 xset +fp /home/kostafey/.fonts
 xset fp rehash
 
-xscreensaver -no-splash
-
 /usr/local/bin/stumpwm

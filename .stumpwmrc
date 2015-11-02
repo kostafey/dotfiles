@@ -17,7 +17,8 @@
 
 (setq *proxy*
       (let ((proxy (stumpwm:run-shell-command "echo $http_proxy" t)))
-        (subseq proxy 7 (- (length proxy) 1))))
+        (if (> (length proxy) 1) (subseq proxy 7 (- (length proxy) 1))
+            "")))
 
 (setq google-chrome-shell-cmd
       (concatenate 'string
