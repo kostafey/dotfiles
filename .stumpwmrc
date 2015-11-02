@@ -13,6 +13,7 @@
 (defcommand lock-screen () ()
   "Lock my screen."
   (run-shell-command *my-lock-command* t))
+(run-shell-command "xscreensaver -no-splash")
 (define-key *top-map* (kbd "C-M-l") "lock-screen")
 
 (setq *proxy*
