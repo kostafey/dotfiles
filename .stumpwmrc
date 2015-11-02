@@ -62,7 +62,7 @@
 (set-bg-color "#F0FFF0")
 (set-fg-color "#326B6B")
 
-(set-win-bg-color "#F0FFF0")
+(set-win-bg-color "#DCDAD5")
 
 ;; Set the border color for the message bar and input bar.
 (set-border-color "#555555")
@@ -93,7 +93,7 @@
 (setf *mode-line-background-color* "#DCDAD5")
 (setf *mode-line-foreground-color* "#222222")
 (setf *mode-line-border-width* 1)
-(setf *mode-line-border-color* "#999999")
+(setf *mode-line-border-color* "#DCDAD5")
 
 (setf stumpwm:*screen-mode-line-format*
       (list "^>"
@@ -102,5 +102,6 @@
 (stumpwm:enable-mode-line (stumpwm:current-screen)
                           (stumpwm:current-head)
                           t)
+
 ;;
 ;; ------------------------------------------------------------
