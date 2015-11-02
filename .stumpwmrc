@@ -83,6 +83,7 @@
 ;; more than one frame.
 (set-focus-color "#555555")
 (set-unfocus-color "#999999")
+
 ;; ------------------------------------------------------------
 ;; modeline
 (setf *mode-line-timeout* 60)
@@ -98,7 +99,8 @@
       (list "^>"
             '(:eval (stumpwm:run-shell-command "date" t))))
 
-(stumpwm:toggle-mode-line (stumpwm:current-screen)
-                          (stumpwm:current-head))
+(stumpwm:enable-mode-line (stumpwm:current-screen)
+                          (stumpwm:current-head)
+                          t)
 ;;
 ;; ------------------------------------------------------------
