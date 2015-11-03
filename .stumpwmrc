@@ -35,17 +35,21 @@
   "run firefox"
   (run-or-raise "urxvt" '(:class "URxvt")))
 
+(defcommand sunflower () ()
+  "run sunflower"
+  (run-or-raise "sunflower" '(:class "Sunflower")))
+
 (defmacro bind-shell-to-key (key command &optional (map *root-map*))
   `(define-key ,map (kbd ,key) (concatenate 'string
                                             "run-shell-command "
                                             ,command)))
 (bind-shell-to-key "D" "deadbeef")
-(bind-shell-to-key "M" "sunflower")
 (bind-shell-to-key "C-M-z" "goldendict" *top-map*)
 (bind-shell-to-key "T" "thunderbird")
 (bind-shell-to-key "N" "gnome-nettool")
 
 (define-key *root-map* (kbd "t") "urxvt")
+(define-key *root-map* (kbd "M") "sunflower")
 (define-key *root-map* (kbd "G") "google-chrome")
 (define-key *root-map* (kbd "F") "firefox")
 
