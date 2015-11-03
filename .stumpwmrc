@@ -122,5 +122,38 @@
                           (stumpwm:current-head)
                           t)
 
-;;
 ;; ------------------------------------------------------------
+;; Swank
+
+(defun slime-package? (package-name)
+  (equal (subseq package-name 0 5) "slime"))
+
+(defun get-slime-package-path ()
+  (let* ((elpa-path (namestring
+                     (merge-pathnames ".emacs.d/elpa/"
+                                      (user-homedir-pathname))))
+         (pkg-version (car
+                       (remove-if-not
+                        #'slime-package?
+                        (stumpwm:split-string
+                         (stumpwm:run-shell-command
+                          (concatenate 'string "ls " elpa-path) t)))))
+         (slime-path (merge-pathnames pkg-version elpa-path)))
+    (concatenate 'string (namestring slime-path) "/")))
+
+(load (merge-pathnames "swank-loader.lisp" (get-slime-package-path)))
+
+(swank-loader:init)
+
+(defcommand swank-start () ()
+ (swank:create-server :port 4005
+                      :dont-close t)
+ (echo-string
+  (current-screen)
+  "Starting swank. M-x slime-connect RET RET, then (in-package stumpwm)."))
+
+(defcommand swank-stop () ()
+  (swank:stop-server 4005)
+  (echo-string
+   (current-screen)
+   "Stop swank."))
