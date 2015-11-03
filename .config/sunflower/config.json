@@ -1,5 +1,5 @@
 {
-    "active_notebook": 1, 
+    "active_notebook": 0, 
     "always_show_tabs": false, 
     "button_relief": false, 
     "confirmations": {
@@ -11,7 +11,7 @@
         "file_mode": 420
     }, 
     "editor": {
-        "application": "gedit", 
+        "application": null, 
         "default_editor": "/home/kostafey/.emacs.d/launcher/switch-to-emacsclient -n %U", 
         "external_command": "/home/kostafey/.emacs.d/launcher/switch-to-emacsclient -n %U", 
         "terminal_command": false, 
