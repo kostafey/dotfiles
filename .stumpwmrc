@@ -47,6 +47,7 @@
 (bind-shell-to-key "C-M-z" "goldendict" *top-map*)
 (bind-shell-to-key "T" "thunderbird")
 (bind-shell-to-key "N" "gnome-nettool")
+(bind-shell-to-key "C-t" "urxvt") ;; new shell
 
 (define-key *root-map* (kbd "t") "urxvt")
 (define-key *root-map* (kbd "M") "sunflower")
@@ -57,15 +58,21 @@
 (define-key *top-map* (kbd "C-M-e") "emacs")
 
 (define-key *top-map* (kbd "M-Tab") "windowlist")
-(define-key *top-map* (kbd "M-Z") "pull-hidden-previous")
+(define-key *top-map* (kbd "M-Z") "pull-hidden-next")
 (define-key *top-map* (kbd "C-M-Z") "pull-hidden-previous")
-(define-key *top-map* (kbd "M-z") "pull-hidden-next")
+(define-key *top-map* (kbd "M-z") "pull-hidden-other")
+
+(define-key *top-map* (kbd "s-Up") "move-focus up")
+(define-key *top-map* (kbd "s-Down") "move-focus down")
+(define-key *top-map* (kbd "s-Left") "move-focus left")
+(define-key *top-map* (kbd "s-Right") "move-focus right")
+
+(define-key *top-map* (kbd "s-M-Up") "pull-hidden-next")
+(define-key *top-map* (kbd "s-M-Down") "pull-hidden-previous")
+(define-key *top-map* (kbd "s-M-Left") "prev")
+(define-key *top-map* (kbd "s-M-Right") "next")
 (define-key *top-map* (kbd "s-SunPageUp") "pull-hidden-next")
 (define-key *top-map* (kbd "s-SunPageDown") "pull-hidden-previous")
-(define-key *top-map* (kbd "C-s-Up") "move-focus up")
-(define-key *top-map* (kbd "C-s-Down") "move-focus down")
-(define-key *top-map* (kbd "C-s-Left") "move-focus left")
-(define-key *top-map* (kbd "C-s-Right") "move-focus right")
 
 (define-key *top-map* (kbd "M-F4") "delete")
 (define-key *top-map* (kbd "C-F12") "loadrc")
