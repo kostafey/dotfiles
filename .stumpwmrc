@@ -1,3 +1,5 @@
+(setq *startup-message* "^5Lisp ^2^bsystem operational.")
+
 ;;;; change the prefix key to something else
 (set-prefix-key (kbd "C-d"))
 
@@ -25,7 +27,12 @@
                    "google-chrome --proxy-server=" *proxy*))
 (defcommand google-chrome () ()
   "run google-chrome"
-  (run-or-raise google-chrome-shell-cmd '(:class "google-chrome")))
+  (let ((google-class (if (stumpwm::find-matching-windows
+                           '(:class "Google-chrome")
+                           'all-groups 'all-screens)
+                          "Google-chrome"
+                          "google-chrome")))
+    (run-or-raise google-chrome-shell-cmd `(:class ,google-class))))
 
 (defcommand firefox () ()
   "run firefox"
