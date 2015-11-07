@@ -161,7 +161,7 @@
       (list
        "%n   (%c%M)"
        "^>" '(:eval (stumpwm:run-shell-command
-                     "date +%a' '%d.%m.%Y' '%T' '%Z'     '" t))))
+                     "date +%a' '%d.%m.%Y' '%T' '%Z'       '" t))))
 
 (stumpwm:enable-mode-line (stumpwm:current-screen)
                           (stumpwm:current-head)
