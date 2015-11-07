@@ -95,6 +95,9 @@
 (define-key *top-map* (kbd "C-s-M-SunPageDown") "gprev-with-window")
 (define-key *top-map* (kbd "C-M-Tab") "grouplist")
 
+(define-key *top-map* (kbd "SunPrint_Screen") "screenshot")
+(define-key *top-map* (kbd "C-SunPrint_Screen") "fclear")
+
 (set-font "-*-terminus-*-*-*-*-18-*-*-*-*-*-iso10646-*")
 
 ;; ------------------------------------------------------------
@@ -144,14 +147,29 @@
 (setf *mode-line-border-width* 1)
 (setf *mode-line-border-color* "#DCDAD5")
 
+(load-module "cpu")
+(load-module "mem")
+(ql:quickload :xembed)
+(load-module "stumptray")
+(ql:quickload :zpng)
+(load-module "screenshot")
+
 (setf stumpwm:*screen-mode-line-format*
       (list
-       "%n"
-       "^>" '(:eval (stumpwm:run-shell-command "date" t))))
+       "%n   (%c%M)"
+       "^>" '(:eval (stumpwm:run-shell-command
+                     "date +%a' '%d.%m.%Y' '%T' '%Z'     '" t))))
 
 (stumpwm:enable-mode-line (stumpwm:current-screen)
                           (stumpwm:current-head)
                           t)
+
+(run-shell-command "/usr/bin/trayer --SetDockType true --transparent true
+--alpha 0 --edge top --align right --expand true --widthtype request --tint
+0xf0f8ff")
+;; (stumpwm:run-commands "stumptray")
+(stumptray:stumptray)
+(run-shell-command "stumpish mode-line")
 
 ;; ------------------------------------------------------------
 ;; Swank
