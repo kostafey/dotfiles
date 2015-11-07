@@ -9,6 +9,9 @@
 ;;;; Default Browser
 (setq *browser* "google-chrome")
 
+(run-shell-command
+ "display -window root /home/kostafey/data/Pictures/Green/Raining-Green-background-1600x2560.jpg")
+
 ;;; Lock screen
 (defparameter *my-lock-command*
   "xscreensaver-command -lock")
