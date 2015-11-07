@@ -157,6 +157,13 @@
 (ql:quickload :zpng)
 (load-module "screenshot")
 
+(run-shell-command "/usr/bin/trayer --SetDockType true --transparent true
+--alpha 0 --edge top --align right --expand true --widthtype request --tint
+0xf0f8ff")
+;; (stumpwm:run-commands "stumptray")
+(stumptray:stumptray)
+;; (run-shell-command "stumpish mode-line")
+
 (setf stumpwm:*screen-mode-line-format*
       (list
        "%n   (%c%M)"
@@ -166,13 +173,6 @@
 (stumpwm:enable-mode-line (stumpwm:current-screen)
                           (stumpwm:current-head)
                           t)
-
-(run-shell-command "/usr/bin/trayer --SetDockType true --transparent true
---alpha 0 --edge top --align right --expand true --widthtype request --tint
-0xf0f8ff")
-;; (stumpwm:run-commands "stumptray")
-(stumptray:stumptray)
-(run-shell-command "stumpish mode-line")
 
 ;; ------------------------------------------------------------
 ;; Swank
