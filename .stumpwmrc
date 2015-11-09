@@ -135,6 +135,9 @@
 (define-key *root-map* (kbd "3") "hsplit")
 
 (define-key *top-map* (kbd "M-F4") "delete")
+
+(bind-shell-to-key "C-F8" "udiskie --tray" *top-map*)
+
 (define-key *top-map* (kbd "C-F9") "swank-start")
 (define-key *top-map* (kbd "C-F10") "swank-stop")
 (define-key *top-map* (kbd "C-F11") "restart-swank-stop")
@@ -223,7 +226,6 @@
 
 (stumpwm:run-shell-command
  "display -window root /home/kostafey/data/img/raining-green-background.jpg")
-(stumpwm:run-shell-command "udiskie --tray")
 (stumpwm:run-shell-command "xxkb")
 
 (stumpwm:run-commands "stumptray")
