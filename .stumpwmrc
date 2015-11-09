@@ -11,6 +11,7 @@
 
 (run-shell-command
  "display -window root /home/kostafey/data/img/raining-green-background.jpg")
+(run-shell-command "udiskie --tray")
 
 ;;; Lock screen
 (defparameter *my-lock-command*
