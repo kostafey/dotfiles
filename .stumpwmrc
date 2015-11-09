@@ -10,7 +10,7 @@
 (setq *browser* "google-chrome")
 
 (run-shell-command
- "display -window root /home/kostafey/data/Pictures/Green/Raining-Green-background-1600x2560.jpg")
+ "display -window root /home/kostafey/data/img/raining-green-background.jpg")
 
 ;;; Lock screen
 (defparameter *my-lock-command*
@@ -85,6 +85,11 @@
 (define-key *top-map* (kbd "s-SunPageUp") "pull-hidden-next")
 (define-key *top-map* (kbd "s-SunPageDown") "pull-hidden-previous")
 
+(define-key *top-map* (kbd "C-s-Up") "move-window up")
+(define-key *top-map* (kbd "C-s-Down") "move-window down")
+(define-key *top-map* (kbd "C-s-Left") "move-window left")
+(define-key *top-map* (kbd "C-s-Right") "move-window right")
+
 (define-key *root-map* (kbd "1") "only")
 (define-key *root-map* (kbd "2") "vsplit")
 (define-key *root-map* (kbd "3") "hsplit")
@@ -158,11 +163,11 @@
 (ql:quickload :zpng)
 (load-module "screenshot")
 
-(run-shell-command "/usr/bin/trayer --SetDockType true --transparent true
+(stumpwm:run-shell-command "/usr/bin/trayer --SetDockType true --transparent true
 --alpha 0 --edge top --align right --expand true --widthtype request --tint
 0xf0f8ff")
-;; (stumpwm:run-commands "stumptray")
-(stumptray:stumptray)
+(stumpwm:run-commands "stumptray")
+;; (stumptray:stumptray)
 ;; (run-shell-command "stumpish mode-line")
 
 (setf stumpwm:*screen-mode-line-format*
