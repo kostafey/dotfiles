@@ -9,9 +9,43 @@
 ;;;; Default Browser
 (setq *browser* "google-chrome")
 
-(run-shell-command
- "display -window root /home/kostafey/data/img/raining-green-background.jpg")
-(run-shell-command "udiskie --tray")
+;; ------------------------------------------------------------
+;; Swank
+
+(defun slime-package? (package-name)
+  (equal (subseq package-name 0 5) "slime"))
+
+(defun get-slime-package-path ()
+  (let* ((elpa-path (namestring
+                     (merge-pathnames ".emacs.d/elpa/"
+                                      (user-homedir-pathname))))
+         (pkg-version (car
+                       (remove-if-not
+                        #'slime-package?
+                        (stumpwm:split-string
+                         (stumpwm:run-shell-command
+                          (concatenate 'string "ls " elpa-path) t)))))
+         (slime-path (merge-pathnames pkg-version elpa-path)))
+    (concatenate 'string (namestring slime-path) "/")))
+
+(load (merge-pathnames "swank-loader.lisp" (get-slime-package-path)))
+
+(swank-loader:init)
+
+(defcommand swank-start () ()
+ (swank:create-server :port 4005
+                      :dont-close t)
+ (echo-string
+  (current-screen)
+  "Starting swank. M-x slime-connect RET RET, then (in-package stumpwm)."))
+
+(defcommand swank-stop () ()
+  (swank:stop-server 4005)
+  (echo-string
+   (current-screen)
+   "Stop swank."))
+;;
+;; ------------------------------------------------------------
 
 ;;; Lock screen
 (defparameter *my-lock-command*
@@ -50,6 +84,10 @@
   "run sunflower"
   (run-or-raise "sunflower" '(:class "Sunflower")))
 
+(defcommand restart-swank-stop () ()
+  (swank-stop)
+  (restart-hard))
+
 (defmacro bind-shell-to-key (key command &optional (map *root-map*))
   `(define-key ,map (kbd ,key) (concatenate 'string
                                             "run-shell-command "
@@ -60,6 +98,7 @@
 (bind-shell-to-key "N" "gnome-nettool")
 (bind-shell-to-key "C-t" "urxvt") ;; new shell
 (bind-shell-to-key "C" "gnome-control-center")
+(bind-shell-to-key "C-s" "skype")
 
 (define-key *root-map* (kbd "t") "urxvt")
 (define-key *root-map* (kbd "M") "sunflower")
@@ -96,8 +135,10 @@
 (define-key *root-map* (kbd "3") "hsplit")
 
 (define-key *top-map* (kbd "M-F4") "delete")
+(define-key *top-map* (kbd "C-F9") "swank-start")
+(define-key *top-map* (kbd "C-F10") "swank-stop")
+(define-key *top-map* (kbd "C-F11") "restart-swank-stop")
 (define-key *top-map* (kbd "C-F12") "loadrc")
-(define-key *top-map* (kbd "C-F11") "restart-hard")
 
 (define-key *top-map* (kbd "s-M-SunPageUp") "gnext")
 (define-key *top-map* (kbd "s-M-SunPageDown") "gprev")
@@ -167,7 +208,6 @@
 (stumpwm:run-shell-command "/usr/bin/trayer --SetDockType true --transparent true
 --alpha 0 --edge top --align right --expand true --widthtype request --tint
 0xf0f8ff")
-(stumpwm:run-commands "stumptray")
 ;; (stumptray:stumptray)
 ;; (run-shell-command "stumpish mode-line")
 
@@ -181,38 +221,9 @@
                           (stumpwm:current-head)
                           t)
 
-;; ------------------------------------------------------------
-;; Swank
+(stumpwm:run-shell-command
+ "display -window root /home/kostafey/data/img/raining-green-background.jpg")
+(stumpwm:run-shell-command "udiskie --tray")
+(stumpwm:run-shell-command "xxkb")
 
-(defun slime-package? (package-name)
-  (equal (subseq package-name 0 5) "slime"))
-
-(defun get-slime-package-path ()
-  (let* ((elpa-path (namestring
-                     (merge-pathnames ".emacs.d/elpa/"
-                                      (user-homedir-pathname))))
-         (pkg-version (car
-                       (remove-if-not
-                        #'slime-package?
-                        (stumpwm:split-string
-                         (stumpwm:run-shell-command
-                          (concatenate 'string "ls " elpa-path) t)))))
-         (slime-path (merge-pathnames pkg-version elpa-path)))
-    (concatenate 'string (namestring slime-path) "/")))
-
-(load (merge-pathnames "swank-loader.lisp" (get-slime-package-path)))
-
-(swank-loader:init)
-
-(defcommand swank-start () ()
- (swank:create-server :port 4005
-                      :dont-close t)
- (echo-string
-  (current-screen)
-  "Starting swank. M-x slime-connect RET RET, then (in-package stumpwm)."))
-
-(defcommand swank-stop () ()
-  (swank:stop-server 4005)
-  (echo-string
-   (current-screen)
-   "Stop swank."))
+(stumpwm:run-commands "stumptray")
