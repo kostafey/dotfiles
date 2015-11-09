@@ -58,6 +58,7 @@
 (bind-shell-to-key "T" "thunderbird")
 (bind-shell-to-key "N" "gnome-nettool")
 (bind-shell-to-key "C-t" "urxvt") ;; new shell
+(bind-shell-to-key "C" "gnome-control-center")
 
 (define-key *root-map* (kbd "t") "urxvt")
 (define-key *root-map* (kbd "M") "sunflower")
