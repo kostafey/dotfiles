@@ -85,7 +85,7 @@
   (run-or-raise "sunflower" '(:class "Sunflower")))
 
 (defcommand restart-swank-stop () ()
-  (swank-stop)
+  (stumpwm:run-commands "swank-stop")
   (restart-hard))
 
 (defmacro bind-shell-to-key (key command &optional (map *root-map*))
