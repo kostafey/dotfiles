@@ -229,3 +229,24 @@
 (stumpwm:run-shell-command "xxkb")
 
 (stumpwm:run-commands "stumptray")
+
+(defmacro with-rat-position (&rest body)
+  `(multiple-value-bind (x y)
+       (xlib:pointer-position (window-xwin (current-window)))
+     ,@body
+     (ratwarp x y)))
+
+(defun handle-mucommander-subwindow-close (window)
+  (if  (equal (window-class window)
+              "com-mucommander-Launcher")
+       (with-rat-position ()
+         (ratwarp 150 10)
+         (ratclick)
+         (ratwarp 150 25)
+         (ratclick)
+         (ratwarp 150 10)
+         (ratclick)
+         (ratwarp 150 25)
+         (ratclick))))
+
+(add-hook *destroy-window-hook* 'handle-mucommander-subwindow-close)
