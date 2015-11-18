@@ -104,6 +104,7 @@
 (define-key *root-map* (kbd "M") "sunflower")
 (define-key *root-map* (kbd "G") "google-chrome")
 (define-key *root-map* (kbd "F") "firefox")
+(define-key *root-map* (kbd "k") "prev")
 
 (define-key *top-map* (kbd "C-M-l") "lock-screen")
 (define-key *top-map* (kbd "C-M-e") "emacs")
