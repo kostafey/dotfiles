@@ -72,6 +72,14 @@
                           "google-chrome")))
     (run-or-raise google-chrome-shell-cmd `(:class ,google-class))))
 
+(setq chromium-shell-cmd
+      (concatenate 'string
+                   "chromium --proxy-server=" *proxy*))
+(defcommand chromium () ()
+  "run chromium"
+  (let ((chromium-class "chromium"))
+    (run-or-raise chromium-shell-cmd `(:class ,chromium-class))))
+
 (defcommand firefox () ()
   "run firefox"
   (run-or-raise "firefox" '(:class "Firefox")))
@@ -83,6 +91,10 @@
 (defcommand sunflower () ()
   "run sunflower"
   (run-or-raise "sunflower" '(:class "Sunflower")))
+
+(defcommand mucommander () ()
+  "run mucommander"
+  (run-or-raise "mucommander" '(:class "com-mucommander-Launcher")))
 
 (defcommand restart-swank-stop () ()
   (stumpwm:run-commands "swank-stop")
@@ -97,12 +109,13 @@
 (bind-shell-to-key "T" "thunderbird")
 (bind-shell-to-key "N" "gnome-nettool")
 (bind-shell-to-key "C-t" "urxvt") ;; new shell
-(bind-shell-to-key "C" "gnome-control-center")
-(bind-shell-to-key "C-s" "skype")
+(bind-shell-to-key "C" "xfce4-settings-manager")
+(bind-shell-to-key "M-m" "xfce4-mixer")
+(bind-shell-to-key "C-s" "apulse skype")
 
 (define-key *root-map* (kbd "t") "urxvt")
-(define-key *root-map* (kbd "M") "sunflower")
-(define-key *root-map* (kbd "G") "google-chrome")
+(define-key *root-map* (kbd "M") "mucommander")
+(define-key *root-map* (kbd "G") "chromium")
 (define-key *root-map* (kbd "F") "firefox")
 (define-key *root-map* (kbd "k") "prev")
 
@@ -209,7 +222,8 @@
 (ql:quickload :zpng)
 (load-module "screenshot")
 
-(stumpwm:run-shell-command "/usr/bin/trayer --SetDockType true --transparent true
+(stumpwm:run-shell-command
+ "/usr/bin/trayer --SetDockType true --transparent true
 --alpha 0 --edge top --align right --expand true --widthtype request --tint
 0xf0f8ff")
 ;; (stumptray:stumptray)
@@ -227,8 +241,6 @@
 
 (stumpwm:run-shell-command
  "display -window root /home/kostafey/data/img/raining-green-background.jpg")
-(stumpwm:run-shell-command "xxkb")
-
 (stumpwm:run-commands "stumptray")
 
 (defmacro with-rat-position (&rest body)
@@ -243,11 +255,11 @@
        (with-rat-position ()
          (ratwarp 150 10)
          (ratclick)
-         (ratwarp 150 25)
+         (ratwarp 150 30)
          (ratclick)
          (ratwarp 150 10)
          (ratclick)
-         (ratwarp 150 25)
+         (ratwarp 150 30)
          (ratclick))))
 
 (add-hook *destroy-window-hook* 'handle-mucommander-subwindow-close)

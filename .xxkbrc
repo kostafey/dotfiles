@@ -3,6 +3,8 @@ XXkb.mainwindow.type: tray
 XXkb.mainwindow.label.enable: yes
 XXkb.mainwindow.enable: yes
 XXkb.mainwindow.appicon: no
+XXkb.mainwindow.type: tray
+XXkb.mainwindow.in_tray: yes
 XXkb.mainwindow.geometry: 15x15+0+0
 XXkb.mainwindow.label.background: #DCDAD5
 XXkb.mainwindow.label.foreground: #222222

@@ -1,0 +1,20 @@
+xkb_keymap {
+	xkb_keycodes  {
+        include "evdev+aliases(qwerty)"
+            <CHGR> = 247;
+    };
+	xkb_types     {
+        include "complete"
+	};
+	xkb_compatibility    {
+        include "complete"
+        include "ledcaps(group_lock)"
+    };
+	xkb_geometry  {
+        include "pc(pc105)"
+    };
+    xkb_symbols {
+        include "pc+us:1+ru:2+inet(evdev)"
+        key <CHGR> { [ ISO_Next_Group ] };
+    };
+};

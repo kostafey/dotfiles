@@ -2,21 +2,35 @@ Xft.dpi:	96
 Xft.antialias:	true
 Xft.hinting:	true
 Xft.hintstyle:	hintslight
+! Xft.hintstyle:	hintfull
 Xft.rgba:	rgb
 Xft.lcdfilter:	lcddefault
 
+URxvt.scrollstyle:             plain ! or xterm
 URxvt*geometry:                152x50
 URxvt*scrollBar_right:         true
 URxvt*iconFile:                /usr/share/icons/Mint-X/apps/scalable/Terminal.svg
 URxvt*font:                    xft:FiraMono:size=12:antialias=true:hinting=true
+! URxvt*font:                    xft:Consolas:size=12:antialias=true:hinting=true
 emacs*font:                    FiraMono:size=12:antialias=true:hinting=true
 
+URxvt.perl-lib:                ~/.urxvt/ext/
 URxvt*perl-ext-common:         fullscreen,default,clipboard,keyboard-select
 URxvt.keysym.F11:              perl:fullscreen:switch
 URxvt.iso14755:                False
 URxvt.keysym.Shift-Control-C:  perl:clipboard:copy
 URxvt.keysym.Shift-Control-V:  perl:clipboard:paste
 URxvt.keysym.M-s:              perl:keyboard-select:activate
+URxvt.clipboard.autocopy:      true
+
+URxvt.url-select.launcher:     chromium
+URxvt.url-select.underline:    true
+URxvt.keysym.M-u:              perl:url-select:select_next
+
+URxvt.keysym.Control-Up:       \033[1;5A
+URxvt.keysym.Control-Down:     \033[1;5B
+URxvt.keysym.Control-Left:     \033[1;5D
+URxvt.keysym.Control-Right:    \033[1;5C
 
 URxvt*background:              #f0fff0
 URxvt*foreground:              #326B6B
@@ -35,12 +49,12 @@ URxvt*color3:                  #cb4b16
 URxvt*color4:                  #268bd2
 URxvt*color5:                  #d33682
 URxvt*color6:                  #2aa198
-URxvt*color7:                  #eee8d5
+URxvt*color7:                  #009292
 URxvt*color8:                  #002b36
 URxvt*color9:                  #b8860b
 URxvt*color10:                 #119911
 URxvt*color11:                 #657b83
-URxvt*color12:                 #3465BD
+URxvt*color12:                 #3063EA
 URxvt*color13:                 #6c71c4
 URxvt*color14:                 #93a1a1
-URxvt*color15:                 #fdf6e3
+URxvt*color15:                 #326B6B
