@@ -1,3 +1,7 @@
+(stumpwm:run-shell-command
+ "display -window root /home/kostafey/data/img/raining-green-background.jpg")
+(stumpwm:run-commands "conky")
+
 (setq *startup-message* "^5Lisp ^2^bsystem operational.")
 
 ;;;; change the prefix key to something else
@@ -112,6 +116,8 @@
 (bind-shell-to-key "C" "xfce4-settings-manager")
 (bind-shell-to-key "M-m" "xfce4-mixer")
 (bind-shell-to-key "C-s" "apulse skype")
+(bind-shell-to-key "Q" "wine C:\\\\QUIK_OpenBroker\\\\info.exe")
+(bind-shell-to-key "I" "~/Jts/tws")
 
 (define-key *root-map* (kbd "t") "urxvt")
 (define-key *root-map* (kbd "M") "mucommander")
@@ -165,6 +171,21 @@
 
 (define-key *top-map* (kbd "SunPrint_Screen") "screenshot")
 (define-key *top-map* (kbd "C-SunPrint_Screen") "fclear")
+(define-key *top-map* (kbd "s-z") "fclear")
+
+;; (ql:quickload :clx-truetype)
+;; (ql:quickload :ttf-fonts)
+(load-module "clx-truetype")
+(load-module "ttf-fonts")
+
+(defun set-consolas-font ()
+  (setq clx-truetype::*font-dirs*
+        (append (list (namestring
+                       (merge-pathnames ".local/share/fonts/" (user-homedir-pathname))))
+                clx-truetype::*font-dirs*))
+  (clx-truetype:cache-fonts)
+  (set-font
+   (make-instance 'xft:font :family "Consolas" :subfamily "Regular" :size 18)))
 
 (set-font "-*-terminus-*-*-*-*-18-*-*-*-*-*-iso10646-*")
 
@@ -173,11 +194,11 @@
 
 ;;;; Message window gravity
 ;; ; :top-left :top-right :bottom-left :bottom-right :center
- (setq *message-window-gravity* :center)
+(setq *message-window-gravity* :center)
 
 ;;;; Input window gravity
 ;; ; :top-left :top-right :bottom-left :bottom-right :center
- (setq *input-window-gravity* :center)
+(setq *input-window-gravity* :center)
 
 (set-bg-color "#F0FFF0")
 (set-fg-color "#326B6B")
@@ -233,15 +254,14 @@
       (list
        "%n   (%c%M)"
        "^>" '(:eval (stumpwm:run-shell-command
-                     "date +%a' '%d.%m.%Y' '%T' '%Z'           '" t))))
+                     "date +%A' '%d.%m.%Y' '%l:%M' '%p' '%Z'           '" t))))
 
 (stumpwm:enable-mode-line (stumpwm:current-screen)
                           (stumpwm:current-head)
                           t)
 
-(stumpwm:run-shell-command
- "display -window root /home/kostafey/data/img/raining-green-background.jpg")
 (stumpwm:run-commands "stumptray")
+(stumpwm:run-shell-command "nm-applet")
 
 (defmacro with-rat-position (&rest body)
   `(multiple-value-bind (x y)

@@ -1,8 +1,8 @@
 Xft.dpi:	96
 Xft.antialias:	true
 Xft.hinting:	true
-Xft.hintstyle:	hintslight
-! Xft.hintstyle:	hintfull
+! Xft.hintstyle:	hintslight
+Xft.hintstyle:	hintfull
 Xft.rgba:	rgb
 Xft.lcdfilter:	lcddefault
 
@@ -10,9 +10,8 @@ URxvt.scrollstyle:             plain ! or xterm
 URxvt*geometry:                152x50
 URxvt*scrollBar_right:         true
 URxvt*iconFile:                /usr/share/icons/Mint-X/apps/scalable/Terminal.svg
-URxvt*font:                    xft:FiraMono:size=12:antialias=true:hinting=true
-! URxvt*font:                    xft:Consolas:size=12:antialias=true:hinting=true
-emacs*font:                    FiraMono:size=12:antialias=true:hinting=true
+URxvt*font:                    xft:FiraMonoMedium:size=12:antialias=true:hinting=true
+! emacs*font:                    FiraMonoMedium:size=12:antialias=true:hinting=true
 
 URxvt.perl-lib:                ~/.urxvt/ext/
 URxvt*perl-ext-common:         fullscreen,default,clipboard,keyboard-select
@@ -56,5 +55,5 @@ URxvt*color10:                 #119911
 URxvt*color11:                 #657b83
 URxvt*color12:                 #3063EA
 URxvt*color13:                 #6c71c4
-URxvt*color14:                 #93a1a1
+URxvt*color14:                 #3465BD
 URxvt*color15:                 #326B6B
