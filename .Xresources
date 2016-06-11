@@ -41,19 +41,20 @@ URxvt*pointerColorForeground:  #586e75
 URxvt*highlightColor:          #EEEEA0
 URxvt*highlightTextColor:      #326B6B
 
-URxvt*color0:                  #073642
-URxvt*color1:                  #dc322f
+URxvt*color0:                  #b8860b
+URxvt*color1:                  #4e9a06
 URxvt*color2:                  #859900
-URxvt*color3:                  #cb4b16
+URxvt*color3:                  #ce5c00
+! URxvt*color4:                  #3465BD
 URxvt*color4:                  #268bd2
 URxvt*color5:                  #d33682
-URxvt*color6:                  #2aa198
+URxvt*color6:                  #22aa22
 URxvt*color7:                  #009292
-URxvt*color8:                  #002b36
+URxvt*color8:                  #ef2929
 URxvt*color9:                  #b8860b
 URxvt*color10:                 #119911
-URxvt*color11:                 #657b83
+URxvt*color11:                 #00A86B
 URxvt*color12:                 #3063EA
-URxvt*color13:                 #6c71c4
-URxvt*color14:                 #3465BD
+URxvt*color13:                 #a020f0
+URxvt*color14:                 #119911
 URxvt*color15:                 #326B6B
