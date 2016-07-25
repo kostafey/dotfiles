@@ -99,6 +99,10 @@
   "run mucommander"
   (run-or-raise "mucommander" '(:class "com-mucommander-Launcher")))
 
+(defcommand trader-workstation () ()
+  "run TWS"
+  (run-or-raise "~/Jts/tws" '(:class "com-install4j-runtime-launcher-UnixLauncher")))
+
 (defcommand restart-swank-stop () ()
   (stumpwm:run-commands "swank-stop")
   (restart-hard))
@@ -116,10 +120,10 @@
 (bind-shell-to-key "M-m" "xfce4-mixer")
 (bind-shell-to-key "C-s" "apulse skype")
 (bind-shell-to-key "Q" "wine C:\\\\QUIK_OpenBroker\\\\info.exe")
-(bind-shell-to-key "I" "~/Jts/tws")
 
 (define-key *root-map* (kbd "t") "urxvt")
 (define-key *root-map* (kbd "M") "mucommander")
+(define-key *root-map* (kbd "I") "trader-workstation")
 (define-key *root-map* (kbd "G") "chromium")
 (define-key *root-map* (kbd "F") "firefox")
 (define-key *root-map* (kbd "k") "prev")
@@ -260,8 +264,12 @@
                           t)
 
 (stumpwm:run-commands "stumptray")
-(stumpwm:run-shell-command "nm-applet")
+;; (stumpwm:run-shell-command "nm-applet")
 (stumpwm:run-shell-command "conky")
+
+(stumpwm:run-shell-command
+ "xcape -e '#50=ISO_Next_Group;#62=ISO_Next_Group;#64=ISO_Next_Group;#108=ISO_Next_Group' -t 1000")
+;; (stumpwm:run-shell-command "xxkb &")
 
 (defmacro with-rat-position (&rest body)
   `(multiple-value-bind (x y)
