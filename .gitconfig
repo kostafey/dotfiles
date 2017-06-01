@@ -1,0 +1,7 @@
+[user]
+	name = kostafey
+	email = kostafey@gmail.com
+[push]
+	default = simple
+[core]
+	autocrlf = input

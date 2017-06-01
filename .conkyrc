@@ -1,22 +1,19 @@
-# set to yes if you want tormo to be forked in the background
-background no
-# update_interval 1
-update_interval 60
-use_xft yes
+conky.config = {
+   background=no,
+   update_interval=30,
+   use_xft=true,
+   xftfont=FiraMonoMedium,
+   default_color='d3d7cf',
+   default_shade_color='2e3436',
+   default_outline_color='DarkGrey',
+   color1='BFFF00',
+   color2='A0F0A0',
+}
 
-xftfont FiraMonoMedium
-
-default_color d3d7cf
-default_shade_color 2e3436
-default_outline_color DarkGrey
-color1 BFFF00
-color2 A0F0A0
-
-TEXT
-
-${voffset -200}${goto 1200}${font FiraMonoMedium:size=54}${time %l:%M %p}
-${voffset 0}${goto 1250}${font FiraMonoMedium:size=54}${color1}${time %d}${color} ${time %B}
-${voffset -10}${goto 1380}${font FiraMonoMedium:size=34}${time %A}
-${voffset 0}${font FiraMonoMedium:size=14}${offset 1250}${execpi 300 DJS=`date +%_d`; cal | sed '/./!d' | sed 's/$/ /' | sed 's/^/ /' | sed /" $DJS "/s/" $DJS "/" "'${font FiraMonoMedium:size=14}${color1}'"$DJS"'${color}'" "/ | sed ':a;N;$!ba;s/\n/\n${offset 1250}/g'}
-
-${font}
+conky.text = [[
+    ${voffset -200}${goto 1200}${font FiraMonoMedium:size=54}${time %l:%M %p}
+    ${voffset 0}${goto 1250}${font FiraMonoMedium:size 54}${color1}${time %d}${color} ${time %B}
+    ${voffset -10}${goto 1380}${font FiraMonoMedium:size 34}${time %A}
+    ${voffset 0}${font FiraMonoMedium:size 14}${offset 1250}${execpi 300 DJS=`date +%_d`; cal | sed '/./!d' | sed 's/$/ /' | sed 's/^/ /' | sed /" $DJS "/s/" $DJS "/" "'${font FiraMonoMedium:size=14}${color1}'"$DJS"'${color}'" "/ | sed ':a;N;$!ba;s/\n/\n${offset 1250}/g'}
+    ${font}
+]]

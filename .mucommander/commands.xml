@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <commands>
-    <!-- <command alias="openFM" value="kioclient exec $f" type="system" display="Dolphin"/> -->
-    <command alias="openFM" value="nemo $f" type="system" display="nemo"/>
-    <command alias="edit" value="/home/kostafey/.emacs.d/launcher/switch-to-emacsclient -n $f" type="system"/>
-    <command alias="open" value="kioclient exec $f" type="system"/>
-    <command alias="openURL" value="kioclient exec $f" type="system"/>
+    <command alias="openFM" value="xdg-open $f" type="system" display="Thunar"/>
+    <command alias="open" value="xdg-open $f" type="system"/>
+    <command alias="openEXE" value="$f" type="system"/>
+    <command alias="openURL" value="xdg-open $f" type="system"/>
+    <command alias="edit" value="switch-to-emacsclient -n $f" type="system"/>
 </commands>
