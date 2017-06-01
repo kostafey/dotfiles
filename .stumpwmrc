@@ -158,7 +158,6 @@
 (define-key *root-map* (kbd "3") "hsplit")
 
 (define-key *top-map* (kbd "M-F4") "delete")
-
 (bind-shell-to-key "C-F8" "udiskie --tray" *top-map*)
 
 (define-key *top-map* (kbd "C-F9") "swank-start")
@@ -181,16 +180,25 @@
 (load-module "clx-truetype")
 (load-module "ttf-fonts")
 
-(defun set-consolas-font ()
+;; Handy font functions:
+;; (clx-truetype:cache-fonts)
+;; (clx-truetype:get-font-families)
+;; (clx-truetype:get-font-subfamilies "Fira Mono Medium")
+
+(defun set-fira-mono-font ()
   (setq clx-truetype::*font-dirs*
         (append (list (namestring
                        (merge-pathnames ".local/share/fonts/" (user-homedir-pathname))))
                 clx-truetype::*font-dirs*))
   (clx-truetype:cache-fonts)
   (set-font
-   (make-instance 'xft:font :family "Consolas" :subfamily "Regular" :size 18)))
+   (make-instance 'xft:font
+                  :family "Fira Mono Medium"
+                  :subfamily "Regular"
+                  :size 12.3)))
 
-(set-font "-*-terminus-*-*-*-*-18-*-*-*-*-*-iso10646-*")
+;; (set-font "-*-terminus-*-*-*-*-18-*-*-*-*-*-iso10646-*")
+(set-fira-mono-font)
 
 ;; ------------------------------------------------------------
 ;; Message window
