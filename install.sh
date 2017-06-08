@@ -25,6 +25,7 @@ ln -sf ~/dotfiles/.stumpwmrc ~/.stumpwmrc
 # xset +fp /home/sedykhkg/.fonts
 # xset fp rehash
 # fc-cache -fv
+ln -sf ~/dotfiles/.fonts.conf ~/.fonts.conf
 
 # ------------------------------------------------------------
 # conky
@@ -46,4 +47,10 @@ ln -sf ~/dotfiles/.lein/profiles.clj ~/.lein/profiles.clj
 # sudo apt-get install git
 # git config --global user.name "kostafey"
 # git config --global user.email kostafey@gmail.com
-ln -sf ~/dotfiles/.gitconfig ~.gitconfig
+ln -sf ~/dotfiles/.gitconfig ~/.gitconfig
+
+------------------------------------------------------------
+# urxvt
+ln -sf ~/dotfiles/.Xresources ~/.Xresources
+xrdb -merge ~/.Xresources
+cp -R ~/dotfiles/.urxvt ~/
