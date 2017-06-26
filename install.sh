@@ -36,6 +36,7 @@ ln -sf ~/dotfiles/.conkyrc ~/.conkyrc
 # ------------------------------------------------------------
 # sbt
 ln -sf ~/dotfiles/.sbt/0.13/global.sbt ~/.sbt/0.13/global.sbt
+mkdir -p ~/.sbt/0.13/plugins
 ln -sf ~/dotfiles/.sbt/0.13/plugins/plugins.sbt ~/.sbt/0.13/plugins/plugins.sbt
 
 # ------------------------------------------------------------
@@ -54,3 +55,14 @@ ln -sf ~/dotfiles/.gitconfig ~/.gitconfig
 ln -sf ~/dotfiles/.Xresources ~/.Xresources
 xrdb -merge ~/.Xresources
 cp -R ~/dotfiles/.urxvt ~/
+
+------------------------------------------------------------
+# java
+# jdir=~/data/soft/java/jdk1.8.0_131/
+# sudo update-alternatives --install /usr/bin/java java $jdir/bin/java 1
+# sudo update-alternatives --install /usr/bin/javac javac $jdir/bin/javac 1
+# sudo update-alternatives --install /usr/bin/javaws javaws $jdir/bin/javaws 1
+# sudo update-alternatives --config java
+# sudo update-alternatives --config javac
+# sudo update-alternatives --config javaws
+
