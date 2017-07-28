@@ -1,19 +1,41 @@
-conky.config = {
-   background=no,
-   update_interval=30,
-   use_xft=true,
-   xftfont=FiraMonoMedium,
-   default_color='d3d7cf',
-   default_shade_color='2e3436',
-   default_outline_color='DarkGrey',
-   color1='BFFF00',
-   color2='A0F0A0',
-}
+alignment                 top_right
+background                no
+border_width              0
+default_color             D3D7CF
+default_outline_color     white
+draw_borders              no
+draw_graph_borders        no
+draw_outline              no
+draw_shades               no
+use_xft                   yes
+#xftfont                   Terminus:size=10
+xftfont                   FiraMonoMedium:size=12
+xftalpha                  1
+#gap_x                     640   # this is half of 1280 (= width of second/right monitor)
+gap_y                     20
+minimum_size              10 0
+maximum_width             1680
+net_avg_samples           2
+no_buffers                yes
+out_to_console            no
+own_window                yes
+own_window_class          Conky
+own_window_type           override
+own_window_transparent    yes
+update_interval           1
+uppercase                 no
+use_spacer                left
+use_spacer                right
+double_buffer             yes
+short_units               yes
+pad_percents              0
+#text_buffer_size          512   # default 256
 
-conky.text = [[
-    ${voffset -200}${goto 1200}${font FiraMonoMedium:size=54}${time %l:%M %p}
-    ${voffset 0}${goto 1250}${font FiraMonoMedium:size 54}${color1}${time %d}${color} ${time %B}
-    ${voffset -10}${goto 1380}${font FiraMonoMedium:size 34}${time %A}
-    ${voffset 0}${font FiraMonoMedium:size 14}${offset 1250}${execpi 300 DJS=`date +%_d`; cal | sed '/./!d' | sed 's/$/ /' | sed 's/^/ /' | sed /" $DJS "/s/" $DJS "/" "'${font FiraMonoMedium:size=14}${color1}'"$DJS"'${color}'" "/ | sed ':a;N;$!ba;s/\n/\n${offset 1250}/g'}
-    ${font}
-]]
+TEXT
+
+${color #A0F0A0}${execp LANG=en_US.utf8 cal | sed s/`echo "\x5f\x08\(.\)\x5f\x08\(.\)"`/'${color #BFFF00}\1\2${color #A0F0A0}'/}
+
+
+${color}${exec LANG=en_US.utf8 cal -m `date +%m` -A1 -B-1}
+${exec LANG=en_US.utf8 cal -m `date +%m` -A2 -B-2}
+${exec LANG=en_US.utf8 cal -m `date +%m` -A3 -B-3}

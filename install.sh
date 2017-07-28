@@ -1,3 +1,10 @@
+# Prerequisites:
+# * git
+# * feh
+
+# Optional:
+# * gnome-nettool
+# * goldendict
 
 # ------------------------------------------------------------
 # mucommander
@@ -17,12 +24,16 @@ ln -sf ~/dotfiles/.sbclrc ~/.sbclrc
 # stumpwm
 ln -sf ~/dotfiles/.stumpwmrc ~/.stumpwmrc
 
+mkdir -p ~/.stumpwm.d/modules/
+cd ~/.stumpwm.d/modules/
+git clone https://github.com/stumpwm/stumpwm-contrib.git
+
 # ------------------------------------------------------------
 # fonts
 # cd ~/.fonts
 # sudo mkfontscale
 # sudo mkfontdir
-# xset +fp /home/sedykhkg/.fonts
+# xset +fp ~/.fonts
 # xset fp rehash
 # fc-cache -fv
 ln -sf ~/dotfiles/.fonts.conf ~/.fonts.conf
@@ -50,13 +61,13 @@ ln -sf ~/dotfiles/.lein/profiles.clj ~/.lein/profiles.clj
 # git config --global user.email kostafey@gmail.com
 ln -sf ~/dotfiles/.gitconfig ~/.gitconfig
 
-------------------------------------------------------------
+# ------------------------------------------------------------
 # urxvt
 ln -sf ~/dotfiles/.Xresources ~/.Xresources
 xrdb -merge ~/.Xresources
 cp -R ~/dotfiles/.urxvt ~/
 
-------------------------------------------------------------
+# ------------------------------------------------------------
 # java
 # jdir=~/data/soft/java/jdk1.8.0_131/
 # sudo update-alternatives --install /usr/bin/java java $jdir/bin/java 1
@@ -66,3 +77,12 @@ cp -R ~/dotfiles/.urxvt ~/
 # sudo update-alternatives --config javac
 # sudo update-alternatives --config javaws
 
+# ------------------------------------------------------------
+# xkb
+
+# ln -sf ~/dotfiles/.xkb ~/.xkb
+ln -sf ~/dotfiles/.xxkbrc ~/.xxkbrc
+
+# ------------------------------------------------------------
+# lein
+ln -sf ~/dotfiles/.lein/profiles.clj ~/.lein/profiles.clj

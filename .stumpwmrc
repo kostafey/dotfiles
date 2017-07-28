@@ -1,5 +1,5 @@
 (stumpwm:run-shell-command
- "display -window root /home/kostafey/data/img/raining-green-background.jpg")
+ "feh --bg-scale ~/dotfiles/images/wallpapers/raining-green-background.jpg")
 
 (setq *startup-message* "^5Lisp ^2^bsystem operational.")
 
@@ -80,7 +80,7 @@
                    "chromium --proxy-server=" *proxy*))
 (defcommand chromium () ()
   "run chromium"
-  (let ((chromium-class "chromium"))
+  (let ((chromium-class "Chromium-browser"))
     (run-or-raise chromium-shell-cmd `(:class ,chromium-class))))
 
 (defcommand firefox () ()
@@ -97,7 +97,7 @@
 
 (defcommand mucommander () ()
   "run mucommander"
-  (run-or-raise "mucommander" '(:class "com-mucommander-Launcher")))
+  (run-or-raise "mucommander" '(:class "com-mucommander-muCommander")))
 
 (defcommand trader-workstation () ()
   "run TWS"
@@ -120,11 +120,12 @@
 (bind-shell-to-key "M-m" "xfce4-mixer")
 (bind-shell-to-key "C-s" "apulse skype")
 (bind-shell-to-key "Q" "wine C:\\\\QUIK_OpenBroker\\\\info.exe")
+(bind-shell-to-key "l" "xscreensaver-command -lock; systemctl suspend")
 
 (define-key *root-map* (kbd "t") "urxvt")
 (define-key *root-map* (kbd "M") "mucommander")
 (define-key *root-map* (kbd "I") "trader-workstation")
-(define-key *root-map* (kbd "G") "chromium")
+(define-key *root-map* (kbd "G") "google-chrome")
 (define-key *root-map* (kbd "F") "firefox")
 (define-key *root-map* (kbd "k") "prev")
 
@@ -175,9 +176,10 @@
 (define-key *top-map* (kbd "C-SunPrint_Screen") "fclear")
 (define-key *top-map* (kbd "s-z") "fclear")
 
-;; (ql:quickload :clx-truetype)
-;; (ql:quickload :ttf-fonts)
-(load-module "clx-truetype")
+;; ------------------------------------------------------------
+;; Fonts
+
+(ql:quickload :clx-truetype)
 (load-module "ttf-fonts")
 
 ;; Handy font functions:
@@ -250,34 +252,24 @@
 (load-module "cpu")
 (load-module "mem")
 (ql:quickload :xembed)
-(load-module "stumptray")
 (ql:quickload :zpng)
 (load-module "screenshot")
-
-(stumpwm:run-shell-command
- "/usr/bin/trayer --SetDockType true --transparent true
---alpha 0 --edge top --align right --expand true --widthtype request --tint
-0xf0f8ff")
-;; (stumptray:stumptray)
-;; (run-shell-command "stumpish mode-line")
 
 (setf stumpwm:*screen-mode-line-format*
       (list
        "%n   (%c%M)"
        "^>" '(:eval (stumpwm:run-shell-command
-                     "date +%A' '%d.%m.%Y' '%l:%M' '%p' '%Z'           '" t))))
+                     "LANG=en_US.utf8 date +%A' '%d.%m.%Y' '%l:%M' '%p' 'GMT''%:::z'           '" t))))
 
 (stumpwm:enable-mode-line (stumpwm:current-screen)
                           (stumpwm:current-head)
                           t)
 
+(load-module "stumptray")
 (stumpwm:run-commands "stumptray")
-;; (stumpwm:run-shell-command "nm-applet")
+(stumpwm:run-shell-command "nm-applet")
 (stumpwm:run-shell-command "conky")
-
-(stumpwm:run-shell-command
- "xcape -e '#50=ISO_Next_Group;#62=ISO_Next_Group;#64=ISO_Next_Group;#108=ISO_Next_Group' -t 1000")
-;; (stumpwm:run-shell-command "xxkb &")
+(stumpwm:run-shell-command "xxkb")
 
 (defmacro with-rat-position (&rest body)
   `(multiple-value-bind (x y)
@@ -285,17 +277,3 @@
      ,@body
      (ratwarp x y)))
 
-(defun handle-mucommander-subwindow-close (window)
-  (if  (equal (window-class window)
-              "com-mucommander-Launcher")
-       (with-rat-position ()
-         (ratwarp 150 10)
-         (ratclick)
-         (ratwarp 150 30)
-         (ratclick)
-         (ratwarp 150 10)
-         (ratclick)
-         (ratwarp 150 30)
-         (ratclick))))
-
-(add-hook *destroy-window-hook* 'handle-mucommander-subwindow-close)
