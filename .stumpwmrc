@@ -118,7 +118,7 @@
 (bind-shell-to-key "C-t" "urxvt") ;; new shell
 (bind-shell-to-key "C" "xfce4-settings-manager")
 (bind-shell-to-key "M-m" "xfce4-mixer")
-(bind-shell-to-key "C-s" "apulse skype")
+(bind-shell-to-key "C-s" "skype") ;; apulse skype
 (bind-shell-to-key "Q" "wine C:\\\\QUIK_OpenBroker\\\\info.exe")
 (bind-shell-to-key "l" "xscreensaver-command -lock; systemctl suspend")
 

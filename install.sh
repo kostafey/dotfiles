@@ -65,7 +65,7 @@ ln -sf ~/dotfiles/.gitconfig ~/.gitconfig
 # urxvt
 ln -sf ~/dotfiles/.Xresources ~/.Xresources
 xrdb -merge ~/.Xresources
-cp -R ~/dotfiles/.urxvt ~/
+ln -sf ~/dotfiles/.urxvt ~/
 
 # ------------------------------------------------------------
 # java

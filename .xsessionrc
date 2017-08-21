@@ -14,6 +14,7 @@ PATH=$PATH:$GOROOT/bin:$GOPATH/bin/
 export PATH
 
 alias cd..="cd .."
+alias gl="glances"
 
 xrandr --output LVDS1 --off
 xrandr --output VGA1 --mode 1680x1050

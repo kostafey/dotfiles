@@ -14,7 +14,10 @@ URxvt*font:                    xft:FiraMonoMedium:size=12:antialias=true:hinting
 ! emacs*font:                    FiraMonoMedium:size=12:antialias=true:hinting=true
 
 URxvt.perl-lib:                ~/.urxvt/ext/
-URxvt*perl-ext-common:         fullscreen,default,clipboard,keyboard-select,tabbed
+URxvt*perl-ext-common:         fullscreen,default,clipboard,keyboard-select,tabbedex
+
+URxvt.keysym.Control-Shift-R:  perl:tabbedex:rename_tab
+URxvt.keysym.Control-w:        perl:tabbedex:kill_tab
 
 URxvt.keysym.F11:              perl:fullscreen:switch
 URxvt.iso14755:                False
