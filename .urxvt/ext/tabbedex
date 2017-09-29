@@ -676,8 +676,8 @@ sub register_keysyms {
         $tab->parse_keysym('Shift-Right', 'perl:tabbedex:next_tab');
         $tab->parse_keysym('Shift-Down', 'perl:tabbedex:new_tab');
         $tab->parse_keysym('Shift-Up', 'perl:tabbedex:rename_tab');
-        $tab->parse_keysym('Control-Left', 'perl:tabbedex:move_tab_left');
-        $tab->parse_keysym('Control-Right', 'perl:tabbedex:move_tab_right');
+        $tab->parse_keysym('Control-Shift-Left', 'perl:tabbedex:move_tab_left');
+        $tab->parse_keysym('Control-Shift-Right', 'perl:tabbedex:move_tab_right');
         for my $num (1..12) {
             $tab->parse_keysym('Meta-F' . $num,
                                'perl:tabbedex:goto_tab_' . $num);

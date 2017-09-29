@@ -75,6 +75,14 @@
                           "google-chrome")))
     (run-or-raise google-chrome-shell-cmd `(:class ,google-class))))
 
+(defcommand midori () ()
+  "run midor"
+  (run-or-raise "midori" '(:class "Midori")))
+
+(defcommand palemoon () ()
+  "run palemoon"
+  (run-or-raise "palemoon" '(:class "Pale moon")))
+
 (setq chromium-shell-cmd
       (concatenate 'string
                    "chromium --proxy-server=" *proxy*))
@@ -126,6 +134,7 @@
 (define-key *root-map* (kbd "M") "mucommander")
 (define-key *root-map* (kbd "I") "trader-workstation")
 (define-key *root-map* (kbd "G") "google-chrome")
+(define-key *root-map* (kbd "e") "palemoon")
 (define-key *root-map* (kbd "F") "firefox")
 (define-key *root-map* (kbd "k") "prev")
 

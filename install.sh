@@ -5,6 +5,7 @@
 # Optional:
 # * gnome-nettool
 # * goldendict
+# * udiskie
 
 # ------------------------------------------------------------
 # mucommander
@@ -66,6 +67,7 @@ ln -sf ~/dotfiles/.gitconfig ~/.gitconfig
 ln -sf ~/dotfiles/.Xresources ~/.Xresources
 xrdb -merge ~/.Xresources
 ln -sf ~/dotfiles/.urxvt ~/
+ln -sf ~/dotfiles/.bashrc ~/.bashrc
 
 # ------------------------------------------------------------
 # java
