@@ -4,6 +4,7 @@
 
 # Optional:
 # * gnome-nettool
+# * miredo
 # * goldendict
 # * udiskie
 
