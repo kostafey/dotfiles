@@ -111,6 +111,11 @@
   "run TWS"
   (run-or-raise "~/Jts/tws" '(:class "com-install4j-runtime-launcher-UnixLauncher")))
 
+(defcommand intellij-idea () ()
+  "run IntelliJ IDEA"
+  (run-or-raise "~/data/soft/idea-IC-172.4343.14/bin/idea.sh"
+                '(:class "jetbrains-idea-ce")))
+
 (defcommand restart-swank-stop () ()
   (stumpwm:run-commands "swank-stop")
   (restart-hard))
@@ -140,6 +145,9 @@
 
 (define-key *top-map* (kbd "C-M-l") "lock-screen")
 (define-key *top-map* (kbd "C-M-e") "emacs")
+
+(define-key *root-map* (kbd "w") "intellij-idea")
+(define-key *top-map* (kbd "C-M-w") "intellij-idea")
 
 (define-key *top-map* (kbd "M-Tab") "windowlist")
 (define-key *top-map* (kbd "M-Z") "pull-hidden-next")

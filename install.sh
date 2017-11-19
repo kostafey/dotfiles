@@ -57,6 +57,10 @@ ln -sf ~/dotfiles/.sbt/0.13/plugins/plugins.sbt ~/.sbt/0.13/plugins/plugins.sbt
 ln -sf ~/dotfiles/.lein/profiles.clj ~/.lein/profiles.clj
 
 # ------------------------------------------------------------
+# maven
+ln -sf ~/dotfiles/.m2/settings.xml ~/.m2/settings.xml
+
+# ------------------------------------------------------------
 # git
 # sudo apt-get install git
 # git config --global user.name "kostafey"
