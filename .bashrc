@@ -10,3 +10,8 @@ alias cd..="cd .."
 alias gl="glances"
 
 source ~/.nix-profile/etc/profile.d/nix.sh
+
+
+# SDKMAN
+export SDKMAN_DIR="${HOME}/.sdkman"
+[[ -s "${HOME}/.sdkman/bin/sdkman-init.sh" ]] && source "${HOME}/.sdkman/bin/sdkman-init.sh"
