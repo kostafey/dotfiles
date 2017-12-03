@@ -95,9 +95,15 @@ ln -sf ~/dotfiles/.bashrc ~/.bashrc
 # ln -sf ~/dotfiles/.xkb ~/.xkb
 ln -sf ~/dotfiles/.xxkbrc ~/.xxkbrc
 
-# xsessionrc
-ln -sf ~/dotfiles/.xsessionrc ~/.xsessionrc
+function get_distro_name () {
+    cat /etc/*-release | grep NAME | sed -n 2p | sed 's/"/\n/g' | sed -n 2p
+}
 
+# xsessionrc
+if get_distro_name == "Debian GNU/Linux"
+then
+    ln -sf ~/dotfiles/.xsessionrc ~/.xsessionrc
+fi
 # ------------------------------------------------------------
 # lein
 ln -sf ~/dotfiles/.lein/profiles.clj ~/.lein/profiles.clj
