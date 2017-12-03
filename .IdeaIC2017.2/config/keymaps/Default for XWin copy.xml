@@ -1,0 +1,12 @@
+<keymap version="1" name="Default for XWin copy" parent="Default for XWin">
+  <action id="CloseContent">
+    <keyboard-shortcut first-keystroke="ctrl f4" />
+    <keyboard-shortcut first-keystroke="ctrl w" />
+  </action>
+  <action id="ContextHelp" />
+  <action id="EditorSelectWord" />
+  <action id="RecentFiles">
+    <keyboard-shortcut first-keystroke="ctrl e" />
+    <keyboard-shortcut first-keystroke="f1" />
+  </action>
+</keymap>

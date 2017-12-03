@@ -14,8 +14,13 @@
 ln -sf ~/dotfiles/.mucommander/action_keymap.xml ~/.mucommander/action_keymap.xml
 ln -sf ~/dotfiles/.mucommander/commands.xml ~/.mucommander/commands.xml
 
+# emacs
 sudo ln -sf ~/.emacs.d/launcher/current-winid /bin/current-winid
 sudo ln -sf ~/.emacs.d/launcher/switch-to-emacsclient /bin/switch-to-emacsclient
+
+# intellij idea
+ln -sf ~/dotfiles/.IdeaIC2017.2/config/keymaps/"Default for XWin copy.xml" \
+   ~/.IdeaIC2017.2/config/keymaps/"Default for XWin copy.xml"
 
 # ------------------------------------------------------------
 # sbcl
@@ -89,6 +94,9 @@ ln -sf ~/dotfiles/.bashrc ~/.bashrc
 
 # ln -sf ~/dotfiles/.xkb ~/.xkb
 ln -sf ~/dotfiles/.xxkbrc ~/.xxkbrc
+
+# xsessionrc
+ln -sf ~/dotfiles/.xsessionrc ~/.xsessionrc
 
 # ------------------------------------------------------------
 # lein
