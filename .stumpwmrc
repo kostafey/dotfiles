@@ -96,7 +96,7 @@
   (run-or-raise "firefox" '(:class "Firefox")))
 
 (defcommand urxvt () ()
-  "run firefox"
+  "run urxvt"
   (run-or-raise "urxvt" '(:class "URxvt")))
 
 (defcommand sunflower () ()
@@ -115,6 +115,11 @@
   "run IntelliJ IDEA"
   (run-or-raise "~/data/soft/idea-IC-172.4343.14/bin/idea.sh"
                 '(:class "jetbrains-idea-ce")))
+
+(defcommand android-studio () ()
+  "run jetbrains android-studio"
+  (run-or-raise "~/data/soft/android-studio/bin/studio.sh"
+                '(:class "jetbrains-studio")))
 
 (defcommand restart-swank-stop () ()
   (stumpwm:run-commands "swank-stop")
@@ -145,9 +150,11 @@
 
 (define-key *top-map* (kbd "C-M-l") "lock-screen")
 (define-key *top-map* (kbd "C-M-e") "emacs")
+;; (define-key *top-map* (kbd "C-M-e") "~/data/Projects/external/remacs/src/remacs")
 
 (define-key *root-map* (kbd "w") "intellij-idea")
 (define-key *top-map* (kbd "C-M-w") "intellij-idea")
+(define-key *root-map* (kbd "a") "android-studio")
 
 (define-key *top-map* (kbd "M-Tab") "windowlist")
 (define-key *top-map* (kbd "M-Z") "pull-hidden-next")
@@ -174,6 +181,7 @@
 (define-key *root-map* (kbd "1") "only")
 (define-key *root-map* (kbd "2") "vsplit")
 (define-key *root-map* (kbd "3") "hsplit")
+;; (kbd "C-d r") - interactive resize
 
 (define-key *top-map* (kbd "M-F4") "delete")
 (bind-shell-to-key "C-F8" "udiskie --tray" *top-map*)
@@ -294,3 +302,61 @@
      ,@body
      (ratwarp x y)))
 
+(defun commandp (command-name)
+  (loop
+    :for command :being :the :hash-keys :of stumpwm::*command-hash*
+    :when (string= (symbol-name command-name)
+                   (symbol-name command ))
+      :return command))
+
+;; (load-module "app-menu")
+
+(setq *app-menu*
+      '(("INTERNET"
+         ("Chrome" google-chrome)
+         ("Firefox" firefox)
+         ("Skype" "skype"))
+        ("VIRTUAL"
+         ("Virtualbox" "virtualbox"))
+        ("IDE"
+         "Emacs" "emacs"
+         "Intellij Idea" "intellij-idea"
+         "Android Studio" "android-studio")
+        ("WORK"
+         ;;submenu
+         ("OpenOffice.org"  "openoffice"))
+        ("GRAPHICS"
+         ;;submenu
+         ("Gimp" "gimp")
+         ("Pinta" "pinta")
+         ("Inkscape" "inkscape"))
+        ("urxvt" urxvt)
+        ("K3B" "k3b")))
+
+(defcommand show-menu () ()
+  "Show the application menu"
+  (labels
+      ((pick (options)
+         (let ((selection
+                 (select-from-menu
+                  (current-screen) ; screen
+                  options          ; table
+                  nil              ; prompt
+                  0                ; initial-selection
+                  )))
+           (cond
+             ((null selection)
+              nil)
+             ((stringp (second selection))
+              (run-shell-command (second selection)))
+             ((and (symbolp (second selection))
+                  (commandp (second selection)))
+              (funcall (second selection)))
+             (t
+              (if (equalp ".." (first selection))
+                  (pick (second selection))
+                  (pick (append (list (list ".." options))
+                                (cdr selection)))))))))
+    (pick *app-menu*)))
+
+(define-key *top-map* (kbd "M-`") "show-menu")

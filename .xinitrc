@@ -1,6 +1,7 @@
 
 xrandr --output LVDS1 --off
-xrandr --output VGA2 --mode 1680x1050
+xrandr --output VGA1 --mode 1680x1050
+# xrandr --output LVDS1 --mode 1366x768
 
 xset fp+ ~/.local/share/fonts
 xset +fp ~/.local/share/fonts

@@ -7,6 +7,7 @@
 # * miredo
 # * goldendict
 # * udiskie
+# * glances [gl] - system monitoring tool written in Python
 
 # ------------------------------------------------------------
 # mucommander
@@ -15,8 +16,10 @@ ln -sf ~/dotfiles/.mucommander/action_keymap.xml ~/.mucommander/action_keymap.xm
 ln -sf ~/dotfiles/.mucommander/commands.xml ~/.mucommander/commands.xml
 
 # emacs
-sudo ln -sf ~/.emacs.d/launcher/current-winid /bin/current-winid
-sudo ln -sf ~/.emacs.d/launcher/switch-to-emacsclient /bin/switch-to-emacsclient
+sudo ln -sf ~/.emacs.d/eframe-jack-in/linux/current-winid /bin/current-winid
+sudo ln -sf ~/.emacs.d/eframe-jack-in/linux/switch-to-emacsclient /bin/switch-to-emacsclient
+sudo chmod +x /bin/current-winid
+sudo chmod +x /bin/switch-to-emacsclient
 
 # intellij idea
 ln -sf ~/dotfiles/.IdeaIC2017.2/config/keymaps/"Default for XWin copy.xml" \
@@ -56,6 +59,10 @@ ln -sf ~/dotfiles/.conkyrc ~/.conkyrc
 ln -sf ~/dotfiles/.sbt/0.13/global.sbt ~/.sbt/0.13/global.sbt
 mkdir -p ~/.sbt/0.13/plugins
 ln -sf ~/dotfiles/.sbt/0.13/plugins/plugins.sbt ~/.sbt/0.13/plugins/plugins.sbt
+
+ln -sf ~/dotfiles/.sbt/1.0/global.sbt ~/.sbt/1.0/global.sbt
+mkdir -p ~/.sbt/1.0/plugins
+ln -sf ~/dotfiles/.sbt/1.0/plugins/plugins.sbt ~/.sbt/1.0/plugins/plugins.sbt
 
 # ------------------------------------------------------------
 # lein

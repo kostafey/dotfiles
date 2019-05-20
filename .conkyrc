@@ -2,6 +2,7 @@ alignment                 top_right
 background                no
 border_width              0
 default_color             D3D7CF
+# default_color             ffffff
 default_outline_color     white
 draw_borders              no
 draw_graph_borders        no
@@ -34,6 +35,7 @@ pad_percents              0
 TEXT
 
 ${color #A0F0A0}${execp LANG=en_US.utf8 cal | sed s/`echo "\x5f\x08\(.\)\x5f\x08\(.\)"`/'${color #BFFF00}\1\2${color #A0F0A0}'/}
+# ${color #ffffff}${execp LANG=en_US.utf8 cal | sed s/`echo "\x5f\x08\(.\)\x5f\x08\(.\)"`/'${color #000000}\1\2${color #ffffff}'/}
 
 
 ${color}${exec LANG=en_US.utf8 cal -m `date +%m` -A1 -B-1}

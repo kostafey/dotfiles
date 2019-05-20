@@ -6,6 +6,8 @@ Xft.hintstyle:	hintfull
 Xft.rgba:	rgb
 Xft.lcdfilter:	lcddefault
 
+#include ".urxvt/organic-green.xresources"
+
 URxvt.scrollstyle:             plain ! or xterm
 URxvt*geometry:                152x50
 URxvt*scrollBar_right:         true
@@ -39,31 +41,3 @@ URxvt.tabbed.tabbar-fg: 14
 URxvt.tabbed.tabbar-bg: 0
 URxvt.tabbed.tab-fg: 14
 URxvt.tabbed.tab-bg: 15
-
-URxvt*background:              #f0fff0
-URxvt*foreground:              #326B6B
-URxvt*cursorColor:             #225522
-URxvt*cursorColor2:            #f0fff0
-
-URxvt*pointerColorBackground:  #93a1a1
-URxvt*pointerColorForeground:  #586e75
-URxvt*highlightColor:          #EEEEA0
-URxvt*highlightTextColor:      #326B6B
-
-URxvt*color0:                  #cccccc
-URxvt*color1:                  #4e9a06
-URxvt*color2:                  #859900
-URxvt*color3:                  #ce5c00
-! URxvt*color4:                  #3465BD
-URxvt*color4:                  #268bd2
-URxvt*color5:                  #d33682
-URxvt*color6:                  #22aa22
-URxvt*color7:                  #009292
-URxvt*color8:                  #ef2929
-URxvt*color9:                  #b8860b
-URxvt*color10:                 #119911
-URxvt*color11:                 #00A86B
-URxvt*color12:                 #3063EA
-URxvt*color13:                 #a020f0
-URxvt*color14:                 #225522
-URxvt*color15:                 #EEEEA0

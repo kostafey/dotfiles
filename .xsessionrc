@@ -1,5 +1,7 @@
-xrandr --output LVDS1 --off
-xrandr --output VGA2 --mode 1680x1050
+# xrandr --output LVDS1 --off
+# xrandr --output VGA1 --mode 1680x1050
+# xrandr --output LVDS1 --off
+# xrandr --output LVDS1 --mode 1366x768
 
 export PATH=$PATH:$HOME/data/soft/java/jdk1.8.0_131/bin/
 export PATH=$PATH:$HOME/data/soft/scala/scala-2.12.2/bin/
@@ -7,6 +9,16 @@ export PATH=$PATH:$HOME/data/soft/sbt/bin/
 export PATH=$PATH:$HOME/data/soft/sbcl/bin/
 export PATH=$PATH:/opt/deadbeef/bin/
 export PATH="$HOME/.cask/bin:$PATH"
+export PATH="$HOME/.cargo/bin:$PATH"
+export PATH="/opt/git/:$PATH"
+
+export GOROOT=/usr/local/go
+export PATH=$PATH:$GOROOT/bin
+export GOPATH=$HOME/data/go
+export PATH=$PATH:$GOPATH/bin
+export PATH=$PATH:$HOME/.emacs.d/foreign/
+export PATH=$PATH:$HOME/data/soft/nodejs/node-v8.11.1-linux-x64/bin/
+export ANDROID_SDK_HOME=$HOME/data/soft/Android/
 
 alias cd..="cd .."
 alias gl="glances"
@@ -15,6 +27,9 @@ xset +fp $HOME/.fonts
 xset fp rehash
 
 export _JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=on -Dswing.aatext=true'
+_SILENT_JAVA_OPTIONS="$_JAVA_OPTIONS"
+unset _JAVA_OPTIONS
+alias java='java "$_SILENT_JAVA_OPTIONS"'
 
 source $HOME/.nix-profile/etc/profile.d/nix.sh
 

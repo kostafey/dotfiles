@@ -15,3 +15,11 @@ source ~/.nix-profile/etc/profile.d/nix.sh
 # SDKMAN
 export SDKMAN_DIR="${HOME}/.sdkman"
 [[ -s "${HOME}/.sdkman/bin/sdkman-init.sh" ]] && source "${HOME}/.sdkman/bin/sdkman-init.sh"
+
+# Rust
+export PATH="$HOME/.cargo/bin:$PATH"
+
+export PATH=$PATH:$HOME/.emacs.d/foreign/
+
+# Set Git language to English
+alias git='LANG=en_GB git'
