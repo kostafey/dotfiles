@@ -1,0 +1,12 @@
+{
+    "workbench.colorTheme": "organic-green",
+    "editor.fontSize": 16,
+    "editor.fontFamily": "'Fira Mono', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
+    "files.watcherExclude": {
+        "**/.bloop": true,
+        "**/.metals": true,
+        "**/.ammonite": true
+    },
+    "editor.cursorBlinking": "solid",
+    "editor.cursorWidth": 20
+}
