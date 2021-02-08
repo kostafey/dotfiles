@@ -8,5 +8,50 @@
         "**/.ammonite": true
     },
     "editor.cursorBlinking": "solid",
-    "editor.cursorWidth": 20
+    "editor.cursorWidth": 20,
+    "editor.emptySelectionClipboard": false,
+    "workbench.editor.enablePreview": false,
+    "bracket-pair-colorizer-2.showHorizontalScopeLine": false,
+    "bracket-pair-colorizer-2.colors": [
+        "#666666",
+        "#5544EE",
+        "#2265DC",
+        "#00A89B",
+        "#229900",
+        "#999900",
+        "#F57900",
+        "#EE66E8",
+        "#A020F0"
+    ],
+    "latex-workshop.message.update.show": false,
+    "highlightwords.colors": [
+        { "light": "#FFF68F", "dark": "cyan" },
+        { "light": "#B7EB8F", "dark": "pink" },
+        { "light": "#76DDBA", "dark": "lightgreen" },
+        { "light": "#91D5FF", "dark": "magenta" },
+        { "light": "#ADC6FF", "dark": "cornflowerblue" },
+        { "light": "#D3ADF7", "dark": "orange" },
+        { "light": "#FFADD2", "dark": "green" },
+        { "light": "#FFA39E", "dark": "red" },
+        { "light": "#FFD591", "dark": "white" }
+    ],
+    "highlightwords.box": {
+        "light": false,
+        "dark": true
+    },
+    "highlightwords.defaultMode": {
+        "default": 0
+    },    
+    "highlightwords.showSidebar": {
+        "default": true
+    },
+    "editor.suggestSelection": "first",
+    "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+    "editor.rulers": [
+        80
+    ],
+    "window.menuBarVisibility": "default",
+    "window.titleBarStyle": "custom",
+    // Allow to detect encoding from contents in the file
+    "files.autoGuessEncoding": true
 }

@@ -1,0 +1,21 @@
+{
+    "name": "organic-green",
+    "displayName": "organic-green",
+    "description": "Low-contract green color theme.",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.52.0"
+    },
+    "categories": [
+        "Themes"
+    ],
+    "contributes": {
+        "themes": [
+            {
+                "label": "organic-green",
+                "uiTheme": "vs",
+                "path": "./themes/organic-green-color-theme.json"
+            }
+        ]
+    }
+}

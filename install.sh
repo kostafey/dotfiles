@@ -21,6 +21,12 @@ sudo ln -sf ~/.emacs.d/eframe-jack-in/linux/switch-to-emacsclient /bin/switch-to
 sudo chmod +x /bin/current-winid
 sudo chmod +x /bin/switch-to-emacsclient
 
+# vscode
+ln -sf ~/dotfiles/.config/Code/User/keybindings.json ~/.config/Code/User/keybindings.json
+ln -sf ~/dotfiles/.config/Code/User/settings.json ~/.config/Code/User/settings.json
+
+ln -sf ~/dotfiles/.vscode/extensions/organic-green ~/.vscode/extensions/organic-green
+
 # intellij idea
 ln -sf ~/dotfiles/.IdeaIC2017.2/config/keymaps/"Default for XWin copy.xml" \
    ~/.IdeaIC2017.2/config/keymaps/"Default for XWin copy.xml"

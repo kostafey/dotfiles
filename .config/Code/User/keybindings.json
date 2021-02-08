@@ -23,5 +23,115 @@
     {
         "key": "alt+w",
         "command": "magit.status"
+    },
+    {
+        "key": "ctrl+shift+c",
+        "command": "workbench.action.terminal.new"
+    },
+    {
+        "key": "ctrl+shift+`",
+        "command": "-workbench.action.terminal.new"
+    },
+    // Goto definition
+    {
+        "key": "ctrl+alt+d",
+        "command": "editor.action.revealDefinition",
+        "when": "editorHasDefinitionProvider && editorTextFocus && !isInEmbeddedEditor"
+    },
+    {
+        "key": "f12",
+        "command": "-editor.action.revealDefinition",
+        "when": "editorHasDefinitionProvider && editorTextFocus && !isInEmbeddedEditor"
+    },
+    // Back from
+    {
+        "key": "shift+alt+left",
+        "command": "workbench.action.navigateBack"
+    },
+    {
+        "key": "ctrl+alt+-",
+        "command": "-workbench.action.navigateBack"
+    },
+    {
+        "key": "ctrl+tab",
+        "command": "-workbench.action.quickOpenNavigateNextInEditorPicker",
+        "when": "inEditorsPicker && inQuickOpen"
+    },
+    {
+        "key": "ctrl+x ctrl+b",
+        "command": "workbench.action.quickOpenNavigateNextInFilePicker",
+        "when": "inFilesPicker && inQuickOpen"
+    },
+    {
+        "key": "ctrl+p",
+        "command": "-workbench.action.quickOpenNavigateNextInFilePicker",
+        "when": "inFilesPicker && inQuickOpen"
+    },
+    {
+        "key": "ctrl+alt+left",
+        "command": "editor.action.jumpToBracket"
+    },
+    {
+        "key": "ctrl+alt+right",
+        "command": "editor.action.jumpToBracket"
+    },
+    {
+        "key": "shift+ctrl+alt+right",
+        "command": "editor.action.smartSelect.grow"
+    },
+    {
+        "key": "shift+ctrl+alt+left",
+        "command": "editor.action.smartSelect.grow"
+    },
+    {
+        "key": "alt+a",
+        "command": "extension.aceJump"
+    },
+    // Copy current file path
+    {
+        "key": "ctrl+shift+c",
+        "command": "copyFilePath",
+    },
+    {
+        "key": "ctrl+alt+c",
+        "command": "-copyFilePath",
+    },
+    {
+        "key": "f1",
+        "command": "workbench.action.quickOpen",
+    },
+    {
+        "key": "f2",
+        "command": "workbench.action.gotoSymbol",
+    },    
+    // New terminal:
+    {
+        "key": "ctrl+alt+c",
+        "command": "workbench.action.terminal.toggleTerminal",
+    },
+    {
+        "key": "ctrl+j",
+        "command": "workbench.action.joinAllGroups"
+    },
+    {
+        "key": "f3",
+        "command": "highlightwords.addHighlight"
+    },
+    {
+        "key": "ctrl+f3",
+        "command": "highlightwords.removeAllHighlights"
+    },
+    {
+        "key": "alt+e",
+        "command": "extension.eval"
+    },
+    {
+        "key": "ctrl+l",
+        "command": "workbench.action.navigateToLastEditLocation"
+    },
+    {
+        "key": "ctrl+shift+d",
+        "command": "editor.action.copyLinesDownAction",
+        "when": "editorTextFocus"
     }
 ]
