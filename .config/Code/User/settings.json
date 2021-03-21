@@ -53,5 +53,7 @@
     "window.menuBarVisibility": "default",
     "window.titleBarStyle": "custom",
     // Allow to detect encoding from contents in the file
-    "files.autoGuessEncoding": true
+    "files.autoGuessEncoding": true,
+    // Set plain text copy
+    "editor.copyWithSyntaxHighlighting": false
 }
