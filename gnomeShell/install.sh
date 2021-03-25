@@ -11,3 +11,4 @@ ln -sf "${SRC_GNOME_SHELL_SCRIPTS}terminal_window.sh" "${DEST_GNOME_SHELL_SCRIPT
 ln -sf "${SRC_GNOME_SHELL_SCRIPTS}vscode_window.sh" "${DEST_GNOME_SHELL_SCRIPTS}vscode_window.sh"
 ln -sf "${SRC_GNOME_SHELL_SCRIPTS}vscode_maximize.sh" "${DEST_GNOME_SHELL_SCRIPTS}vscode_maximize.sh"
 ln -sf "${SRC_GNOME_SHELL_SCRIPTS}deadbeef_window.sh" "${DEST_GNOME_SHELL_SCRIPTS}deadbeef_window.sh"
+ln -sf "${SRC_GNOME_SHELL_SCRIPTS}jts_window.sh" "${DEST_GNOME_SHELL_SCRIPTS}jts_window.sh"
