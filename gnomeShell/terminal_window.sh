@@ -7,4 +7,9 @@ var mw =
   global.get_window_actors()
     .map(w=>w.meta_window)
     .find(mw=>mw.get_wm_class().includes('gnome-terminal-server'));
-mw && mw.activate(0)"
+if (mw) {
+  mw.activate(0);
+  mw.maximize(Meta.MaximizeFlags.HORIZONTAL | Meta.MaximizeFlags.VERTICAL);
+} else {
+  imports.misc.util.spawnCommandLine('gnome-terminal');
+}"
