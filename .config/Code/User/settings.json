@@ -1,7 +1,6 @@
 {
     "workbench.colorTheme": "organic-green",
     "editor.fontSize": 16,
-    "editor.fontFamily": "'Fira Mono', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
     "files.watcherExclude": {
         "**/.bloop": true,
         "**/.metals": true,
@@ -50,10 +49,18 @@
     "editor.rulers": [
         80
     ],
-    "window.menuBarVisibility": "default",
     "window.titleBarStyle": "custom",
     // Allow to detect encoding from contents in the file
     "files.autoGuessEncoding": true,
     // Set plain text copy
-    "editor.copyWithSyntaxHighlighting": false
+    "editor.copyWithSyntaxHighlighting": false,
+    "editor.fontFamily": "'Fira Mono Medium', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
+    "workbench.editorAssociations": [
+        {
+            "viewType": "jupyter.notebook.ipynb",
+            "filenamePattern": "*.ipynb"
+        }
+    ],
+    "window.customMenuBarAltFocus": false,
+    "files.autoSave": "afterDelay"
 }

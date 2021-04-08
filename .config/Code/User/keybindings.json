@@ -68,9 +68,17 @@
         "when": "inFilesPicker && inQuickOpen"
     },
     {
-        "key": "ctrl+alt+left",
+        "key": "ctrl+meta+right",
         "command": "editor.action.jumpToBracket"
     },
+    {
+        "key": "ctrl+meta+left",
+        "command": "editor.action.jumpToBracket"
+    },
+    {
+        "key": "ctrl+alt+right",
+        "command": "editor.action.jumpToBracket"
+    },    
     {
         "key": "ctrl+alt+right",
         "command": "editor.action.jumpToBracket"
