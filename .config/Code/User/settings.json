@@ -62,5 +62,7 @@
         }
     ],
     "window.customMenuBarAltFocus": false,
-    "files.autoSave": "afterDelay"
+    "files.autoSave": "afterDelay",
+    // Do not search text under cursor. Search the same text searched last time.
+    "editor.find.seedSearchStringFromSelection": false
 }
