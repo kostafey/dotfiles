@@ -24,6 +24,7 @@
         "key": "alt+w",
         "command": "magit.status"
     },
+    // Open terminal
     {
         "key": "ctrl+shift+c",
         "command": "workbench.action.terminal.new"
@@ -51,6 +52,11 @@
     {
         "key": "ctrl+alt+-",
         "command": "-workbench.action.navigateBack"
+    },
+    // Goto last edit
+    {
+        "key": "ctrl+alt+l",
+        "command": "workbench.action.navigateToLastEditLocation"
     },
     {
         "key": "ctrl+tab",
@@ -80,7 +86,7 @@
         "command": "editor.action.jumpToBracket"
     },    
     {
-        "key": "ctrl+alt+right",
+        "key": "ctrl+alt+left",
         "command": "editor.action.jumpToBracket"
     },
     {
@@ -132,10 +138,6 @@
     {
         "key": "alt+e",
         "command": "extension.eval"
-    },
-    {
-        "key": "ctrl+l",
-        "command": "workbench.action.navigateToLastEditLocation"
     },
     {
         "key": "ctrl+shift+d",
