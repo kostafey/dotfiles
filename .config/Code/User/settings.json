@@ -38,8 +38,12 @@
         "light": false,
         "dark": true
     },
+    // 0=default, 
+    // 1=whole word, 
+    // 2=ignore case, 
+    // 3=whole word and ignore case
     "highlightwords.defaultMode": {
-        "default": 0
+        "default": 1
     },    
     "highlightwords.showSidebar": {
         "default": true
@@ -64,5 +68,10 @@
     "window.customMenuBarAltFocus": false,
     "files.autoSave": "afterDelay",
     // Do not search text under cursor. Search the same text searched last time.
-    "editor.find.seedSearchStringFromSelection": false
+    "editor.find.seedSearchStringFromSelection": false,
+    // --------------------
+    // Center Editor Window
+    // Enable toggling between centering the current line center, moving it
+    // to the top of the viewport and moving it to the bottom.
+    "center-editor-window.threeStateToggle": true
 }

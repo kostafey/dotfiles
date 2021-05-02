@@ -53,6 +53,10 @@
         "key": "ctrl+alt+-",
         "command": "-workbench.action.navigateBack"
     },
+    {
+        "key": "shift+alt+right",
+        "command": "workbench.action.navigateForward"
+    },
     // Goto last edit
     {
         "key": "ctrl+alt+l",
@@ -143,5 +147,14 @@
         "key": "ctrl+shift+d",
         "command": "editor.action.copyLinesDownAction",
         "when": "editorTextFocus"
+    },
+    // ctrl+d  --  select the next occurrence
+    {
+        "key": "ctrl+q",
+        "command": "workbench.action.togglePanel"
+    },
+    {
+        "key": "ctrl+j",
+        "command": "-workbench.action.togglePanel"
     }
 ]
