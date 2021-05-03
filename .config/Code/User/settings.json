@@ -1,5 +1,5 @@
 {
-    "workbench.colorTheme": "organic-green",
+    "workbench.colorTheme": "organic-green-theme",
     "editor.fontSize": 16,
     "files.watcherExclude": {
         "**/.bloop": true,
@@ -73,5 +73,10 @@
     // Center Editor Window
     // Enable toggling between centering the current line center, moving it
     // to the top of the viewport and moving it to the bottom.
-    "center-editor-window.threeStateToggle": true
+    "center-editor-window.threeStateToggle": true,
+    "editor.minimap.enabled": false,
+    // -----
+    // calva
+    "calva.statusColor.connectedStatusColor": "#B8860B",
+    "calva.statusColor.typeStatusColor": "#119911"
 }
