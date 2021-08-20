@@ -95,11 +95,11 @@
     },
     {
         "key": "shift+ctrl+alt+right",
-        "command": "editor.action.smartSelect.grow"
+        "command": "editor.action.selectToBracket"
     },
     {
         "key": "shift+ctrl+alt+left",
-        "command": "editor.action.smartSelect.grow"
+        "command": "editor.action.selectToBracket"
     },
     {
         "key": "alt+a",
@@ -156,5 +156,20 @@
     {
         "key": "ctrl+j",
         "command": "-workbench.action.togglePanel"
+    },
+    {
+        "key": "ctrl+shift+alt+b",
+        "command": "latex-workshop.build",
+        "when": "!config.latex-workshop.bind.altKeymap.enabled && editorLangId =~ /latex|rsweave|jlweave/"
+    },
+    {
+        "key": "ctrl+alt+b",
+        "command": "-latex-workshop.build",
+        "when": "!config.latex-workshop.bind.altKeymap.enabled && editorLangId =~ /latex|rsweave|jlweave/"
+    },
+    {
+        "key": "ctrl+e",
+        "command": "advanced-navigation.exchangePointAndMark"
     }
+    
 ]

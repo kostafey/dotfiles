@@ -38,13 +38,13 @@
         "light": false,
         "dark": true
     },
-    // 0=default, 
-    // 1=whole word, 
-    // 2=ignore case, 
+    // 0=default,
+    // 1=whole word,
+    // 2=ignore case,
     // 3=whole word and ignore case
     "highlightwords.defaultMode": {
         "default": 1
-    },    
+    },
     "highlightwords.showSidebar": {
         "default": true
     },
@@ -56,19 +56,17 @@
     "window.titleBarStyle": "custom",
     // Allow to detect encoding from contents in the file
     "files.autoGuessEncoding": true,
+    // Do not auto save files
+    "files.autoSave": "off",
     // Set plain text copy
     "editor.copyWithSyntaxHighlighting": false,
     "editor.fontFamily": "'Fira Mono Medium', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
-    "workbench.editorAssociations": [
-        {
-            "viewType": "jupyter.notebook.ipynb",
-            "filenamePattern": "*.ipynb"
-        }
-    ],
+    "workbench.editorAssociations": {
+        "*.ipynb": "jupyter-notebook"
+    },
     "window.customMenuBarAltFocus": false,
-    "files.autoSave": "afterDelay",
     // Do not search text under cursor. Search the same text searched last time.
-    "editor.find.seedSearchStringFromSelection": false,
+    "editor.find.seedSearchStringFromSelection": "never",
     // --------------------
     // Center Editor Window
     // Enable toggling between centering the current line center, moving it
@@ -78,5 +76,37 @@
     // -----
     // calva
     "calva.statusColor.connectedStatusColor": "#B8860B",
-    "calva.statusColor.typeStatusColor": "#119911"
+    "calva.statusColor.typeStatusColor": "#119911",
+    // -------
+    // aceJump
+    "aceJump.placeholder.backgroundColor": "#F0F0A1",
+    "aceJump.placeholder.color": "#333",
+    "aceJump.placeholder.upperCase": false,
+    "aceJump.placeholder.border": "none",
+    "aceJump.placeholder.fontWeight": "500",
+    // -----
+    // LaTeX
+    "latex-workshop.latex.tools": [
+        {
+            "name": "latexmk",
+            "command": "latexmk",
+            "args": [
+                "-e",
+                "$pdflatex=q/lualatex %O -synctex=1 -interaction=nonstopmode -file-line-error %S/",
+                "-outdir=%OUTDIR%",
+                "-pdf",
+                "%DOC%"
+            ],
+            "env": {}
+        }
+    ],
+    "notebook.cellToolbarLocation": {
+        "default": "right",
+        "jupyter-notebook": "left"
+    },
+    "security.workspace.trust.untrustedFiles": "open",
+    // -----------------
+    // Clean whitespaces
+    "files.trimTrailingWhitespace": false
+    // or "Trim Trailing Whitespace" command.
 }
