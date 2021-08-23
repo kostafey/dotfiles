@@ -93,13 +93,26 @@
         "key": "ctrl+alt+left",
         "command": "editor.action.jumpToBracket"
     },
+    // advanced-navigation keybindings
+    {
+        "key": "ctrl+e",
+        "command": "advanced-navigation.exchangePointAndMark"
+    },
+    {
+        "key": "ctrl+alt+right",
+        "command": "advanced-navigation.forwardSexp"
+    },
+    {
+        "key": "ctrl+alt+left",
+        "command": "advanced-navigation.backwardSexp"
+    },
     {
         "key": "shift+ctrl+alt+right",
-        "command": "editor.action.selectToBracket"
+        "command": "advanced-navigation.forwardSexpSelect"
     },
     {
         "key": "shift+ctrl+alt+left",
-        "command": "editor.action.selectToBracket"
+        "command": "advanced-navigation.backwardSexpSelect"
     },
     {
         "key": "alt+a",
@@ -166,10 +179,5 @@
         "key": "ctrl+alt+b",
         "command": "-latex-workshop.build",
         "when": "!config.latex-workshop.bind.altKeymap.enabled && editorLangId =~ /latex|rsweave|jlweave/"
-    },
-    {
-        "key": "ctrl+e",
-        "command": "advanced-navigation.exchangePointAndMark"
     }
-    
 ]
