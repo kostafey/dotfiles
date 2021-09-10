@@ -162,6 +162,11 @@
         "when": "editorTextFocus"
     },
     // ctrl+d  --  select the next occurrence
+    
+    {
+        "key": "ctrl+k",
+        "command": "deleteAllRight"
+    },
     {
         "key": "ctrl+q",
         "command": "workbench.action.togglePanel"

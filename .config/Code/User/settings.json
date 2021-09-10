@@ -77,6 +77,7 @@
     // calva
     "calva.statusColor.connectedStatusColor": "#B8860B",
     "calva.statusColor.typeStatusColor": "#119911",
+    "calva.showCalvaSaysOnStart": false,
     // -------
     // aceJump
     "aceJump.placeholder.backgroundColor": "#F0F0A1",
@@ -107,6 +108,15 @@
     "security.workspace.trust.untrustedFiles": "open",
     // -----------------
     // Clean whitespaces
-    "files.trimTrailingWhitespace": false
     // or "Trim Trailing Whitespace" command.
+    "files.trimTrailingWhitespace": false,
+    // Wraps after 70 characters
+    "rewrap.wrappingColumn": 70,
+    "rewrap.wholeComment": true,
+    // -----------------
+    "[scala]": {
+        "editor.suggestSelection": "first",
+        "editor.formatOnPaste": false,
+        "editor.formatOnType": false
+    }
 }

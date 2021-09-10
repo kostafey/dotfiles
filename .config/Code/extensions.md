@@ -11,3 +11,4 @@
 * Scala Syntax (official)  (scala-lang.scala)
 
 * Calva: Clojure & ClojureScript (betterthantomorrow.calva)
+* Rewrap: Hard word wrapping for comments and other text at a given column.
