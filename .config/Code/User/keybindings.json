@@ -161,8 +161,15 @@
         "command": "editor.action.copyLinesDownAction",
         "when": "editorTextFocus"
     },
-    // ctrl+d  --  select the next occurrence
-    
+    // ctrl+d  --  select the next occurrence    
+    {
+        "key": "ctrl+alt+down",
+        "command": "findWordAtCursor.next"
+    },
+    {
+        "key": "ctrl+alt+up",
+        "command": "findWordAtCursor.previous"
+    },
     {
         "key": "ctrl+k",
         "command": "deleteAllRight"
@@ -184,5 +191,16 @@
         "key": "ctrl+alt+b",
         "command": "-latex-workshop.build",
         "when": "!config.latex-workshop.bind.altKeymap.enabled && editorLangId =~ /latex|rsweave|jlweave/"
+    },
+    // Upper/lower case
+    {
+        "key": "ctrl+cmd+up",
+        "command": "editor.action.transformToUppercase",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "ctrl+cmd+down",
+        "command": "editor.action.transformToLowercase",
+        "when": "editorTextFocus"
     }
 ]

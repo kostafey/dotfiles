@@ -118,5 +118,6 @@
         "editor.suggestSelection": "first",
         "editor.formatOnPaste": false,
         "editor.formatOnType": false
-    }
+    },
+    "findWordAtCursor.showMessageIfNotFound": false
 }

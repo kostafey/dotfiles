@@ -12,3 +12,4 @@
 
 * Calva: Clojure & ClojureScript (betterthantomorrow.calva)
 * Rewrap: Hard word wrapping for comments and other text at a given column.
+* find-word-at-cursor: Move cursor to the next occurrence of word at cursor
