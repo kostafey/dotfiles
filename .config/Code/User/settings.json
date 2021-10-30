@@ -78,6 +78,36 @@
     "calva.statusColor.connectedStatusColor": "#B8860B",
     "calva.statusColor.typeStatusColor": "#119911",
     "calva.showCalvaSaysOnStart": false,
+    "calva.highlight.bracketColors": [
+        "#666666",
+        "#5544EE",
+        "#2265DC",
+        "#00A89B",
+        "#229900",
+        "#999900",
+        "#F57900",
+        "#EE66E8",
+        "#A020F0"
+    ],
+    "calva.highlight.matchedBracketStyle": {
+        "backgroundColor": "#F0F0A1"
+    },
+    "editor.tokenColorCustomizations": {
+        "textMateRules": [
+            {
+                "scope": "entity.global.clojure",
+                "settings": {
+                    "foreground": "#912CEE"
+                }
+            },
+            {
+                "scope": "entity.name.variable.clojure",
+                "settings": {
+                    "foreground": "#326B6B"
+                }
+            }            
+        ]
+    },
     // -------
     // aceJump
     "aceJump.placeholder.backgroundColor": "#F0F0A1",

@@ -77,42 +77,64 @@
         "command": "-workbench.action.quickOpenNavigateNextInFilePicker",
         "when": "inFilesPicker && inQuickOpen"
     },
+    // In-file navigation
     {
-        "key": "ctrl+meta+right",
-        "command": "editor.action.jumpToBracket"
+        "key": "ctrl+right",
+        "win": "ctrl+right",
+        "mac": "alt+right",
+        "command": "cursorWordRight"
     },
     {
-        "key": "ctrl+meta+left",
-        "command": "editor.action.jumpToBracket"
-    },
-    {
-        "key": "ctrl+alt+right",
-        "command": "editor.action.jumpToBracket"
-    },    
-    {
-        "key": "ctrl+alt+left",
-        "command": "editor.action.jumpToBracket"
-    },
-    // advanced-navigation keybindings
-    {
-        "key": "ctrl+e",
-        "command": "advanced-navigation.exchangePointAndMark"
+        "key": "ctrl+left",
+        "win": "ctrl+left",
+        "mac": "alt+left",
+        "command": "cursorWordLeft"
     },
     {
         "key": "ctrl+alt+right",
-        "command": "advanced-navigation.forwardSexp"
+        "command": "paredit.forwardSexp",
+        "when": "calva:keybindingsEnabled && editorTextFocus && editorLangId == 'clojure' && paredit:keyMap =~ /original|strict/"
     },
     {
         "key": "ctrl+alt+left",
-        "command": "advanced-navigation.backwardSexp"
+        "command": "paredit.backwardSexp",
+        "when": "calva:keybindingsEnabled && editorTextFocus && editorLangId == 'clojure' && paredit:keyMap =~ /original|strict/"
     },
     {
         "key": "shift+ctrl+alt+right",
-        "command": "advanced-navigation.forwardSexpSelect"
+        "command": "paredit.selectForwardSexp",
+        "when": "calva:keybindingsEnabled && editorTextFocus && editorLangId == 'clojure' && paredit:keyMap =~ /original|strict/"
     },
     {
         "key": "shift+ctrl+alt+left",
-        "command": "advanced-navigation.backwardSexpSelect"
+        "command": "paredit.selectBackwardSexp",
+        "when": "calva:keybindingsEnabled && editorTextFocus && editorLangId == 'clojure' && paredit:keyMap =~ /original|strict/"
+    },    
+    // advanced-navigation keybindings
+    {
+        "key": "ctrl+e",
+        "command": "advanced-navigation.exchangePointAndMark",
+        "when": "editorTextFocus && editorLangId != 'clojure'"
+    },
+    {
+        "key": "ctrl+alt+right",
+        "command": "advanced-navigation.forwardSexp",
+        "when": "editorTextFocus && editorLangId != 'clojure'"
+    },
+    {
+        "key": "ctrl+alt+left",
+        "command": "advanced-navigation.backwardSexp",
+        "when": "editorTextFocus && editorLangId != 'clojure'"
+    },
+    {
+        "key": "shift+ctrl+alt+right",
+        "command": "advanced-navigation.forwardSexpSelect",
+        "when": "editorTextFocus && editorLangId != 'clojure'"
+    },
+    {
+        "key": "shift+ctrl+alt+left",
+        "command": "advanced-navigation.backwardSexpSelect",
+        "when": "editorTextFocus && editorLangId != 'clojure'"
     },
     {
         "key": "alt+a",
