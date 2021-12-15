@@ -1,4 +1,3 @@
-* Bracket Pair Colorizer 2 (coenraads.bracket-pair-colorizer-2)
 * Center Editor Window     (kaiwood.center-editor-window)
 * Code Ace Jumper          (lucax88x.codeacejumper)
 * edamagit                 (kahole.magit)

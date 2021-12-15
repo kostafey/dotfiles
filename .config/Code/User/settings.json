@@ -10,18 +10,17 @@
     "editor.cursorWidth": 20,
     "editor.emptySelectionClipboard": false,
     "workbench.editor.enablePreview": false,
-    "bracket-pair-colorizer-2.showHorizontalScopeLine": false,
-    "bracket-pair-colorizer-2.colors": [
-        "#666666",
-        "#5544EE",
-        "#2265DC",
-        "#00A89B",
-        "#229900",
-        "#999900",
-        "#F57900",
-        "#EE66E8",
-        "#A020F0"
-    ],
+    "editor.bracketPairColorization.enabled": true,
+    "editor.guides.bracketPairs": false,
+    "workbench.colorCustomizations": {
+        "editorBracketHighlight.foreground1": "#666666",
+        "editorBracketHighlight.foreground2": "#5544EE",
+        "editorBracketHighlight.foreground3": "#2265DC",
+        "editorBracketHighlight.foreground4": "#00A89B",
+        "editorBracketHighlight.foreground5": "#229900",
+        "editorBracketHighlight.foreground6": "#999900",
+        "editorBracketHighlight.unexpectedBracket.foreground": "#db6165"
+    },
     "latex-workshop.message.update.show": false,
     "highlightwords.colors": [
         { "light": "#FFF68F", "dark": "cyan" },
@@ -149,5 +148,6 @@
         "editor.formatOnPaste": false,
         "editor.formatOnType": false
     },
-    "findWordAtCursor.showMessageIfNotFound": false
+    "findWordAtCursor.showMessageIfNotFound": false,
+    "editor.unicodeHighlight.ambiguousCharacters": false
 }
