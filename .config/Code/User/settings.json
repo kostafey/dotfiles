@@ -149,5 +149,13 @@
         "editor.formatOnType": false
     },
     "findWordAtCursor.showMessageIfNotFound": false,
-    "editor.unicodeHighlight.ambiguousCharacters": false
+    "editor.unicodeHighlight.ambiguousCharacters": false,    
+    "code-runner.executorMap": {
+        "javascript": "node",
+        "lua": "lua"
+    },
+    "output.smartScroll.enabled": true,
+    "editor.unicodeHighlight.allowedCharacters": {
+        " ": true
+    }
 }

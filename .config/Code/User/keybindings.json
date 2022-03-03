@@ -176,7 +176,7 @@
     },
     {
         "key": "alt+e",
-        "command": "extension.eval"
+        "command": "code-runner.run"
     },
     {
         "key": "ctrl+shift+d",
@@ -224,5 +224,9 @@
         "key": "ctrl+cmd+down",
         "command": "editor.action.transformToLowercase",
         "when": "editorTextFocus"
+    },
+    {
+        "key": "ctrl+]",
+        "command": "workbench.action.splitEditorDown"
     }
 ]
