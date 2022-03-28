@@ -154,8 +154,26 @@
         "javascript": "node",
         "lua": "lua"
     },
+    "interactiveScala.interpreter": "sbt console",
+    "interactiveScala.autoStart": false,
     "output.smartScroll.enabled": true,
     "editor.unicodeHighlight.allowedCharacters": {
         " ": true
+    },
+    "redhat.telemetry.enabled": false,
+    "java.configuration.runtimes": [
+        {
+          "name": "JavaSE-1.8",
+          "path": "/data/soft/java/jdk1.8.0_281",
+        },
+        {
+          "name": "JavaSE-11",
+          "path": "/data/soft/java/jdk-11.0.12",
+          "default": true
+        }
+    ],
+    "java.jdt.ls.java.home": "/data/soft/java/jdk-11.0.12",
+    "[java]": {
+        "editor.defaultFormatter": "redhat.java"
     }
 }
