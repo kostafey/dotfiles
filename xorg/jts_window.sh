@@ -1,0 +1,1 @@
+/data/dotfiles/xorg/run-or-raise.sh install4j-jclient-Launcher $HOME/Jts/tws

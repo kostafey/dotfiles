@@ -1,0 +1,1 @@
+/data/dotfiles/xorg/run-or-raise.sh google-chrome google-chrome
