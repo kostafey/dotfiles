@@ -91,6 +91,10 @@
     "calva.highlight.matchedBracketStyle": {
         "backgroundColor": "#F0F0A1"
     },
+    "scm.diffDecorationsGutterPattern": {
+        "added": false,
+        "modified": false
+    },    
     "editor.tokenColorCustomizations": {
         "textMateRules": [
             {
@@ -169,11 +173,19 @@
         {
           "name": "JavaSE-11",
           "path": "/data/soft/java/jdk-11.0.12",
-          "default": true
-        }
+        },
+        {
+            "name": "JavaSE-17",
+            "path": "/data/soft/java/jdk-17.0.3",
+            "default": true
+          }
     ],
-    "java.jdt.ls.java.home": "/data/soft/java/jdk-11.0.12",
+    "java.jdt.ls.java.home": "/data/soft/java/jdk-17.0.3/",
     "[java]": {
         "editor.defaultFormatter": "redhat.java"
+    },
+    "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx2G -Xms100m -javaagent:\"/home/kostafey/.vscode/extensions/gabrielbb.vscode-lombok-1.0.1/server/lombok.jar\"",
+    "[xml]": {
+        "editor.defaultFormatter": "redhat.vscode-xml"
     }
 }

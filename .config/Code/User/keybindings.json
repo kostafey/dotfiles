@@ -228,5 +228,9 @@
     {
         "key": "ctrl+]",
         "command": "workbench.action.splitEditorDown"
+    },
+    {
+        "key": "ctrl+f4",
+        "command": "java.test.runFromJavaProjectExplorer"
     }
 ]
