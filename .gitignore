@@ -1,2 +1,4 @@
 node_modules
 *.vsix
+.config/joyride/scripts/.clj-kondo/
+.config/joyride/scripts/.lsp/

@@ -24,6 +24,8 @@ sudo chmod +x /bin/switch-to-emacsclient
 # vscode
 ln -sf ~/dotfiles/.config/Code/User/keybindings.json ~/.config/Code/User/keybindings.json
 ln -sf ~/dotfiles/.config/Code/User/settings.json ~/.config/Code/User/settings.json
+ln -sf /data/dotfiles/.config/joyride/scripts ~/.config/joyride/scripts
+ln -sf /data/dotfiles/.config/clj-kondo/config.edn ~/.config/clj-kondo/config.edn
 
 ln -sf ~/dotfiles/.vscode/extensions/organic-green ~/.vscode/extensions/organic-green
 

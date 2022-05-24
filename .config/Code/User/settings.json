@@ -91,6 +91,10 @@
     "calva.highlight.matchedBracketStyle": {
         "backgroundColor": "#F0F0A1"
     },
+    "calva.paredit.defaultKeyMap": "strict",
+    "[clojure]": {
+        "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?"
+    },
     "scm.diffDecorationsGutterPattern": {
         "added": false,
         "modified": false

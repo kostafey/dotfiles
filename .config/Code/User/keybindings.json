@@ -80,20 +80,37 @@
     // In-file navigation
     {
         "key": "ctrl+right",
-        "win": "ctrl+right",
-        "mac": "alt+right",
-        "command": "cursorWordRight"
+        "command": "cursorWordRight",
+        "when": "textInputFocus"
     },
     {
         "key": "ctrl+left",
-        "win": "ctrl+left",
-        "mac": "alt+left",
-        "command": "cursorWordLeft"
+        "command": "cursorWordLeft",
+        "when": "textInputFocus"
     },
+    //------
+    // Calva
+    {
+        "key": "ctrl+e",
+        "command": "calva.evaluateSelection",
+        "when": "calva:connected && calva:keybindingsEnabled && editorTextFocus && !suggestWidgetVisible && editorLangId == 'clojure' && !editorHasSelection"
+    },
+    //------------------------
+    // Calva: Paredit redefine
+    {
+        "key": "ctrl+right",
+        "command": "cursorWordRight", // cursorWordAccessibilityRight
+        "when": "calva:cursorAfterComment && editorLangId == 'clojure' || calva:keybindingsEnabled && config.calva.paredit.hijackVSCodeDefaults && editorTextFocus && !calva:cursorInComment && editorLangId == 'clojure' && paredit:keyMap =~ /original|strict/"
+    }, 
     {
         "key": "ctrl+alt+right",
         "command": "paredit.forwardSexp",
         "when": "calva:keybindingsEnabled && editorTextFocus && editorLangId == 'clojure' && paredit:keyMap =~ /original|strict/"
+    },
+    {
+        "key": "ctrl+left",
+        "command": "cursorWordLeft", // cursorWordAccessibilityLeft
+        "when": "calva:cursorAfterComment && editorLangId == 'clojure' || calva:keybindingsEnabled && config.calva.paredit.hijackVSCodeDefaults && editorTextFocus && !calva:cursorInComment && editorLangId == 'clojure' && paredit:keyMap =~ /original|strict/"
     },
     {
         "key": "ctrl+alt+left",
@@ -110,11 +127,51 @@
         "command": "paredit.selectBackwardSexp",
         "when": "calva:keybindingsEnabled && editorTextFocus && editorLangId == 'clojure' && paredit:keyMap =~ /original|strict/"
     },    
+    {
+        "key": "ctrl+home",
+        "command": "cursorTop",
+        "when": "calva:keybindingsEnabled && editorTextFocus && editorLangId == 'clojure' && paredit:keyMap =~ /original|strict/"
+    },
+    {
+        "key": "ctrl+end",
+        "command": "cursorBottom",
+        "when": "calva:keybindingsEnabled && editorTextFocus && editorLangId == 'clojure' && paredit:keyMap =~ /original|strict/"
+    },
+    {
+        "key": "ctrl+shift+home",
+        "command": "cursorTopSelect",
+        "when": "calva:keybindingsEnabled && editorTextFocus && editorLangId == 'clojure' && paredit:keyMap =~ /original|strict/"
+    },
+    {
+        "key": "ctrl+shift+end",
+        "command": "cursorBottomSelect",
+        "when": "calva:keybindingsEnabled && editorTextFocus && editorLangId == 'clojure' && paredit:keyMap =~ /original|strict/"
+    },
+    {
+        "key": "ctrl+down",
+        "command": "scrollLineDown",
+        "when": "calva:keybindingsEnabled && editorTextFocus && editorLangId == 'clojure' && paredit:keyMap =~ /original|strict/"
+    },
+    {
+        "key": "alt+down",
+        "command": "paredit.forwardDownSexp",
+        "when": "calva:keybindingsEnabled && editorTextFocus && editorLangId == 'clojure' && paredit:keyMap =~ /original|strict/"
+    },
+    {
+        "key": "ctrl+up",
+        "command": "scrollLineUp",        
+        "when": "calva:keybindingsEnabled && editorTextFocus && editorLangId == 'clojure' && paredit:keyMap =~ /original|strict/"
+    },
+    {
+        "key": "alt+up",
+        "command": "paredit.backwardUpSexp",
+        "when": "calva:keybindingsEnabled && editorTextFocus && editorLangId == 'clojure' && paredit:keyMap =~ /original|strict/"
+    },
     // advanced-navigation keybindings
     {
         "key": "ctrl+e",
         "command": "advanced-navigation.exchangePointAndMark",
-        "when": "editorTextFocus && editorLangId != 'clojure'"
+        "when": "editorTextFocus && editorHasSelection"
     },
     {
         "key": "ctrl+alt+right",
