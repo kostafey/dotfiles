@@ -289,5 +289,25 @@
     {
         "key": "ctrl+f4",
         "command": "java.test.runFromJavaProjectExplorer"
+    },
+    {
+        "key": "ctrl+up",
+        "command": "calva.showPreviousReplHistoryEntry",
+        "when": "calva:connected && calva:keybindingsEnabled && calva:outputWindowActive && calva:replHistoryCommandsActive && editorLangId == 'clojure'"
+    },
+    {
+        "key": "alt+up",
+        "command": "-calva.showPreviousReplHistoryEntry",
+        "when": "calva:connected && calva:keybindingsEnabled && calva:outputWindowActive && calva:replHistoryCommandsActive && editorLangId == 'clojure'"
+    },
+    {
+        "key": "ctrl+down",
+        "command": "calva.showNextReplHistoryEntry",
+        "when": "calva:connected && calva:keybindingsEnabled && calva:outputWindowActive && calva:replHistoryCommandsActive && editorLangId == 'clojure'"
+    },
+    {
+        "key": "alt+down",
+        "command": "-calva.showNextReplHistoryEntry",
+        "when": "calva:connected && calva:keybindingsEnabled && calva:outputWindowActive && calva:replHistoryCommandsActive && editorLangId == 'clojure'"
     }
 ]
