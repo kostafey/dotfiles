@@ -19,3 +19,5 @@
 * Rewrap: Hard word wrapping for comments and other text at a given column.
 * Find Word At Cursor      (yzhang.find-word-at-cursor)
 * Filter Lines             (earshinov.filter-lines)
+* Multiple clipboards for VSCode (slevesque.vscode-multiclip)
+* Org Mode                 (vscode-org-mode.org-mode)

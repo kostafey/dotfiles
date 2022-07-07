@@ -6,6 +6,7 @@
         "**/.metals": true,
         "**/.ammonite": true
     },
+    "workbench.editor.navigationScope": "editorGroup",
     "editor.cursorBlinking": "solid",
     "editor.cursorWidth": 20,
     "editor.emptySelectionClipboard": false,

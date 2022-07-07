@@ -194,6 +194,14 @@
         "when": "editorTextFocus && editorLangId != 'clojure'"
     },
     {
+        "key": "ctrl+u",
+        "command": "advanced-navigation.swapTabGroups"
+    },
+    {
+        "key": "alt+delete",
+        "command": "advanced-navigation.justOneSpace"
+    },
+    {
         "key": "alt+a",
         "command": "extension.aceJump"
     },
@@ -309,5 +317,30 @@
         "key": "alt+down",
         "command": "-calva.showNextReplHistoryEntry",
         "when": "calva:connected && calva:keybindingsEnabled && calva:outputWindowActive && calva:replHistoryCommandsActive && editorLangId == 'clojure'"
+    },
+    {
+        "key": "ctrl+alt+up",
+        "command": "org.incrementContext",
+        "when": "editorLangId == 'org'"
+    },
+    {
+        "key": "alt+right",
+        "command": "-org.incrementContext",
+        "when": "editorLangId == 'org'"
+    },
+    {
+        "key": "ctrl+alt+down",
+        "command": "org.decrementContext",
+        "when": "editorLangId == 'org'"
+    },
+    {
+        "key": "alt+left",
+        "command": "-org.decrementContext",
+        "when": "editorLangId == 'org'"
+    },
+    {
+        "key": "ctrl+r",
+        "command": "-workbench.action.reloadWindow",
+        "when": "isDevelopment"
     }
 ]
