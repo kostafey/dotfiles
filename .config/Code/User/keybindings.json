@@ -198,7 +198,7 @@
         "command": "advanced-navigation.swapTabGroups"
     },
     {
-        "key": "ctrl+delete",
+        "key": "alt+delete",
         "command": "advanced-navigation.justOneSpace",
         "when": "editorTextFocus && editorLangId != 'clojure'"
     },
@@ -343,5 +343,9 @@
         "key": "ctrl+r",
         "command": "-workbench.action.reloadWindow",
         "when": "isDevelopment"
+    },
+    {
+        "key": "alt+f",
+        "command": "search.action.openEditor"
     }
 ]

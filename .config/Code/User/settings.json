@@ -94,7 +94,11 @@
     },
     "calva.paredit.defaultKeyMap": "strict",
     "[clojure]": {
-        "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?"
+        "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?",
+        "editor.defaultFormatter": "betterthantomorrow.calva"
+    },
+    "files.associations": {
+        "*.edn": "clojure"
     },
     "scm.diffDecorationsGutterPattern": {
         "added": false,
