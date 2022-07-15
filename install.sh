@@ -33,6 +33,11 @@ ln -sf ~/dotfiles/.vscode/extensions/organic-green ~/.vscode/extensions/organic-
 ln -sf ~/dotfiles/.IdeaIC2017.2/config/keymaps/"Default for XWin copy.xml" \
    ~/.IdeaIC2017.2/config/keymaps/"Default for XWin copy.xml"
 
+# alacritty
+mkdir ~/.config/alacritty
+ln -sf /data/dotfiles/.config/alacritty/alacritty.yml ~/.config/alacritty/alacritty.yml
+ln -sf /data/dotfiles/.tmux.conf ~/.tmux.conf
+
 # ------------------------------------------------------------
 # sbcl
 # sbcl --eval '(progn (ql:quickload :prove) (quit))'
