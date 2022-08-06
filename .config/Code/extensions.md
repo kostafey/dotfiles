@@ -21,3 +21,5 @@
 * Filter Lines             (earshinov.filter-lines)
 * Multiple clipboards for VSCode (slevesque.vscode-multiclip)
 * Org Mode                 (vscode-org-mode.org-mode)
+* Color Highlight          (naumovs.color-highlight)
+* File Utils               (sleistner.vscode-fileutils)

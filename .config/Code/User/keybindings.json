@@ -167,6 +167,16 @@
         "command": "paredit.backwardUpSexp",
         "when": "calva:keybindingsEnabled && editorTextFocus && editorLangId == 'clojure' && paredit:keyMap =~ /original|strict/"
     },
+    {
+        "key": "alt+shift+9",
+        "command": "paredit.slurpSexpBackward",
+        "when": "calva:keybindingsEnabled && editorTextFocus && editorLangId == 'clojure' && paredit:keyMap =~ /original|strict/"
+    },
+    {
+        "key": "alt+shift+0",
+        "command": "paredit.slurpSexpForward",
+        "when": "calva:keybindingsEnabled && editorTextFocus && editorLangId == 'clojure' && paredit:keyMap =~ /original|strict/"
+    },    
     // advanced-navigation keybindings
     {
         "key": "ctrl+e",
@@ -203,6 +213,26 @@
         "when": "editorTextFocus && editorLangId != 'clojure'"
     },
     {
+        "key": "ctrl+shift+t 1",
+        "command": "advanced-navigation.tempEditor-1"
+    },
+    {
+        "key": "ctrl+shift+t 2",
+        "command": "advanced-navigation.tempEditor-2"
+    },
+    {
+        "key": "ctrl+shift+t 3",
+        "command": "advanced-navigation.tempEditor-3"
+    },
+    {
+        "key": "ctrl+shift+t 4",
+        "command": "advanced-navigation.tempEditor-4"
+    },
+    {
+        "key": "ctrl+shift+t 5",
+        "command": "advanced-navigation.tempEditor-5"
+    },
+    {
         "key": "alt+a",
         "command": "extension.aceJump"
     },
@@ -223,11 +253,6 @@
         "key": "f2",
         "command": "workbench.action.gotoSymbol",
     },    
-    // New terminal:
-    {
-        "key": "ctrl+alt+c",
-        "command": "workbench.action.terminal.toggleTerminal",
-    },
     {
         "key": "ctrl+j",
         "command": "workbench.action.joinAllGroups"
@@ -265,6 +290,8 @@
     {
         "key": "ctrl+q",
         "command": "workbench.action.togglePanel"
+        // New terminal:
+        // "command": "workbench.action.terminal.toggleTerminal"
     },
     {
         "key": "ctrl+j",
@@ -347,5 +374,46 @@
     {
         "key": "alt+f",
         "command": "search.action.openEditor"
+    },
+    {
+        "key": "ctrl+`",
+        "command": "editor.action.triggerParameterHints",
+        "when": "editorHasSignatureHelpProvider && editorTextFocus"
+    },
+    {
+        "key": "ctrl+shift+p",
+        "command": "workbench.action.pinEditor",
+        "when": "!activeEditorIsPinned"
+    },
+    {
+        "key": "ctrl+k shift+enter",
+        "command": "-workbench.action.pinEditor",
+        "when": "!activeEditorIsPinned"
+    },
+    {
+        "key": "ctrl+shift+p",
+        "command": "workbench.action.unpinEditor",
+        "when": "activeEditorIsPinned"
+    },
+    {
+        "key": "ctrl+k shift+enter",
+        "command": "-workbench.action.unpinEditor",
+        "when": "activeEditorIsPinned"
+    },
+    {
+        "key": "ctrl+shift+meta+up",
+        "command": "workbench.action.moveEditorToAboveGroup"
+    },
+    {
+        "key": "ctrl+shift+meta+down",
+        "command": "workbench.action.moveEditorToBelowGroup"
+    },
+    {
+        "key": "ctrl+shift+meta+left",
+        "command": "workbench.action.moveEditorToLeftGroup"
+    },
+    {
+        "key": "ctrl+shift+meta+right",
+        "command": "workbench.action.moveEditorToRightGroup"
     }
 ]

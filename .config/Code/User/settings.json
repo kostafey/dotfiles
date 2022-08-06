@@ -11,6 +11,11 @@
     "editor.cursorWidth": 20,
     "editor.emptySelectionClipboard": false,
     "workbench.editor.enablePreview": false,
+    "workbench.editor.tabSizing": "fit",
+    "workbench.editor.wrapTabs": false,
+    "workbench.editor.tabCloseButton": "right",
+    "workbench.editor.pinnedTabSizing": "normal",
+    "workbench.editor.highlightModifiedTabs": false,
     "editor.bracketPairColorization.enabled": true,
     "editor.guides.bracketPairs": false,
     "workbench.colorCustomizations": {

@@ -89,7 +89,7 @@ window:
   # Window class (Linux/BSD only):
   class:
     # Application instance name
-    instance: alacritty.alacritty
+    instance: alacritty.alacritty@assume-uinq
     # General application class
     general: Alacritty
 
@@ -123,7 +123,7 @@ font:
     #style: Regular
 
   # Bold font face
-  #bold:
+  bold:
     # Font family
     #
     # If the bold family is not specified, it will fall back to the
@@ -132,6 +132,7 @@ font:
 
     # The `style` can be specified to pick a specific face.
     #style: Bold
+    style: Normal
 
   # Italic font face
   #italic:
@@ -285,15 +286,16 @@ colors:
   #  background: CellForeground
 
   # Normal colors
-  #normal:
-  #  black:   '#1d1f21'
-  #  red:     '#cc6666'
-  #  green:   '#b5bd68'
-  #  yellow:  '#f0c674'
-  #  blue:    '#81a2be'
-  #  magenta: '#b294bb'
-  #  cyan:    '#8abeb7'
-  #  white:   '#c5c8c6'
+  normal:
+   black:   '#24292e'
+  #  black:   '#2e3436'
+   red:     '#ce5c00'
+   green:   '#22aa22'
+   yellow:  '#b8860b'
+   blue:    '#268bd2'
+   magenta: '#3063EA'
+   cyan:    '#009292'
+   white:   '#912CEE'
 
   # Bright colors
   #bright:
