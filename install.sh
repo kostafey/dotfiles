@@ -27,6 +27,9 @@ ln -sf ~/dotfiles/.config/Code/User/settings.json ~/.config/Code/User/settings.j
 ln -sf /data/dotfiles/.config/joyride/scripts ~/.config/joyride/scripts
 ln -sf /data/dotfiles/.config/clj-kondo/config.edn ~/.config/clj-kondo/config.edn
 
+# nvim
+ln -sf /data/dotfiles/.config/nvim ~/.config/nvim
+
 ln -sf ~/dotfiles/.vscode/extensions/organic-green ~/.vscode/extensions/organic-green
 
 # intellij idea
