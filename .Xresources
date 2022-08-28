@@ -1,3 +1,6 @@
+// Enable Control Shift mappings for neovim
+term*modifyOtherKeys: 2
+
 Xft.dpi:	96
 Xft.antialias:	true
 Xft.hinting:	true

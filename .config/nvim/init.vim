@@ -10,7 +10,9 @@ if exists("g:neovide")
     let g:neovide_fullscreen=v:true
 endif
 
-"  Position cursor to the most right char in command mode
+" show line numbers
+set number
+" Position cursor to the most right char in command mode
 set virtualedit=onemore
 "  Set CUA mode
 behave mswin
@@ -32,6 +34,18 @@ lua require('keybindings')
 
 set guifont=Fira\ Mono\ Medium:h12.5
 
+"  save
 noremap <silent> <C-S>          :update<CR>
 vnoremap <silent> <C-S>         <C-C>:update<CR>
 inoremap <silent> <C-S>         <C-O>:update<CR>
+"  copy current file path
+nnoremap cp :let @+=expand('%:p')<CR>
+
+"  findWordAtCursor.previous
+noremap <C-M-Up> g#:let @/ = ""<CR>
+vnoremap <C-M-Up> <C-C>g#:let @/ = ""<CR>v
+inoremap <C-M-Up> <C-C>g#:let @/ = ""<CR>i
+"  findWordAtCursor.next
+noremap <C-M-Down> g*:let @/ = ""<CR>
+vnoremap <C-M-Down> <C-C>g*:let @/ = ""<CR>v
+inoremap <C-M-Down> <C-C>g*:let @/ = ""<CR>i

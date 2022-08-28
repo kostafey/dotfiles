@@ -3,6 +3,10 @@ vim.cmd [[packadd packer.nvim]]
 return require('packer').startup(function(use)
   -- Packer can manage itself
   use 'wbthomason/packer.nvim'
+  use 'norcalli/nvim-colorizer.lua'
+
+  require'colorizer'.setup()
+
 
   use 'shaunsingh/nord.nvim'
   vim.cmd[[colorscheme nord]]
