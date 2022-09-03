@@ -1,5 +1,6 @@
 "  neovide
 if exists("g:neovide")
+    let g:neovide_floating_window_opacity = 1.0
     let g:neovide_cursor_vfx_mode = ""
     "let g:neovide_transparency=0.8
     let g:neovide_scroll_animation_length= 0 "0.02
@@ -7,7 +8,10 @@ if exists("g:neovide")
     let g:neovide_cursor_trail_length=0.0
     let g:neovide_cursor_unfocused_outline_width=0.125
     let g:neovide_cursor_vfx_mode = ""
-    let g:neovide_fullscreen=v:true
+    "let g:neovide_fullscreen=v:true
+    let g:neovide_remember_window_size = v:true
+    let g:neovide_remember_window_position = v:true
+    "let g:neovide_cursor_antialiasing=v:true
 endif
 
 " show line numbers
@@ -32,7 +36,7 @@ map! <C-v> <C-R>+
 lua require('plugins')
 lua require('keybindings')
 
-set guifont=Fira\ Mono\ Medium:h12.5
+set guifont=Fira\ Mono\ Medium:h12.5:cDEFAULT
 
 "  save
 noremap <silent> <C-S>          :update<CR>
@@ -49,3 +53,11 @@ inoremap <C-M-Up> <C-C>g#:let @/ = ""<CR>i
 noremap <C-M-Down> g*:let @/ = ""<CR>
 vnoremap <C-M-Down> <C-C>g*:let @/ = ""<CR>v
 inoremap <C-M-Down> <C-C>g*:let @/ = ""<CR>i
+
+"  arrow key mappings for wildmenu tab completion
+set wildcharm=<C-Z>
+cnoremap <expr> <up> wildmenumode() ? "\<left>" : "\<up>"
+cnoremap <expr> <down> wildmenumode() ? "\<right>" : "\<down>"
+cnoremap <expr> <left> wildmenumode() ? "\<up>" : "\<left>"
+cnoremap <expr> <right> wildmenumode() ? " \<bs>\<C-Z>" : "\<right>"
+

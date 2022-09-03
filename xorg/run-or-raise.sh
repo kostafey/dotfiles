@@ -7,5 +7,5 @@ if test $(wmctrl -x -l | grep $win_class | wc -l) -gt 0;
 then 
     $SCRIPT_DIR/switch-window.sh $win_class
 else
-    $launch_command
+    eval $launch_command
 fi
