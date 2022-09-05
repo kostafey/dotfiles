@@ -10,6 +10,8 @@ return require('packer').startup(function(use)
     requires = { {'nvim-lua/plenary.nvim'} }
   }  
 
+  use 'Shatur/neovim-session-manager'
+
   use {
     "vigoux/notifier.nvim",
     config = function()
@@ -21,8 +23,8 @@ return require('packer').startup(function(use)
           "lsp"  -- LSP status updates
         },
         notify = {
-          clear_time = 5000, -- Time in milisecond before removing a vim.notifiy notification, 0 to make them sticky
-          min_level = vim.log.level.INFO, -- Minimum log level to print the notification
+          clear_time = 5000, -- Time in milliseconds before removing a vim.notify notification, 0 to make them sticky
+          min_level = vim.log.levels.INFO, -- Minimum log level to print the notification
         },
         component_name_recall = false -- Whether to prefix the title of the notification by the component name
       }
@@ -30,11 +32,10 @@ return require('packer').startup(function(use)
   }
 
   use 'norcalli/nvim-colorizer.lua'
-  require'colorizer'.setup()
+  require 'colorizer'.setup()
 
+  use 'kostafey/organicgreen.nvim'
   vim.cmd[[colorscheme organicgreen]]
 
 end)
-
-
 

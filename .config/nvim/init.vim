@@ -22,9 +22,12 @@ set virtualedit=onemore
 behave mswin
 "  Enable mouse
 set mouse=a
+
 "  Insert mode cursor block shape
 set guicursor=i:block
+" Enable CursorLine
 set cursorline
+
 set encoding=utf-8
 "  Use clipboard for cut and paste
 set clipboard+=unnamedplus
