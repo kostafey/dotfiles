@@ -12,6 +12,7 @@ vim.api.nvim_set_keymap("v", "<c-c>", '"*y :let @+=@*<CR>', {noremap=true, silen
 vim.api.nvim_set_keymap("n", "<c-v>", '<left>p<right>', {noremap=true, silent=true})
 vim.api.nvim_set_keymap("i", "<c-v>", '<C-c>pa', {noremap=true, silent=true})
 vim.api.nvim_set_keymap("n", "<c-x>", '"+x', {noremap=true, silent=true})
+vim.api.nvim_set_keymap("n", "<c-x>", '<del>', {noremap=true, silent=true})
 
 -- Cancel
 keymap("i", "<C-G>", '<Esc>', {noremap=true, silent=true})
@@ -39,3 +40,6 @@ keymap("i", "<C-f>", '<C-c>/', {noremap=true, silent=true})
 -- Reload buffer file
 keymap("n", "<C-r>", ':e<CR>', {noremap=true, silent=true})
 keymap("i", "<C-r>", ':<C-c>:e<CR>i', {noremap=true, silent=true})
+-- Command
+keymap("i", "<M-x>", '<C-c>:', {noremap=true, silent=true})
+keymap("n", "<M-x>", ':', {noremap=true, silent=true})

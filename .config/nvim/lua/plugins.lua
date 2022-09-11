@@ -3,6 +3,7 @@ vim.cmd [[packadd packer.nvim]]
 return require('packer').startup(function(use)
   -- Packer can manage itself
   use 'wbthomason/packer.nvim'
+  use 'Olical/aniseed'
 
   use {
     'nvim-telescope/telescope.nvim', tag = '0.1.0',
@@ -11,6 +12,10 @@ return require('packer').startup(function(use)
   }  
 
   use 'Shatur/neovim-session-manager'
+  
+  use {'akinsho/bufferline.nvim', tag = "v2.*", requires = 'kyazdani42/nvim-web-devicons'}
+  vim.opt.termguicolors = true
+  require("bufferline").setup{}
 
   use {
     "vigoux/notifier.nvim",
@@ -33,6 +38,26 @@ return require('packer').startup(function(use)
 
   use 'norcalli/nvim-colorizer.lua'
   require 'colorizer'.setup()
+
+  use 'nvim-treesitter/nvim-treesitter'
+  use 'p00f/nvim-ts-rainbow'
+  require("nvim-treesitter.configs").setup {
+     ensure_installed = { "c", "lua", "rust", "java", "clojure" },
+      -- Automatically install missing parsers when entering buffer
+     auto_install = true,  
+    highlight = {
+ 	    enable = true,
+       additional_vim_regex_highlighting = false,
+    },
+    rainbow = {
+      enable = true,
+      extended_mode = true, -- Also highlight non-bracket delimiters like html tags, boolean or table: lang -> boolean
+      max_file_lines = nil, -- Do not enable for files with more than n lines, int
+      colors = {"#666666", "#5544EE", "#0065CC", "#00A89B", "#119911", "#b8860b", "#ce5c00"}, -- table of hex strings
+      termcolors = {"Red", "Green", "Yellow", "Blue", "Magenta", "Cyan", "White"}, -- table of colour name strings      
+    }
+  }
+
 
   use 'kostafey/organicgreen.nvim'
   vim.cmd[[colorscheme organicgreen]]

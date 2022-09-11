@@ -40,6 +40,7 @@ lua require('plugins')
 lua require('keybindings')
 
 set guifont=Fira\ Mono\ Medium:h12.5:cDEFAULT
+autocmd BufRead,BufNewFile * syn match parens /[(){}]/ | hi parens ctermfg=red
 
 "  save
 noremap <silent> <C-S>          :update<CR>
