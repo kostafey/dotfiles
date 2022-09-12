@@ -3,7 +3,9 @@ vim.cmd [[packadd packer.nvim]]
 return require('packer').startup(function(use)
   -- Packer can manage itself
   use 'wbthomason/packer.nvim'
+  
   use 'Olical/aniseed'
+  use 'Shatur/neovim-session-manager'
 
   use {
     'nvim-telescope/telescope.nvim', tag = '0.1.0',
@@ -11,8 +13,64 @@ return require('packer').startup(function(use)
     requires = { {'nvim-lua/plenary.nvim'} }
   }  
 
-  use 'Shatur/neovim-session-manager'
-  
+  use { 
+    'TimUntersberger/neogit', 
+    requires = 'nvim-lua/plenary.nvim', 
+    config = function()
+      local neogit = require('neogit')
+      neogit.setup {}   
+    end
+  } 
+ --require('neogit').open({ cwd = plenary.path.dirname(vim.fn.expand('%')) })
+
+  use {
+    'lewis6991/gitsigns.nvim',
+    config = function()
+      require('gitsigns').setup{
+        signs = {
+          add          = {hl = 'GitSignsAdd'   , text = '█', numhl='GitSignsAddNr'   , linehl='GitSignsAddLn'},
+          change       = {hl = 'GitSignsChange', text = '█', numhl='GitSignsChangeNr', linehl='GitSignsChangeLn'},
+          delete       = {hl = 'GitSignsDelete', text = '█', numhl='GitSignsDeleteNr', linehl='GitSignsDeleteLn'},
+          topdelete    = {hl = 'GitSignsDelete', text = '█', numhl='GitSignsDeleteNr', linehl='GitSignsDeleteLn'},
+          changedelete = {hl = 'GitSignsChange', text = '█', numhl='GitSignsChangeNr', linehl='GitSignsChangeLn'},
+        },
+	signcolumn = true,  -- Toggle with `:Gitsigns toggle_signs`
+        numhl      = false, -- Toggle with `:Gitsigns toggle_numhl`
+        linehl     = false, -- Toggle with `:Gitsigns toggle_linehl`
+        word_diff  = false, -- Toggle with `:Gitsigns toggle_word_diff`
+        watch_gitdir = {
+          interval = 1000,
+          follow_files = true
+        },
+        attach_to_untracked = true,
+        current_line_blame = false, -- Toggle with `:Gitsigns toggle_current_line_blame`
+        current_line_blame_opts = {
+          virt_text = true,
+          virt_text_pos = 'eol', -- 'eol' | 'overlay' | 'right_align'
+          delay = 1000,
+          ignore_whitespace = false,
+        },
+        current_line_blame_formatter = '<author>, <author_time:%Y-%m-%d> - <summary>',
+        sign_priority = 6,
+        update_debounce = 100,
+        status_formatter = nil, -- Use default
+        max_file_length = 40000, -- Disable if file is longer than this (in lines)
+        preview_config = {
+          -- Options passed to nvim_open_win
+          border = 'single',
+          style = 'minimal',
+          relative = 'cursor',
+          row = 0,
+          col = 1
+        },
+        yadm = {
+          enable = false
+        },
+      }
+    end
+  }
+
+
   use {'akinsho/bufferline.nvim', tag = "v2.*", requires = 'kyazdani42/nvim-web-devicons'}
   vim.opt.termguicolors = true
   require("bufferline").setup{}
@@ -42,7 +100,7 @@ return require('packer').startup(function(use)
   use 'nvim-treesitter/nvim-treesitter'
   use 'p00f/nvim-ts-rainbow'
   require("nvim-treesitter.configs").setup {
-     ensure_installed = { "c", "lua", "rust", "java", "clojure" },
+     ensure_installed = { "c", "lua", "rust", "java", "clojure", "fennel"},
       -- Automatically install missing parsers when entering buffer
      auto_install = true,  
     highlight = {
@@ -53,7 +111,7 @@ return require('packer').startup(function(use)
       enable = true,
       extended_mode = true, -- Also highlight non-bracket delimiters like html tags, boolean or table: lang -> boolean
       max_file_lines = nil, -- Do not enable for files with more than n lines, int
-      colors = {"#666666", "#5544EE", "#0065CC", "#00A89B", "#119911", "#b8860b", "#ce5c00"}, -- table of hex strings
+      colors = {"#666666", "#5544EE", "#0065CC", "#00A89B", "#119911", "#859900", "#b8860b"}, -- table of hex strings
       termcolors = {"Red", "Green", "Yellow", "Blue", "Magenta", "Cyan", "White"}, -- table of colour name strings      
     }
   }

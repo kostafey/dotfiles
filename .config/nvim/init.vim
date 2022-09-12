@@ -28,6 +28,11 @@ set guicursor=i:block
 " Enable CursorLine
 set cursorline
 
+" Change Color when entering Insert Mode
+autocmd InsertEnter * highlight  CursorLine guibg=#D3F0D5
+" Revert Color to default when leaving Insert Mode
+autocmd InsertLeave * highlight  CursorLine guibg=#F2FFC0
+
 set encoding=utf-8
 "  Use clipboard for cut and paste
 set clipboard+=unnamedplus
@@ -36,6 +41,7 @@ set clipboard+=unnamedplus
 map! <S-Insert> <C-R>+
 map! <C-v> <C-R>+
 
+let g:aniseed#env = v:true
 lua require('plugins')
 lua require('keybindings')
 
@@ -65,3 +71,5 @@ cnoremap <expr> <down> wildmenumode() ? "\<right>" : "\<down>"
 cnoremap <expr> <left> wildmenumode() ? "\<up>" : "\<left>"
 cnoremap <expr> <right> wildmenumode() ? " \<bs>\<C-Z>" : "\<right>"
 
+" Confirm save changes
+set confirm

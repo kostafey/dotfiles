@@ -31,9 +31,6 @@ keymap("i", "<C-Down>", "<C-c>l<C-e>i", {noremap=true})
 -- Open file
 keymap("n", "<C-o>", ':e ', {noremap=true, silent=true})
 keymap("i", "<C-o>", '<C-c>:e ', {noremap=true, silent=true})
--- Buffer switcher
-keymap("n", "<F1>", ":lua require('telescope.builtin').buffers()<CR>", {noremap=true, silent=true})
-keymap("i", "<F1>", "<C-c>:lua require('telescope.builtin').buffers()", {noremap=true, silent=true})
 -- Search
 keymap("n", "<C-f>", '/', {noremap=true, silent=true})
 keymap("i", "<C-f>", '<C-c>/', {noremap=true, silent=true})
