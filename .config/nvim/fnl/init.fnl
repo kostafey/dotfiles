@@ -11,6 +11,7 @@
 
 ;; CUA mode
 (noremap :v :<Delete> "\"_d" :silent)
+(noremap :n :<Delete> "\"_d<right>" :silent)
 (noremap :v :<S-Delete> "\"_d" :silent)
 (noremap :v :<Backspace> "\"_d" :silent)
 ;; Kill the rest of the current line
@@ -51,3 +52,25 @@
 ;; Command
 (noremap :i :<M-x> "<Esc>:")
 (noremap :n :<M-x> ":")
+;; Windows split
+(noremap :n "<C-]>" "<cmd>:split<CR>")
+(noremap :c "<C-]>" "<cmd>:split<CR>")
+(noremap :v "<C-]>" "<cmd>:split<CR>")
+(noremap :i "<C-]>" "<cmd>:split<CR>")
+(noremap :n "<C-\\>" "<cmd>:vsplit<CR>")
+(noremap :c "<C-\\>" "<cmd>:vsplit<CR>")
+(noremap :v "<C-\\>" "<cmd>:vsplit<CR>")
+(noremap :i "<C-\\>" "<cmd>:vsplit<CR>")
+(noremap :n "<C-[>" "<cmd>:only<CR>")
+(noremap :c "<C-[>" "<cmd>:only<CR>")
+(noremap :i "<C-[>" "<cmd>:only<CR>")
+;; Windmove
+(noremap :i "<M-Down>" "<C-c><C-w><Down>i")
+(noremap :n "<M-Down>" "<C-w><Down>")
+(noremap :i "<M-Up>" "<C-c><C-w><Up>i")
+(noremap :n "<M-Up>" "<C-w><Up>")
+(noremap :i "<M-Left>" "<C-c><C-w><Left>i")
+(noremap :n "<M-Left>" "<C-w><Left>")
+(noremap :i "<M-Right>" "<C-c><C-w><Right>i")
+(noremap :n "<M-Right>" "<C-w><Right>")
+
