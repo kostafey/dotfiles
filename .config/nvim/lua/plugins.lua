@@ -21,7 +21,6 @@ return require('packer').startup(function(use)
       neogit.setup {}   
     end
   } 
- --require('neogit').open({ cwd = plenary.path.dirname(vim.fn.expand('%')) })
 
   use {
     'lewis6991/gitsigns.nvim',
@@ -71,6 +70,12 @@ return require('packer').startup(function(use)
     end
   }
 
+  use {
+    "terrortylor/nvim-comment",
+    config = function()
+      require'nvim_comment'.setup()
+    end
+  }
 
   use {'akinsho/bufferline.nvim', tag = "v2.*", requires = 'kyazdani42/nvim-web-devicons'}
   vim.opt.termguicolors = true

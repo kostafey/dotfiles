@@ -16,6 +16,8 @@ endif
 
 " show line numbers
 set number
+" Do not wrap long lines
+set wrap!
 " Position cursor to the most right char in command mode
 set virtualedit=onemore
 "  Set CUA mode

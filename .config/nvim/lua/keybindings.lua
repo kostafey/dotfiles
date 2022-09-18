@@ -14,11 +14,6 @@ vim.api.nvim_set_keymap("i", "<c-v>", '<C-c>pa', {noremap=true, silent=true})
 vim.api.nvim_set_keymap("n", "<c-x>", '"+x', {noremap=true, silent=true})
 vim.api.nvim_set_keymap("n", "<c-x>", '<del>', {noremap=true, silent=true})
 
--- Undo/redo
-keymap("n", "<C-z>", ':undo<CR><right>', {noremap=true, silent=true})
-keymap("i", "<C-z>", '<C-c>:undo<CR>a', {noremap=true, silent=true})
-keymap("n", "<C-S-z>", ':redo<CR>', {noremap=true, silent=true})
-keymap("i", "<C-S-z>", '<C-c>:redo<CR>i', {noremap=true, silent=true})
 -- Center screen to cursor pos
 vim.api.nvim_set_keymap("n", "<c-l>", '"+zz', {noremap=true, silent=true})
 -- Move viewport up & down
