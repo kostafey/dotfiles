@@ -14,8 +14,6 @@ vim.api.nvim_set_keymap("i", "<c-v>", '<C-c>pa', {noremap=true, silent=true})
 vim.api.nvim_set_keymap("n", "<c-x>", '"+x', {noremap=true, silent=true})
 vim.api.nvim_set_keymap("n", "<c-x>", '<del>', {noremap=true, silent=true})
 
--- Cancel
-keymap("i", "<C-G>", '<Esc>', {noremap=true, silent=true})
 -- Undo/redo
 keymap("n", "<C-z>", ':undo<CR><right>', {noremap=true, silent=true})
 keymap("i", "<C-z>", '<C-c>:undo<CR>a', {noremap=true, silent=true})
@@ -28,15 +26,7 @@ keymap("n", "<C-Up>", "<C-y>")
 keymap("n", "<C-Down>", "<C-e>")
 keymap("i", "<C-Up>", "<C-c>l<C-y>i", {noremap=true})
 keymap("i", "<C-Down>", "<C-c>l<C-e>i", {noremap=true})
--- Open file
-keymap("n", "<C-o>", ':e ', {noremap=true, silent=true})
-keymap("i", "<C-o>", '<C-c>:e ', {noremap=true, silent=true})
--- Search
-keymap("n", "<C-f>", '/', {noremap=true, silent=true})
-keymap("i", "<C-f>", '<C-c>/', {noremap=true, silent=true})
 -- Reload buffer file
 keymap("n", "<C-r>", ':e<CR>', {noremap=true, silent=true})
 keymap("i", "<C-r>", ':<C-c>:e<CR>i', {noremap=true, silent=true})
--- Command
-keymap("i", "<M-x>", '<C-c>:', {noremap=true, silent=true})
-keymap("n", "<M-x>", ':', {noremap=true, silent=true})
+

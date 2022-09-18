@@ -44,14 +44,11 @@ map! <C-v> <C-R>+
 let g:aniseed#env = v:true
 lua require('plugins')
 lua require('keybindings')
+lua require('commands')
 
 set guifont=Fira\ Mono\ Medium:h12.5:cDEFAULT
 autocmd BufRead,BufNewFile * syn match parens /[(){}]/ | hi parens ctermfg=red
 
-"  save
-noremap <silent> <C-S>          :update<CR>
-vnoremap <silent> <C-S>         <C-C>:update<CR>
-inoremap <silent> <C-S>         <C-O>:update<CR>
 "  copy current file path
 nnoremap cp :let @+=expand('%:p')<CR>
 
