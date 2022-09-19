@@ -7,13 +7,6 @@ function keymap(mode, lhs, rhs, opts)
     vim.api.nvim_set_keymap(mode, lhs, rhs, options)
 end
 
-vim.api.nvim_set_keymap("n", "<c-c>", '"*y :let @+=@*<CR>', {noremap=true, silent=true})
-vim.api.nvim_set_keymap("v", "<c-c>", '"*y :let @+=@*<CR>', {noremap=true, silent=true})
-vim.api.nvim_set_keymap("n", "<c-v>", '<left>p<right>', {noremap=true, silent=true})
-vim.api.nvim_set_keymap("i", "<c-v>", '<C-c>pa', {noremap=true, silent=true})
-vim.api.nvim_set_keymap("n", "<c-x>", '"+x', {noremap=true, silent=true})
-vim.api.nvim_set_keymap("n", "<c-x>", '<del>', {noremap=true, silent=true})
-
 -- Center screen to cursor pos
 vim.api.nvim_set_keymap("n", "<c-l>", '"+zz', {noremap=true, silent=true})
 -- Move viewport up & down

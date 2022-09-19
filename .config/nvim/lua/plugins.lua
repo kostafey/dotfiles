@@ -20,7 +20,7 @@ return require('packer').startup(function(use)
       local neogit = require('neogit')
       neogit.setup {}   
     end
-  } 
+  }
 
   use {
     'lewis6991/gitsigns.nvim',
@@ -77,9 +77,17 @@ return require('packer').startup(function(use)
     end
   }
 
-  use {'akinsho/bufferline.nvim', tag = "v2.*", requires = 'kyazdani42/nvim-web-devicons'}
+  use 'andymass/vim-matchup'
+
+  use {
+    'akinsho/bufferline.nvim',
+    tag = "v2.*",
+    requires = 'kyazdani42/nvim-web-devicons',
+    config = function()
+      require("bufferline").setup{}
+    end
+  }
   vim.opt.termguicolors = true
-  require("bufferline").setup{}
 
   use {
     "vigoux/notifier.nvim",
@@ -119,6 +127,10 @@ return require('packer').startup(function(use)
       max_file_lines = nil, -- Do not enable for files with more than n lines, int
       colors = {"#666666", "#5544EE", "#0065CC", "#00A89B", "#119911", "#859900", "#b8860b"}, -- table of hex strings
       termcolors = {"Red", "Green", "Yellow", "Blue", "Magenta", "Cyan", "White"}, -- table of colour name strings      
+    },
+    matchup = {
+      enable = true, -- mandatory, false will disable the whole extension
+      disable = {},  -- optional, list of language that will be disabled
     }
   }
 

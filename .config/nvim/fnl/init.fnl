@@ -10,6 +10,17 @@
                                              false)}))
 
 ;; CUA mode
+; Copy
+(noremap :n :<C-c> "\"*y :let @+=@*<CR>" :silent)
+(noremap :v :<C-c> "\"*y :let @+=@*<CR>" :silent)
+; Paste
+(noremap :n :<C-v> "P<right>" :silent)
+(noremap :c :<C-v> "P<right>" :silent)
+(noremap :i :<C-v> "<C-c>pa" :silent)
+(noremap :v :<C-v> "\"_dPi" :silent)
+; Cut
+(noremap :v "<C-x>" "\"+x" :noremap)
+; Delete
 (noremap :v :<Delete> "\"_d" :silent)
 (noremap :n :<Delete> "\"_d<right>" :silent)
 (noremap :v :<S-Delete> "\"_d" :silent)
