@@ -73,6 +73,9 @@
 (noremap :i :<C-s> "<cmd>:update<CR>")
 (noremap :n :<C-s> "<cmd>:update<CR>")
 (noremap :v :<C-s> "<cmd>:update<CR>")
+;; Reload buffer file
+(noremap :n :<C-r> "<cmd>e<CR>" :silent)
+(noremap :i :<C-r> "<cmd><C-c>e<CR>i" :silent)
 ;; Next/previous buffer
 (noremap :n :<C-PageUp> ":bp<CR>")
 (noremap :n :<C-PageDown> ":bn<CR>")
