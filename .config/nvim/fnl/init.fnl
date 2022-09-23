@@ -9,15 +9,23 @@
                                  :silent (or (when silent? true) 
                                              false)}))
 
+(defn- keymap [mode from to opts?]
+  (let [options (if opts?
+                  opts?
+                  {:noremap true})]
+  (nvim.set_keymap mode from to options)))
+
 ;; CUA mode
 ; Copy
 (noremap :n :<C-c> "\"*y :let @+=@*<CR>" :silent)
 (noremap :v :<C-c> "\"*y :let @+=@*<CR>" :silent)
 ; Paste
 (noremap :n :<C-v> "P<right>" :silent)
-(noremap :c :<C-v> "P<right>" :silent)
 (noremap :i :<C-v> "<C-c>pa" :silent)
 (noremap :v :<C-v> "\"_dPi" :silent)
+; Paste from clipboard into command line
+(keymap  :c :<C-v> "<C-R>+" {:noremap false})
+(keymap  :c :<S-Insert> "<C-R>+" {:noremap false})
 ; Cut
 (noremap :v "<C-x>" "\"+x" :noremap)
 ; Delete
@@ -37,12 +45,27 @@
 (noremap :i :<C-k> "<C-c><right>\"_Di")
 ;; Duplicate line
 (noremap :i :<C-S-d> "<cmd>:t.<CR>")
+(noremap :n :<C-S-d> "<cmd>:t.<CR>")
 (noremap :n :cd "<cmd>:t.<CR>")
 ; Comment
 (noremap :i :<C-/> "<cmd>CommentToggle<CR>")
 (noremap :n :<C-/> "<cmd>CommentToggle<CR>")
 (noremap :c :<C-/> "<cmd>CommentToggle<CR>")
 (noremap :v :<C-/> "<cmd>CommentToggleSelection<CR>")
+;; Goto last edit
+(noremap :n :<C-M-l> "g;" :silent)
+(noremap :i :<C-M-l> "<C-c>g;i" :silent)
+;; Center screen to cursor pos
+(noremap :n :<C-l> "\"+zz" :silent)
+(noremap :i :<C-l> "<C-c>\"+zzi" :silent)
+;; Move viewport up & down
+(noremap :n :<C-Up> "<C-y>" :silent)
+(noremap :n :<C-Down> "<C-e>" :silent)
+(noremap :i :<C-Up> "<C-c>l<C-y>i" :silent)
+(noremap :i :<C-Down> "<C-c>l<C-e>i" :silent)
+;; Copy current buffer file path
+(noremap :n :cp "<cmd>let @+=expand('%:p')<CR><cmd>echo @<CR>")
+(noremap :c :cp "<cmd>let @+=expand('%:p')<CR><cmd>echo @<CR>")
 ;; Open file
 (noremap :n :<C-o> ":e ")
 (noremap :i :<C-o> "<C-c>:e ")

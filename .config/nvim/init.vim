@@ -39,10 +39,6 @@ set encoding=utf-8
 "  Use clipboard for cut and paste
 set clipboard+=unnamedplus
 
-"  paste from clipboard into command line
-map! <S-Insert> <C-R>+
-map! <C-v> <C-R>+
-
 let g:aniseed#env = v:true
 lua require('plugins')
 lua require('keybindings')
@@ -50,9 +46,6 @@ lua require('commands')
 
 set guifont=Fira\ Mono\ Medium:h12.5:cDEFAULT
 autocmd BufRead,BufNewFile * syn match parens /[(){}]/ | hi parens ctermfg=red
-
-"  copy current file path
-nnoremap cp :let @+=expand('%:p')<CR>
 
 "  findWordAtCursor.previous
 noremap <C-M-Up> g#:let @/ = ""<CR>
