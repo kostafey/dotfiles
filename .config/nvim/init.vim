@@ -45,6 +45,7 @@ lua require('plugins')
 lua require('commands')
 
 set guifont=Fira\ Mono\ Medium:h12.5:cDEFAULT
+" set guifont=FiraCode\ Nerd\ Font:h12.0:cDEFAULT
 autocmd BufRead,BufNewFile * syn match parens /[(){}]/ | hi parens ctermfg=red
 
 " Confirm save changes

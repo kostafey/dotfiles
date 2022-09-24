@@ -82,9 +82,14 @@ return require('packer').startup(function(use)
   use {
     'akinsho/bufferline.nvim',
     tag = "v2.*",
-    requires = 'kyazdani42/nvim-web-devicons',
+    -- requires = 'kyazdani42/nvim-web-devicons',
     config = function()
-      require("bufferline").setup{}
+      require("bufferline").setup {
+        options = {
+          show_buffer_icons = false, -- disable file type icons
+	  buffer_close_icon = 'x',
+        }
+      }
     end
   }
   vim.opt.termguicolors = true
@@ -118,7 +123,7 @@ return require('packer').startup(function(use)
       -- Automatically install missing parsers when entering buffer
      auto_install = true,  
     highlight = {
- 	    enable = true,
+       enable = true,
        additional_vim_regex_highlighting = false,
     },
     rainbow = {
