@@ -3,3 +3,4 @@ node_modules
 .config/joyride/scripts/.clj-kondo/
 .config/joyride/scripts/.lsp/
 .config/nvim/lua/keybindings.lua
+.config/nvim/lua/init.lua

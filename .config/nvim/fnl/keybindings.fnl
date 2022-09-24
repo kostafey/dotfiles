@@ -1,4 +1,4 @@
-(module dotfiles.module.keybindings
+(module keybindings
   {require {nvim aniseed.nvim
             nu aniseed.nvim.util
             core aniseed.core}})
@@ -63,6 +63,14 @@
 (noremap :n :<C-Down> "<C-e>" :silent)
 (noremap :i :<C-Up> "<C-c>l<C-y>i" :silent)
 (noremap :i :<C-Down> "<C-c>l<C-e>i" :silent)
+;; findWordAtCursor.previous
+(noremap :n :<C-M-Up> "g#:let @/ = \"\"<CR>")
+(noremap :v :<C-M-Up> "<C-C>g#:let @/ = \"\"<CR>v")
+(noremap :i :<C-M-Up> "<C-C>g#:let @/ = \"\"<CR>i")
+;; findWordAtCursor.next
+(noremap :n :<C-M-Down> "g*:let @/ = \"\"<CR>")
+(noremap :v :<C-M-Down> "<C-C>g*:let @/ = \"\"<CR>v")
+(noremap :i :<C-M-Down> "<C-C>g*:let @/ = \"\"<CR>i")
 ;; Copy current buffer file path
 (noremap :n :cp "<cmd>let @+=expand('%:p')<CR><cmd>echo @<CR>")
 (noremap :c :cp "<cmd>let @+=expand('%:p')<CR><cmd>echo @<CR>")
@@ -101,6 +109,12 @@
 ;; Command
 (noremap :i :<M-x> "<Esc>:")
 (noremap :n :<M-x> ":")
+ ; Arrow key mappings for wildmenu tab completion
+(vim.api.nvim_command "set wildcharm=<C-Z>")
+(vim.api.nvim_command "cnoremap <expr> <up> wildmenumode() ? '<left>' : '<up>'")
+(vim.api.nvim_command "cnoremap <expr> <down> wildmenumode() ? '<right>' : '<down>'")
+(vim.api.nvim_command "cnoremap <expr> <left> wildmenumode() ? '<up>' : '<left>'")
+(vim.api.nvim_command "cnoremap <expr> <right> wildmenumode() ? ' <bs><C-Z>' : '<right>'")
 ;; Windows split
 (noremap :n "<C-]>" "<cmd>:split<CR>")
 (noremap :c "<C-]>" "<cmd>:split<CR>")

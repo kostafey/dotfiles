@@ -39,29 +39,13 @@ set encoding=utf-8
 "  Use clipboard for cut and paste
 set clipboard+=unnamedplus
 
+" Load ~/.config/nvim/fnl/init.fnl
 let g:aniseed#env = v:true
 lua require('plugins')
-lua require('keybindings')
 lua require('commands')
 
 set guifont=Fira\ Mono\ Medium:h12.5:cDEFAULT
 autocmd BufRead,BufNewFile * syn match parens /[(){}]/ | hi parens ctermfg=red
-
-"  findWordAtCursor.previous
-noremap <C-M-Up> g#:let @/ = ""<CR>
-vnoremap <C-M-Up> <C-C>g#:let @/ = ""<CR>v
-inoremap <C-M-Up> <C-C>g#:let @/ = ""<CR>i
-"  findWordAtCursor.next
-noremap <C-M-Down> g*:let @/ = ""<CR>
-vnoremap <C-M-Down> <C-C>g*:let @/ = ""<CR>v
-inoremap <C-M-Down> <C-C>g*:let @/ = ""<CR>i
-
-"  arrow key mappings for wildmenu tab completion
-set wildcharm=<C-Z>
-cnoremap <expr> <up> wildmenumode() ? "\<left>" : "\<up>"
-cnoremap <expr> <down> wildmenumode() ? "\<right>" : "\<down>"
-cnoremap <expr> <left> wildmenumode() ? "\<up>" : "\<left>"
-cnoremap <expr> <right> wildmenumode() ? " \<bs>\<C-Z>" : "\<right>"
 
 " Confirm save changes
 set confirm
