@@ -98,6 +98,9 @@
 ;; Search
 (noremap :n :<C-f> "/")
 (noremap :i :<C-f> "<Esc>/")
+;; Jump to word/symbol
+(noremap :n :<M-a> "<cmd>HopChar1<CR>")
+(noremap :i :<M-a> "<cmd>HopChar1<CR>")
 ;; Version control
 (noremap :n :<M-w> "<cmd>:NeogitCWD<CR>")
 (noremap :i :<M-w> "<C-c><cmd>:NeogitCWD<CR>")
