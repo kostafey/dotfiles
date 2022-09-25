@@ -19,6 +19,7 @@
 ; Copy
 (noremap :n :<C-c> "\"*y :let @+=@*<CR>" :silent)
 (noremap :v :<C-c> "\"*y :let @+=@*<CR>" :silent)
+(noremap :i :<C-c> :<Esc> :silent) ; remap switch to normal mode
 ; Paste
 (noremap :n :<C-v> "P<right>" :silent)
 (noremap :i :<C-v> "<C-c>pa" :silent)
