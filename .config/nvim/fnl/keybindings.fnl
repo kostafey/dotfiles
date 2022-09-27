@@ -93,12 +93,16 @@
 ;; Close buffer
 (noremap :n :<C-w> ":bd<CR>")
 (noremap :i :<C-w> "<C-c>:bd<CR>i")
+(noremap :v :<C-w> "<C-c>:bd<CR>i")
 ;; Buffer switcher
 (noremap :n :<F1> "<cmd>lua require('telescope.builtin').buffers()<CR>")
 (noremap :i :<F1> "<cmd>lua require('telescope.builtin').buffers()<CR>")
+(noremap :n :<F2> "<cmd>lua require('telescope.builtin').treesitter()<CR>")
+(noremap :i :<F2> "<cmd>lua require('telescope.builtin').treesitter()<CR>")
 ;; Search
 (noremap :n :<C-f> "/")
 (noremap :i :<C-f> "<Esc>/")
+(noremap :c :<Esc> "<C-c>")
 ;; Jump to word/symbol
 (noremap :n :<M-a> "<cmd>HopChar1<CR>")
 (noremap :i :<M-a> "<cmd>HopChar1<CR>")

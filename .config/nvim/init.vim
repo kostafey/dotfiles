@@ -14,6 +14,11 @@ if exists("g:neovide")
     "let g:neovide_cursor_antialiasing=v:true
 endif
 
+" Enable GUI ScrollBar
+if exists(':GuiScrollBar')
+    GuiScrollBar 1
+endif
+
 " show line numbers
 set number
 " Do not wrap long lines
