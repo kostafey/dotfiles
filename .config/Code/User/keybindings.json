@@ -254,7 +254,7 @@
         "command": "workbench.action.gotoSymbol",
     },    
     {
-        "key": "ctrl+j",
+        "key": "ctrl+[",
         "command": "workbench.action.joinAllGroups"
     },
     {

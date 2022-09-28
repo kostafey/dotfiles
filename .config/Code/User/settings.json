@@ -1,6 +1,6 @@
 {
+    "window.title": "${activeEditorLong}${separator}${rootName}",
     "workbench.colorTheme": "organic-green-theme",
-    "editor.fontSize": 16,
     "files.watcherExclude": {
         "**/.bloop": true,
         "**/.metals": true,
@@ -25,7 +25,9 @@
         "editorBracketHighlight.foreground4": "#00A89B",
         "editorBracketHighlight.foreground5": "#229900",
         "editorBracketHighlight.foreground6": "#999900",
-        "editorBracketHighlight.unexpectedBracket.foreground": "#db6165"
+        "editorBracketHighlight.unexpectedBracket.foreground": "#db6165",
+        "calva.inlineErrorForegroundColor": "#ff0000",
+        "calva.inlineForegroundColor": "#5544EE"
     },
     "latex-workshop.message.update.show": false,
     "highlightwords.colors": [
@@ -63,9 +65,11 @@
     "files.autoGuessEncoding": true,
     // Do not auto save files
     "files.autoSave": "off",
+    "editor.tabCompletion": "on",
     // Set plain text copy
     "editor.copyWithSyntaxHighlighting": false,
     "editor.fontFamily": "'Fira Mono Medium', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
+    "editor.fontSize": 16,
     "workbench.editorAssociations": {
         "*.ipynb": "jupyter-notebook"
     },
@@ -103,7 +107,9 @@
         "editor.defaultFormatter": "betterthantomorrow.calva"
     },
     "files.associations": {
-        "*.edn": "clojure"
+        "*.edn": "clojure",
+        "*.patch": "diff",
+        "*.Rmd": "markdown"
     },
     "scm.diffDecorationsGutterPattern": {
         "added": false,
@@ -201,5 +207,11 @@
     "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx2G -Xms100m -javaagent:\"/home/kostafey/.vscode/extensions/gabrielbb.vscode-lombok-1.0.1/server/lombok.jar\"",
     "[xml]": {
         "editor.defaultFormatter": "redhat.vscode-xml"
-    }
+    },
+    "git.mergeEditor": false,
+    "editor.codeLens": true,
+    "gitlens.codeLens.recentChange.enabled": false,
+    "gitlens.codeLens.authors.enabled": false,
+    "gitlens.currentLine.enabled": false,
+    "workbench.activityBar.visible": false
 }
