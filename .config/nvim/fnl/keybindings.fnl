@@ -20,11 +20,10 @@
 (noremap :i :<Esc> "<cmd>NormalMode<CR><cmd>noh<CR>i" :silent)
 ;; CUA mode
 ; Copy
-(noremap :n :<C-c> "\"*y :let @+=@*<CR>" :silent)
-(noremap :v :<C-c> "\"*y :let @+=@*<CR>i" :silent)
+(noremap :v :<C-c> "\"*y :let @+=@*<CR>" :silent)
 ; Paste
 (noremap :n :<C-v> "P<right>" :silent)
-(noremap :i :<C-v> "<C-c>Pa" :silent)
+(noremap :i :<C-v> "<cmd>NormalMode<CR>Pa" :silent)
 (noremap :v :<C-v> "\"_dPi" :silent)
 ; Paste from clipboard into command line
 (keymap  :c :<C-v> "<C-R>+" {:noremap false})
@@ -110,10 +109,10 @@
 (noremap :n :<M-a> "<cmd>HopChar1<CR>")
 (noremap :i :<M-a> "<cmd>HopChar1<CR>")
 ;; Matchup
-(noremap :i :<C-M-left> "<C-c>%i")
-(noremap :i :<C-M-right> "<C-c>%a")
-(noremap :i :<S-C-M-left> "<C-c>v%")
-(noremap :i :<S-C-M-right> "<C-c>v%")
+(noremap :i :<C-M-left> "<cmd>NormalMode<CR>%i")
+(noremap :i :<C-M-right> "<cmd>NormalMode<CR>%a")
+(noremap :i :<S-C-M-left> "<cmd>NormalMode<CR>v%")
+(noremap :i :<S-C-M-right> "<cmd>NormalMode<CR>v%")
 ;; Version control
 (noremap :n :<M-w> "<cmd>:NeogitCWD<CR>")
 (noremap :i :<M-w> "<C-c><cmd>:NeogitCWD<CR>")
