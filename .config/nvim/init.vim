@@ -36,9 +36,9 @@ set guicursor=i:block
 set cursorline
 
 " Change Color when entering Insert Mode
-autocmd InsertEnter * highlight  CursorLine guibg=#D3F0D5
+" autocmd InsertEnter * highlight  CursorLine guibg=#D3F0D5
 " Revert Color to default when leaving Insert Mode
-autocmd InsertLeave * highlight  CursorLine guibg=#F2FFC0
+" autocmd InsertLeave * highlight  CursorLine guibg=#F2FFC0
 
 set encoding=utf-8
 "  Use clipboard for cut and paste
@@ -71,4 +71,7 @@ set tabstop     =4
 set softtabstop =4
 set shiftwidth  =4
 set expandtab
+
+set wildmenu
+set wildmode=longest:full,full
 

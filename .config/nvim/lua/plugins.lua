@@ -5,6 +5,9 @@ return require('packer').startup(function(use)
   use 'wbthomason/packer.nvim'
   
   use 'Olical/aniseed'
+  use 'Olical/conjure'
+  vim.cmd[[let g:conjure#client#fennel#aniseed#aniseed_module_prefix = "aniseed."]]
+
   use 'Shatur/neovim-session-manager'
 
   use {
@@ -160,7 +163,7 @@ return require('packer').startup(function(use)
       enable = true,
       extended_mode = true, -- Also highlight non-bracket delimiters like html tags, boolean or table: lang -> boolean
       max_file_lines = nil, -- Do not enable for files with more than n lines, int
-      colors = {"#666666", "#5544EE", "#0065CC", "#00A89B", "#119911", "#859900", "#b8860b"}, -- table of hex strings
+      colors = {"#666666", "#5544EE", "#0065CC", "#00A89B", "#119911", "#999900", "#b8860b"}, -- table of hex strings
       termcolors = {"Red", "Green", "Yellow", "Blue", "Magenta", "Cyan", "White"}, -- table of colour name strings      
     },
     matchup = {

@@ -15,14 +15,16 @@
                   {:noremap true})]
   (nvim.set_keymap mode from to options)))
 
+;; Fix cursor
+(noremap :i :<C-c> "<cmd>NormalMode<CR>" :silent)
+(noremap :i :<Esc> "<cmd>NormalMode<CR><cmd>noh<CR>i" :silent)
 ;; CUA mode
 ; Copy
 (noremap :n :<C-c> "\"*y :let @+=@*<CR>" :silent)
-(noremap :v :<C-c> "\"*y :let @+=@*<CR>" :silent)
-(noremap :i :<C-c> :<Esc> :silent) ; remap switch to normal mode
+(noremap :v :<C-c> "\"*y :let @+=@*<CR>i" :silent)
 ; Paste
 (noremap :n :<C-v> "P<right>" :silent)
-(noremap :i :<C-v> "<C-c>pa" :silent)
+(noremap :i :<C-v> "<C-c>Pa" :silent)
 (noremap :v :<C-v> "\"_dPi" :silent)
 ; Paste from clipboard into command line
 (keymap  :c :<C-v> "<C-R>+" {:noremap false})
@@ -102,10 +104,16 @@
 ;; Search
 (noremap :n :<C-f> "/")
 (noremap :i :<C-f> "<Esc>/")
+(noremap :v :<C-f> "<Esc>/")
 (noremap :c :<Esc> "<C-c>")
 ;; Jump to word/symbol
 (noremap :n :<M-a> "<cmd>HopChar1<CR>")
 (noremap :i :<M-a> "<cmd>HopChar1<CR>")
+;; Matchup
+(noremap :i :<C-M-left> "<C-c>%i")
+(noremap :i :<C-M-right> "<C-c>%a")
+(noremap :i :<S-C-M-left> "<C-c>v%")
+(noremap :i :<S-C-M-right> "<C-c>v%")
 ;; Version control
 (noremap :n :<M-w> "<cmd>:NeogitCWD<CR>")
 (noremap :i :<M-w> "<C-c><cmd>:NeogitCWD<CR>")
@@ -113,10 +121,10 @@
 (noremap :n :<C-g> "<Esc><cmd>noh<CR>")
 (noremap :i :<C-g> "<Esc><cmd>noh<CR>")
 (noremap :n :<Esc> "<Esc><cmd>noh<CR>")
-(noremap :i :<Esc> "<Esc><cmd>noh<CR>")
 ;; Command
 (noremap :i :<M-x> "<Esc>:")
 (noremap :n :<M-x> ":")
+(noremap :v :<M-x> "<Esc>:")
  ; Arrow key mappings for wildmenu tab completion
 (vim.api.nvim_command "set wildcharm=<C-Z>")
 (vim.api.nvim_command "cnoremap <expr> <up> wildmenumode() ? '<left>' : '<up>'")
@@ -148,4 +156,8 @@
 (noremap :i "<M-Right>" "<C-c><C-w><Right>i")
 (noremap :n "<M-Right>" "<C-w><Right>")
 (noremap :v "<M-Right>" "<C-w><Right>")
+;; Conjure
+(noremap :n "<C-e>" "<cmd>ConjureEvalCurrentForm<CR>")
+(noremap :i "<C-e>" "<cmd>ConjureEvalCurrentForm<CR>")
+(noremap :v "<C-e>" "<cmd>ConjureEvalCurrentForm<CR>")
 
