@@ -23,7 +23,7 @@
 (noremap :v :<C-c> "\"*y :let @+=@*<CR>" :silent)
 ; Paste
 (noremap :n :<C-v> "P<right>" :silent)
-(noremap :i :<C-v> "<cmd>NormalMode<CR>Pa" :silent)
+(noremap :i :<C-v> " <BS><cmd>NormalMode<CR>Pa" :silent)
 (noremap :v :<C-v> "\"_dPi" :silent)
 ; Paste from clipboard into command line
 (keymap  :c :<C-v> "<C-R>+" {:noremap false})
@@ -63,8 +63,8 @@
 ;; Move viewport up & down
 (noremap :n :<C-Up> "<C-y>" :silent)
 (noremap :n :<C-Down> "<C-e>" :silent)
-(noremap :i :<C-Up> "<C-c>l<C-y>i" :silent)
-(noremap :i :<C-Down> "<C-c>l<C-e>i" :silent)
+(noremap :i :<C-Up> "<cmd>NormalMode<CR><C-y>i" :silent)
+(noremap :i :<C-Down> "<cmd>NormalMode<CR><C-e>i" :silent)
 ;; findWordAtCursor.previous
 (noremap :n :<C-M-Up> "g#:let @/ = \"\"<CR>")
 (noremap :v :<C-M-Up> "<C-C>g#:let @/ = \"\"<CR>v")

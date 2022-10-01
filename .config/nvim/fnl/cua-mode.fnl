@@ -15,7 +15,7 @@
 
 (defn next-char [] (feed-keys "l"))
 (defn prew-char [] (feed-keys "h"))
- 
+
 (defn normal-mode []
   (let [mode (get-mode)
         [y x] (vim.api.nvim_win_get_cursor 0)]
@@ -23,7 +23,7 @@
     (when (and (or (= mode "i") (= mode "R")) (> x 0))
       (next-char))))
  
-(defn insert-mode [] 
+(defn insert-mode []
   (vim.cmd "startinsert"))
 
 (command "NormalMode" normal-mode 0)
