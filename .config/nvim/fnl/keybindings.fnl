@@ -18,9 +18,12 @@
 ;; Fix cursor
 (noremap :i :<C-c> "<cmd>NormalMode<CR>" :silent)
 (noremap :i :<Esc> "<cmd>NormalMode<CR><cmd>noh<CR>i" :silent)
+(noremap :v :<Esc> "<C-c>i" :silent)
 ;; CUA mode
 ; Copy
 (noremap :v :<C-c> "\"*y :let @+=@*<CR>" :silent)
+(noremap :i :<C-S-c> "<cmd>NormalMode<CR>^vg_yi" :silent) ; copy line
+(noremap :n :<C-S-c> "^vg_y" :silent)                     ; copy line
 ; Paste
 (noremap :n :<C-v> "P<right>" :silent)
 (noremap :i :<C-v> " <BS><cmd>NormalMode<CR>Pa" :silent)
@@ -43,8 +46,9 @@
 (noremap :i "<C-S-z>" "<C-c>:redo<CR>i" :silent)
 (noremap :v "<C-S-z>" "<C-c>:redo<CR>i" :silent)
 ;; Kill the rest of the current line
-(noremap :n :<C-k> "\"_D")
-(noremap :i :<C-k> "<C-c><right>\"_Di")
+(noremap :n :<C-k> "\"_D" :silent)
+(noremap :i :<C-k> "<C-c><right>\"_Di" :silent)
+(noremap :c :<C-k> "<C-\\>e(strpart(getcmdline(), 0, getcmdpos() - 1))<CR>")
 ;; Duplicate line
 (noremap :i :<C-S-d> "<cmd>:t.<CR>")
 (noremap :n :<C-S-d> "<cmd>:t.<CR>")
@@ -104,7 +108,13 @@
 (noremap :n :<C-f> "/")
 (noremap :i :<C-f> "<Esc>/")
 (noremap :v :<C-f> "<Esc>/")
-(noremap :c :<Esc> "<C-c>")
+(noremap :n :<C-S-f> "?")
+(noremap :i :<C-S-f> "<Esc>?")
+(noremap :v :<C-S-f> "<Esc>?")
+(noremap :c :<Esc> "<cmd>CommandEsc<CR>")
+(noremap :c :<CR> "<cmd>CommandRet<CR>")
+(noremap :i :<C-n> "<C-c>nni")
+(noremap :i :<C-S-n> "<C-c>Ni")
 ;; Jump to word/symbol
 (noremap :n :<M-a> "<cmd>HopChar1<CR>")
 (noremap :i :<M-a> "<cmd>HopChar1<CR>")
