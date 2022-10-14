@@ -11,12 +11,23 @@
   (. (vim.api.nvim_get_mode) :mode))
 
 (fn feed-keys [keys mode?]
-  (vim.api.nvim_feedkeys keys (or mode? (get-mode)) true))
+  (vim.api.nvim_feedkeys keys (or mode? (get-mode)) false))
 
 (fn next-char [] (feed-keys "l"))
 (fn prew-char [] (feed-keys "h"))
 
+(var current-mode "n")
+
+(fn save-mode []
+  (set current-mode (get-mode)))
+
+(fn restore-mode []
+  (match current-mode
+    "i" (vim.cmd "startinsert")
+    "n" (vim.cmd "stopinsert")))
+
 (fn normal-mode []
+  (save-mode)
   (let [mode (get-mode)
         [y x] (vim.api.nvim_win_get_cursor 0)]
     (vim.cmd "stopinsert")
@@ -24,6 +35,7 @@
       (next-char))))
  
 (fn insert-mode []
+  (save-mode)
   (vim.cmd "startinsert"))
 
 (macro save-excursion [body]
@@ -36,16 +48,18 @@
      result#))
 
 (fn command-ret []
-  (feed-keys "\ni"))
+  (feed-keys "\n")
+  (insert-mode))
 
 (fn command-esc []
   (let [cmd-type (vim.api.nvim_eval "getcmdtype()")]
     (if (or (= cmd-type "/") (= cmd-type "?"))
-      (command-ret))
+      (command-ret)
       (do
         (vim.api.nvim_eval "setcmdline(\"\")")
-        (command-ret))))
+        (command-ret)))))
 
+(command "RestoreMode" restore-mode 0)
 (command "NormalMode" normal-mode 0)
 (command "InsertMode" insert-mode 0)
 (command "CommandRet" command-ret 0)

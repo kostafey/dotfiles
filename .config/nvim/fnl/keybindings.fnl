@@ -3,137 +3,119 @@
             nu aniseed.nvim.util
             core aniseed.core}})
 
-(defn- noremap [mode from to silent?]
-  "Sets a mapping with {:noremap true}."
-  (nvim.set_keymap mode from to {:noremap true
-                                 :silent (or (when silent? true) 
-                                             false)}))
+(local {: map
+        : keys
+        : str->chars} (require :lib))
 
-(defn- keymap [mode from to opts?]
-  (let [options (if opts?
-                  opts?
-                  {:noremap true})]
-  (nvim.set_keymap mode from to options)))
+(fn keymap [modes from to opts?]
+  "Set keybindings."
+  (let [options {:noremap true :silent true}]
+    (when opts?
+      (map (fn [k] (tset options k (. opts? k)))
+           (keys opts?)))
+    (map (fn [mode] (nvim.set_keymap mode from to options))
+         (str->chars modes))
+    (string.format "mapped :%s %s -> %s" modes from to)))
 
 ;; Fix cursor
-(noremap :i :<C-c> "<cmd>NormalMode<CR>" :silent)
-(noremap :i :<Esc> "<cmd>NormalMode<CR><cmd>noh<CR>i" :silent)
-(noremap :v :<Esc> "<C-c>i" :silent)
+(keymap :i :<C-c> "<cmd>NormalMode<CR>")
+(keymap :i :<Esc> "<cmd>NormalMode<CR><cmd>noh<CR>i")
+(keymap :v :<Esc> "<C-c>i")
+;; Enforce insert mode
+(keymap :n :<CR> "i<CR>")
+(keymap :n :<Delete> "\"_d<right>i")
+(keymap :n ")" "i)")
+(keymap :n "(" "i(")
 ;; CUA mode
 ; Copy
-(noremap :v :<C-c> "\"*y :let @+=@*<CR>" :silent)
-(noremap :i :<C-S-c> "<cmd>NormalMode<CR>^vg_yi" :silent) ; copy line
-(noremap :n :<C-S-c> "^vg_y" :silent)                     ; copy line
+(keymap :v :<C-c> "\"*y :let @+=@*<CR>")
+(keymap :i :<C-S-c> "<cmd>NormalMode<CR>^vg_yi") ; copy line
+(keymap :n :<C-S-c> "^vg_y")                     ; copy line
 ; Paste
-(noremap :n :<C-v> "P<right>" :silent)
-(noremap :i :<C-v> " <BS><cmd>NormalMode<CR>Pa" :silent)
-(noremap :v :<C-v> "\"_dPi" :silent)
+(keymap :n :<C-v> "P<right>")
+(keymap :i :<C-v> " <BS><cmd>NormalMode<CR>Pa")
+(keymap :v :<C-v> "\"_dPi")
 ; Paste from clipboard into command line
-(keymap  :c :<C-v> "<C-R>+" {:noremap false})
-(keymap  :c :<S-Insert> "<C-R>+" {:noremap false})
+(keymap :c :<C-v> "<C-R>+" {:noremap false :silent false})
+(keymap :c :<S-Insert> "<C-R>+" {:noremap false :silent false})
 ; Cut
-(noremap :v "<C-x>" "\"+x" :noremap)
+(keymap :v "<C-x>" "\"+x")
 ; Delete
-(noremap :v :<Delete> "\"_d" :silent)
-(noremap :n :<Delete> "\"_d<right>" :silent)
-(noremap :v :<S-Delete> "\"_d" :silent)
-(noremap :v :<Backspace> "\"_d" :silent)
+(keymap :v :<Delete> "\"_d")
+(keymap :v :<S-Delete> "\"_d")
+(keymap :v :<Backspace> "\"_d")
 ;; Undo/redo
-(noremap :n "<C-z>" ":undo<CR><right>" :silent)
-(noremap :i "<C-z>" "<C-c>:undo<CR>a" :silent)
-(noremap :v "<C-z>" "<C-c>:undo<CR>a" :silent)
-(noremap :n "<C-S-z>" ":redo<CR>" :silent)
-(noremap :i "<C-S-z>" "<C-c>:redo<CR>i" :silent)
-(noremap :v "<C-S-z>" "<C-c>:redo<CR>i" :silent)
+(keymap :n   :<C-z> "<cmd>undo<CR><right>")
+(keymap :iv  :<C-z> "<cmd>undo<CR>")
+(keymap :inv :<C-S-z> "<cmd>redo<CR>")
 ;; Kill the rest of the current line
-(noremap :n :<C-k> "\"_D" :silent)
-(noremap :i :<C-k> "<C-c><right>\"_Di" :silent)
-(noremap :c :<C-k> "<C-\\>e(strpart(getcmdline(), 0, getcmdpos() - 1))<CR>")
+(keymap :n :<C-k> "\"_D")
+(keymap :i :<C-k> "<cmd>NormalMode<CR>\"_Di")
+(keymap :c :<C-k> "<C-\\>e(strpart(getcmdline(), 0, getcmdpos() - 1))<CR>" {:silent false})
 ;; Duplicate line
-(noremap :i :<C-S-d> "<cmd>:t.<CR>")
-(noremap :n :<C-S-d> "<cmd>:t.<CR>")
-(noremap :n :cd "<cmd>:t.<CR>")
+(keymap :inv :<C-S-d> "<cmd>:t.<CR>")
 ; Comment
-(noremap :i :<C-/> "<cmd>CommentToggle<CR>")
-(noremap :n :<C-/> "<cmd>CommentToggle<CR>")
-(noremap :c :<C-/> "<cmd>CommentToggle<CR>")
-(noremap :v :<C-/> "<cmd>CommentToggleSelection<CR>")
+(keymap :in :<C-/> "<cmd>CommentToggle<CR>")
+(keymap :v :<C-/> "<cmd>CommentToggleSelection<CR>")
 ;; Goto last edit
-(noremap :n :<C-M-l> "g;" :silent)
-(noremap :i :<C-M-l> "<C-c>g;i" :silent)
+(keymap :n :<C-M-l> "g;")
+(keymap :i :<C-M-l> "<C-c>g;i")
 ;; Center screen to cursor pos
-(noremap :n :<C-l> "\"+zz" :silent)
-(noremap :i :<C-l> "<C-c>\"+zzi" :silent)
+(keymap :n :<C-l> "\"+zz")
+(keymap :i :<C-l> "<C-c>\"+zzi")
 ;; Move viewport up & down
-(noremap :n :<C-Up> "<C-y>" :silent)
-(noremap :n :<C-Down> "<C-e>" :silent)
-(noremap :i :<C-Up> "<cmd>NormalMode<CR><C-y>i" :silent)
-(noremap :i :<C-Down> "<cmd>NormalMode<CR><C-e>i" :silent)
+(keymap :n :<C-Up> "<C-y>")
+(keymap :n :<C-Down> "<C-e>")
+(keymap :i :<C-Up> "<cmd>NormalMode<CR><C-y>i")
+(keymap :i :<C-Down> "<cmd>NormalMode<CR><C-e>i")
 ;; findWordAtCursor.previous
-(noremap :n :<C-M-Up> "g#:let @/ = \"\"<CR>")
-(noremap :v :<C-M-Up> "<C-C>g#:let @/ = \"\"<CR>v")
-(noremap :i :<C-M-Up> "<C-C>g#:let @/ = \"\"<CR>i")
+(keymap :n :<C-M-Up> "g#:let @/ = \"\"<CR>")
+(keymap :v :<C-M-Up> "<C-C>g#:let @/ = \"\"<CR>v")
+(keymap :i :<C-M-Up> "<C-C>g#:let @/ = \"\"<CR>i")
 ;; findWordAtCursor.next
-(noremap :n :<C-M-Down> "g*:let @/ = \"\"<CR>")
-(noremap :v :<C-M-Down> "<C-C>g*:let @/ = \"\"<CR>v")
-(noremap :i :<C-M-Down> "<C-C>g*:let @/ = \"\"<CR>i")
+(keymap :n :<C-M-Down> "g*:let @/ = \"\"<CR>")
+(keymap :v :<C-M-Down> "<C-C>g*:let @/ = \"\"<CR>v")
+(keymap :i :<C-M-Down> "<C-C>g*:let @/ = \"\"<CR>i")
 ;; Copy current buffer file path
-(noremap :n :cp "<cmd>let @+=expand('%:p')<CR><cmd>echo @<CR>")
-(noremap :c :cp "<cmd>let @+=expand('%:p')<CR><cmd>echo @<CR>")
+(keymap :n :cp "<cmd>let @+=expand('%:p')<CR><cmd>echo @<CR>")
 ;; Open file
-(noremap :n :<C-o> ":e ")
-(noremap :i :<C-o> "<C-c>:e ")
+(keymap :n :<C-o> ":e " {:silent false})
+(keymap :i :<C-o> "<C-c>:e " {:silent false})
 ;; Save
-(noremap :i :<C-s> "<cmd>:update<CR>")
-(noremap :n :<C-s> "<cmd>:update<CR>")
-(noremap :v :<C-s> "<cmd>:update<CR>")
+(keymap :inv :<C-s> "<cmd>:update<CR>")
 ;; Reload buffer file
-(noremap :n :<C-r> "<cmd>e<CR>" :silent)
-(noremap :i :<C-r> "<cmd><C-c>e<CR>i" :silent)
+(keymap :inv :<C-r> "<cmd>e<CR>")
 ;; Next/previous buffer
-(noremap :n :<C-PageUp> ":bp<CR>")
-(noremap :n :<C-PageDown> ":bn<CR>")
-(noremap :i :<C-PageUp> "<C-c>:bp<CR>i")
-(noremap :i :<C-PageDown> "<C-c>:bn<CR>i")
+(keymap :inv :<C-PageUp> "<cmd>bp<CR>")
+(keymap :inv :<C-PageDown> "<cmd>bn<CR>")
 ;; Close buffer
-(noremap :n :<C-w> ":bd<CR>")
-(noremap :i :<C-w> "<C-c>:bd<CR>i")
-(noremap :v :<C-w> "<C-c>:bd<CR>i")
+(keymap :inv :<C-w> "<cmd>bd<CR>")
 ;; Buffer switcher
-(noremap :n :<F1> "<cmd>lua require('telescope.builtin').buffers()<CR>")
-(noremap :i :<F1> "<cmd>lua require('telescope.builtin').buffers()<CR>")
-(noremap :n :<F2> "<cmd>lua require('telescope.builtin').treesitter()<CR>")
-(noremap :i :<F2> "<cmd>lua require('telescope.builtin').treesitter()<CR>")
+(keymap :in :<F1> "<cmd>lua require('telescope.builtin').buffers()<CR>")
+(keymap :in :<F2> "<cmd>lua require('telescope.builtin').treesitter()<CR>")
 ;; Search
-(noremap :n :<C-f> "/")
-(noremap :i :<C-f> "<Esc>/")
-(noremap :v :<C-f> "<Esc>/")
-(noremap :n :<C-S-f> "?")
-(noremap :i :<C-S-f> "<Esc>?")
-(noremap :v :<C-S-f> "<Esc>?")
-(noremap :c :<Esc> "<cmd>CommandEsc<CR>")
-(noremap :c :<CR> "<cmd>CommandRet<CR>")
-(noremap :i :<C-n> "<C-c>nni")
-(noremap :i :<C-S-n> "<C-c>Ni")
+(keymap :n :<C-f> "/" {:silent false})
+(keymap :iv :<C-f> "<Esc>/" {:silent false})
+(keymap :n :<C-S-f> "?" {:silent false})
+(keymap :iv :<C-S-f> "<Esc>?" {:silent false})
+(keymap :c :<Esc> "<cmd>CommandEsc<CR>")
+(keymap :c :<CR> "<cmd>CommandRet<CR>")
+(keymap :i :<C-n> "<C-c>nni")
+(keymap :i :<C-S-n> "<C-c>Ni")
 ;; Jump to word/symbol
-(noremap :n :<M-a> "<cmd>HopChar1<CR>")
-(noremap :i :<M-a> "<cmd>HopChar1<CR>")
+(keymap :in :<M-a> "<cmd>HopChar1<CR>")
 ;; Matchup
-(noremap :i :<C-M-left> "<cmd>NormalMode<CR>%i")
-(noremap :i :<C-M-right> "<cmd>NormalMode<CR>%a")
-(noremap :i :<S-C-M-left> "<cmd>NormalMode<CR>v%")
-(noremap :i :<S-C-M-right> "<cmd>NormalMode<CR>v%")
+(keymap :i :<C-M-left> "<cmd>NormalMode<CR>%i")
+(keymap :i :<C-M-right> "<cmd>NormalMode<CR>%a")
+(keymap :i :<S-C-M-left> "<cmd>NormalMode<CR>v%")
+(keymap :i :<S-C-M-right> "<cmd>NormalMode<CR>v%")
 ;; Version control
-(noremap :n :<M-w> "<cmd>:NeogitCWD<CR>")
-(noremap :i :<M-w> "<C-c><cmd>:NeogitCWD<CR>")
+(keymap :inv :<M-w> "<cmd>NeogitCWD<CR><C-c>")
 ;; Cancel / Disable highlight
-(noremap :n :<C-g> "<Esc><cmd>noh<CR>")
-(noremap :i :<C-g> "<Esc><cmd>noh<CR>")
-(noremap :n :<Esc> "<Esc><cmd>noh<CR>")
+(keymap :in :<C-g> "<C-c><cmd>noh<CR>i")
+(keymap :n :<Esc> "<Esc><cmd>noh<CR>")
 ;; Command
-(noremap :i :<M-x> "<Esc>:")
-(noremap :n :<M-x> ":")
-(noremap :v :<M-x> "<Esc>:")
+(keymap :inv :<M-x> "<Esc>:" {:silent false})
  ; Arrow key mappings for wildmenu tab completion
 (vim.api.nvim_command "set wildcharm=<C-Z>")
 (vim.api.nvim_command "cnoremap <expr> <up> wildmenumode() ? '<left>' : '<up>'")
@@ -141,32 +123,16 @@
 (vim.api.nvim_command "cnoremap <expr> <left> wildmenumode() ? '<up>' : '<left>'")
 (vim.api.nvim_command "cnoremap <expr> <right> wildmenumode() ? ' <bs><C-Z>' : '<right>'")
 ;; Windows split
-(noremap :n "<C-]>" "<cmd>:split<CR>")
-(noremap :c "<C-]>" "<cmd>:split<CR>")
-(noremap :v "<C-]>" "<cmd>:split<CR>")
-(noremap :i "<C-]>" "<cmd>:split<CR>")
-(noremap :n "<C-\\>" "<cmd>:vsplit<CR>")
-(noremap :c "<C-\\>" "<cmd>:vsplit<CR>")
-(noremap :v "<C-\\>" "<cmd>:vsplit<CR>")
-(noremap :i "<C-\\>" "<cmd>:vsplit<CR>")
-(noremap :n "<C-[>" "<cmd>:only<CR>")
-(noremap :c "<C-[>" "<cmd>:only<CR>")
-(noremap :i "<C-[>" "<cmd>:only<CR>")
+(keymap :inv "<C-]>" "<cmd>:split<CR>")
+(keymap :inv "<C-\\>" "<cmd>:vsplit<CR>")
+(keymap :inv "<C-[>" "<cmd>:only<CR>")
 ;; Windmove
-(noremap :i "<M-Down>" "<C-c><C-w><Down>i")
-(noremap :n "<M-Down>" "<C-w><Down>")
-(noremap :v "<M-Down>" "<C-w><Down>")
-(noremap :i "<M-Up>" "<C-c><C-w><Up>i")
-(noremap :n "<M-Up>" "<C-w><Up>")
-(noremap :v "<M-Up>" "<C-w><Up>")
-(noremap :i "<M-Left>" "<C-c><C-w><Left>i")
-(noremap :n "<M-Left>" "<C-w><Left>")
-(noremap :v "<M-Left>" "<C-w><Left>")
-(noremap :i "<M-Right>" "<C-c><C-w><Right>i")
-(noremap :n "<M-Right>" "<C-w><Right>")
-(noremap :v "<M-Right>" "<C-w><Right>")
+(keymap :inv "<M-Down>"  "<cmd>NormalMode<CR><C-w><Down><cmd>RestoreMode<CR>")
+(keymap :inv "<M-Up>"    "<cmd>NormalMode<CR><C-w><Up><cmd>RestoreMode<CR>")
+(keymap :inv "<M-Left>"  "<cmd>NormalMode<CR><C-w><Left><cmd>RestoreMode<CR>")
+(keymap :inv "<M-Right>" "<cmd>NormalMode<CR><C-w><Right><cmd>RestoreMode<CR>")
 ;; Conjure
-(noremap :n "<C-e>" "<cmd>ConjureEvalCurrentForm<CR>")
-(noremap :i "<C-e>" "<cmd>ConjureEvalCurrentForm<CR>")
-(noremap :v "<C-e>" "<cmd>ConjureEvalCurrentForm<CR>")
+(keymap :invs "<C-e>" "<cmd>ConjureEvalCurrentForm<CR>")
+(keymap :invs "<M-e>" "<cmd>ConjureEval<CR>")
+(keymap :invs "<C-S-e>" "<cmd>ConjureEvalBuf<CR>")
 
