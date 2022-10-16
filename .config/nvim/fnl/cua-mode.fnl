@@ -3,18 +3,12 @@
             nu aniseed.nvim.util
             core aniseed.core}})
 
-(fn command [name impl-fn args-count]
-  (vim.api.nvim_create_user_command 
-    name impl-fn {:nargs args-count}))
-
-(fn get-mode []
-  (. (vim.api.nvim_get_mode) :mode))
-
-(fn feed-keys [keys mode?]
-  (vim.api.nvim_feedkeys keys (or mode? (get-mode)) false))
-
-(fn next-char [] (feed-keys "l"))
-(fn prew-char [] (feed-keys "h"))
+(local {: command
+        : get-mode
+        : feed-keys
+        : visual-mode?
+        : insert-mode
+        : normal-mode} (require :lib.api))
 
 (var current-mode "n")
 
@@ -25,27 +19,6 @@
   (match current-mode
     "i" (vim.cmd "startinsert")
     "n" (vim.cmd "stopinsert")))
-
-(fn normal-mode []
-  (save-mode)
-  (let [mode (get-mode)
-        [y x] (vim.api.nvim_win_get_cursor 0)]
-    (vim.cmd "stopinsert")
-    (when (and (or (= mode "i") (= mode "R")) (> x 0))
-      (next-char))))
- 
-(fn insert-mode []
-  (save-mode)
-  (vim.cmd "startinsert"))
-
-(macro save-excursion [body]
-  `(let [buffer# (vim.api.nvim_win_get_buf 0)         
-         pos# (vim.api.nvim_win_get_cursor 0)
-         mode# (get-mode)
-         result# ,body]
-     (vim.api.nvim_win_set_buf 0 buffer#)
-     (vim.api.nvim_win_set_cursor 0 pos#)
-     result#))
 
 (fn command-ret []
   (feed-keys "\n")
@@ -59,9 +32,105 @@
         (vim.api.nvim_eval "setcmdline(\"\")")
         (command-ret)))))
 
+(fn line-next []
+  (normal-mode)
+  (if (visual-mode?)
+    (feed-keys "vj" "n")
+    (feed-keys "j" "n")))
+
+(fn char-forward []
+  (normal-mode)
+  (if (visual-mode?)
+    (feed-keys "va" "n")
+    (feed-keys "a" "n")))
+
+(fn char-forward-select []
+  (normal-mode)
+  (if (visual-mode?)
+    (feed-keys "l" "n")
+    (feed-keys "vl" "n")))
+
+(fn char-backward []
+  (normal-mode)
+  (if (visual-mode?)
+    (feed-keys "vhi" "n")
+    (feed-keys "hi" "n")))
+
+(fn char-backward-select []
+  (normal-mode)
+  (if (visual-mode?)
+    (feed-keys "h" "n")
+    (feed-keys "vh" "n")))
+
+(fn word-forward []
+  (vim.api.nvim_command "set iskeyword-=.") ; Add dot as word separator
+  (normal-mode)
+  (if (visual-mode?)   
+    (feed-keys "vea" "n")
+    (feed-keys "ea" "n")))
+
+(fn word-forward-select []
+  (vim.api.nvim_command "set iskeyword-=.") ; Add dot as word separator
+  (normal-mode)
+  (if (visual-mode?)
+    (feed-keys "e" "n")
+    (feed-keys "ve" "n")))
+
+(fn word-backward []
+  (vim.api.nvim_command "set iskeyword-=.") ; Add dot as word separator
+  (normal-mode)
+  (if (visual-mode?)   
+    (feed-keys "vbi" "n")
+    (feed-keys "bi" "n")))
+
+(fn word-backward-select []
+  (vim.api.nvim_command "set iskeyword-=.") ; Add dot as word separator
+  (normal-mode)
+  (if (visual-mode?)
+    (feed-keys "b" "n")
+    (feed-keys "vb" "n")))
+
+(fn line-beginning []
+  (normal-mode)
+  (if (visual-mode?)
+    (feed-keys "v0i" "n")
+    (feed-keys "0i" "n")))
+
+(fn line-beginning-select []
+  (normal-mode)
+  (if (visual-mode?)
+    (feed-keys "0" "n")
+    (feed-keys "v0" "n")))
+
+(fn line-end []
+  (normal-mode)
+  (if (visual-mode?)
+    (feed-keys "v$li" "n")
+    (feed-keys "$li" "n")))
+
+(fn line-end-select []
+  (normal-mode)
+  (if (visual-mode?)
+    (feed-keys "$l" "n")
+    (feed-keys "v$l" "n")))
+
 (command "RestoreMode" restore-mode 0)
 (command "NormalMode" normal-mode 0)
 (command "InsertMode" insert-mode 0)
 (command "CommandRet" command-ret 0)
 (command "CommandEsc" command-esc 0)
 
+(command "WordForward" word-forward 0)
+(command "WordForwardSelect" word-forward-select 0)
+(command "WordBackward" word-backward 0)
+(command "WordBackwardSelect" word-backward-select 0)
+
+;; (command "CharForward" char-forward 0)
+;; (command "CharForwardSelect" char-forward-select 0)
+;; (command "CharBackward" char-backward 0)
+;; (command "CharBackwardSelect" char-backward-select 0)
+;; (command "LineNext" line-next 0)
+;; (command "LineEnd" line-end 0)
+;; (command "LineEndSelect" line-end-select 0)
+;; (command "LineBeginning" line-beginning 0)
+;; (command "LineBeginningSelect" line-beginning-select 0)

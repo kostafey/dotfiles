@@ -5,4 +5,4 @@ node_modules
 .config/nvim/lua/keybindings.lua
 .config/nvim/lua/cua-mode.lua
 .config/nvim/lua/init.lua
-.config/nvim/lua/lib.lua
+.config/nvim/lua/lib/*

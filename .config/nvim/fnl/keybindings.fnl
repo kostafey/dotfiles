@@ -3,19 +3,7 @@
             nu aniseed.nvim.util
             core aniseed.core}})
 
-(local {: map
-        : keys
-        : str->chars} (require :lib))
-
-(fn keymap [modes from to opts?]
-  "Set keybindings."
-  (let [options {:noremap true :silent true}]
-    (when opts?
-      (map (fn [k] (tset options k (. opts? k)))
-           (keys opts?)))
-    (map (fn [mode] (nvim.set_keymap mode from to options))
-         (str->chars modes))
-    (string.format "mapped :%s %s -> %s" modes from to)))
+(local {: keymap} (require :lib.api))
 
 ;; Fix cursor
 (keymap :i :<C-c> "<cmd>NormalMode<CR>")
@@ -23,7 +11,7 @@
 (keymap :v :<Esc> "<C-c>i")
 ;; Enforce insert mode
 (keymap :n :<CR> "i<CR>")
-(keymap :n :<Delete> "\"_d<right>i")
+(keymap :n :<Delete> "i<Delete>")
 (keymap :n ")" "i)")
 (keymap :n "(" "i(")
 ;; CUA mode
@@ -49,9 +37,9 @@
 (keymap :iv  :<C-z> "<cmd>undo<CR>")
 (keymap :inv :<C-S-z> "<cmd>redo<CR>")
 ;; Kill the rest of the current line
-(keymap :n :<C-k> "\"_D")
-(keymap :i :<C-k> "<cmd>NormalMode<CR>\"_Di")
+(keymap :in :<C-k> "<cmd>KillRestOfLine<CR>")
 (keymap :c :<C-k> "<C-\\>e(strpart(getcmdline(), 0, getcmdpos() - 1))<CR>" {:silent false})
+(keymap :in :<C-M-k> "<cmd>KillLine<CR>")
 ;; Duplicate line
 (keymap :inv :<C-S-d> "<cmd>:t.<CR>")
 ; Comment
@@ -61,8 +49,7 @@
 (keymap :n :<C-M-l> "g;")
 (keymap :i :<C-M-l> "<C-c>g;i")
 ;; Center screen to cursor pos
-(keymap :n :<C-l> "\"+zz")
-(keymap :i :<C-l> "<C-c>\"+zzi")
+(keymap :inv :<C-l> "<cmd>NormalMode<CR>\"+zzi<cmd>RestoreMode<CR>")
 ;; Move viewport up & down
 (keymap :n :<C-Up> "<C-y>")
 (keymap :n :<C-Down> "<C-e>")
@@ -82,7 +69,24 @@
 (keymap :n :<C-o> ":e " {:silent false})
 (keymap :i :<C-o> "<C-c>:e " {:silent false})
 ;; Save
-(keymap :inv :<C-s> "<cmd>:update<CR>")
+(keymap :inv :<C-s> "<cmd>update<CR>")
+
+; (keymap :inv :<right> "<cmd>CharForward<CR>")
+; (keymap :inv :<S-right> "<cmd>CharForwardSelect<CR>")
+; (keymap :inv :<left> "<cmd>CharBackward<CR>")
+; (keymap :inv :<S-left> "<cmd>CharBackwardSelect<CR>")
+
+(keymap :inv :<C-right> "<cmd>WordForward<CR>")
+(keymap :inv :<C-S-right> "<cmd>WordForwardSelect<CR>")
+(keymap :inv :<C-left> "<cmd>WordBackward<CR>")
+(keymap :inv :<C-S-left> "<cmd>WordBackwardSelect<CR>")
+
+; (keymap :inv :<down> "<cmd>LineNext<CR>")
+; (keymap :inv :<end> "<cmd>LineEnd<CR>")
+; (keymap :inv :<S-end> "<cmd>LineEndSelect<CR>")
+; (keymap :inv :<home> "<cmd>LineBeginning<CR>")
+; (keymap :inv :<S-home> "<cmd>LineBeginningSelect<CR>")
+
 ;; Reload buffer file
 (keymap :inv :<C-r> "<cmd>e<CR>")
 ;; Next/previous buffer
