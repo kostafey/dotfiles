@@ -9,6 +9,10 @@
   (vim.api.nvim_create_user_command 
     name impl-fn {:nargs args-count}))
 
+(fn nvim-command [command]
+  "Executes an Ex command."
+  (vim.api.nvim_command command))
+
 (fn get-mode []
   (. (vim.api.nvim_get_mode) :mode))
 
@@ -26,8 +30,19 @@
 (fn insert-mode? []
   (= (get-mode) "i"))
 
+(fn mode-name [m]
+  (. {:v :visual
+      :s :select
+      :n :normal
+      :i :insert} m))
+
 (fn feed-keys [keys mode?]
   (vim.api.nvim_feedkeys keys (or mode? (get-mode)) true))
+
+(fn replace-termcodes [keys]
+  "Replaces terminal codes and keycodes (<CR>, <Esc>, ...) 
+in a string with the internal representation."
+  (vim.api.nvim_replace_termcodes keys true true true))
 
 (fn next-char [] (feed-keys "l"))
 (fn prew-char [] (feed-keys "h"))
@@ -54,13 +69,17 @@
          (str->chars modes))
     (string.format "mapped :%s %s -> %s" modes from to)))
 
-(fn cursor []
+(fn get-cursor []
   "Get cursor position [y x]."
   (vim.api.nvim_win_get_cursor 0))
 
+(fn set-cursor [y x]
+  "Set cursor position [y x]."
+  (vim.api.nvim_win_set_cursor 0 [y x]))
+
 (fn line []
   "Get cursor current line text."
-  (let [[y x] (cursor)]
+  (let [[y x] (get-cursor)]
     (. (vim.api.nvim_buf_get_lines 0 (- y 1) y true) 1)))
 
 (fn get-lines [start end]
@@ -73,9 +92,9 @@
 
 (fn kill-rest-of-line []
   "Kill the rest of the current line."
-  (let [[y x] (cursor)
+  (let [[y x] (get-cursor)
         line-text (line)]
-    (if (< x (length (line)))
+    (if (< x (length line-text))
       (set-lines (- y 1) y [(string.sub line-text 0 x)])
       (set-lines (- y 1) (+ y 1) 
                      [(. (get-lines (- y 1) (+ y 1)) 2)]))))
@@ -88,12 +107,16 @@
 (command "KillLine" kill-line 0)
 
 {: command
+ : nvim-command
  : get-mode
+ : mode-name
  : visual-mode?
  : normal-mode?
  : feed-keys
+ : replace-termcodes
  : keymap
- : cursor
+ : get-cursor
+ : set-cursor
  : line
  : insert-mode
  : normal-mode

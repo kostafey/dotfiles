@@ -70,23 +70,11 @@
 (keymap :i :<C-o> "<C-c>:e " {:silent false})
 ;; Save
 (keymap :inv :<C-s> "<cmd>update<CR>")
-
-; (keymap :inv :<right> "<cmd>CharForward<CR>")
-; (keymap :inv :<S-right> "<cmd>CharForwardSelect<CR>")
-; (keymap :inv :<left> "<cmd>CharBackward<CR>")
-; (keymap :inv :<S-left> "<cmd>CharBackwardSelect<CR>")
-
-(keymap :inv :<C-right> "<cmd>WordForward<CR>")
-(keymap :inv :<C-S-right> "<cmd>WordForwardSelect<CR>")
-(keymap :inv :<C-left> "<cmd>WordBackward<CR>")
-(keymap :inv :<C-S-left> "<cmd>WordBackwardSelect<CR>")
-
-; (keymap :inv :<down> "<cmd>LineNext<CR>")
-; (keymap :inv :<end> "<cmd>LineEnd<CR>")
-; (keymap :inv :<S-end> "<cmd>LineEndSelect<CR>")
-; (keymap :inv :<home> "<cmd>LineBeginning<CR>")
-; (keymap :inv :<S-home> "<cmd>LineBeginningSelect<CR>")
-
+;; Motions
+(keymap :invs :<C-right> "<cmd>WordForward<CR>")
+(keymap :invs :<C-S-right> "<cmd>WordForwardSelect<CR>")
+(keymap :invs :<C-left> "<cmd>WordBackward<CR>")
+(keymap :invs :<C-S-left> "<cmd>WordBackwardSelect<CR>")
 ;; Reload buffer file
 (keymap :inv :<C-r> "<cmd>e<CR>")
 ;; Next/previous buffer
@@ -106,6 +94,8 @@
 (keymap :c :<CR> "<cmd>CommandRet<CR>")
 (keymap :i :<C-n> "<C-c>nni")
 (keymap :i :<C-S-n> "<C-c>Ni")
+(keymap :n :<C-n> "ni")
+(keymap :n :<C-S-n> "Ni")
 ;; Jump to word/symbol
 (keymap :in :<M-a> "<cmd>HopChar1<CR>")
 ;; Matchup
