@@ -102,6 +102,7 @@
               (feed-keys "b" "n")
               (feed-keys C-g "v")))))
 
+(command "SaveMode" save-mode 0)
 (command "RestoreMode" restore-mode 0)
 (command "NormalMode" normal-mode 0)
 (command "InsertMode" insert-mode 0)

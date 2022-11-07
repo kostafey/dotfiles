@@ -101,8 +101,8 @@
 ;; Matchup
 (keymap :i :<C-M-left> "<cmd>NormalMode<CR>%i")
 (keymap :i :<C-M-right> "<cmd>NormalMode<CR>%a")
-(keymap :i :<S-C-M-left> "<cmd>NormalMode<CR>v%")
-(keymap :i :<S-C-M-right> "<cmd>NormalMode<CR>v%")
+(keymap :i :<S-C-M-left> "<cmd>NormalMode<CR>v%<C-g>")
+(keymap :i :<S-C-M-right> "<cmd>NormalMode<CR>v%<C-g>")
 ;; Version control
 (keymap :inv :<M-w> "<cmd>NeogitCWD<CR><C-c>")
 ;; Cancel / Disable highlight
@@ -121,10 +121,10 @@
 (keymap :inv "<C-\\>" "<cmd>:vsplit<CR>")
 (keymap :inv "<C-[>" "<cmd>:only<CR>")
 ;; Windmove
-(keymap :inv "<M-Down>"  "<cmd>NormalMode<CR><C-w><Down><cmd>RestoreMode<CR>")
-(keymap :inv "<M-Up>"    "<cmd>NormalMode<CR><C-w><Up><cmd>RestoreMode<CR>")
-(keymap :inv "<M-Left>"  "<cmd>NormalMode<CR><C-w><Left><cmd>RestoreMode<CR>")
-(keymap :inv "<M-Right>" "<cmd>NormalMode<CR><C-w><Right><cmd>RestoreMode<CR>")
+(keymap :inv "<M-Down>"  "<cmd>SaveMode<CR><cmd>NormalMode<CR><C-w><Down><cmd>RestoreMode<CR>")
+(keymap :inv "<M-Up>"    "<cmd>SaveMode<CR><cmd>NormalMode<CR><C-w><Up><cmd>RestoreMode<CR>")
+(keymap :inv "<M-Left>"  "<cmd>SaveMode<CR><cmd>NormalMode<CR><C-w><Left><cmd>RestoreMode<CR>")
+(keymap :inv "<M-Right>" "<cmd>SaveMode<CR><cmd>NormalMode<CR><C-w><Right><cmd>RestoreMode<CR>")
 ;; Conjure
 (keymap :invs "<C-e>" "<cmd>ConjureEvalCurrentForm<CR>")
 (keymap :invs "<M-e>" "<cmd>ConjureEval<CR>")
