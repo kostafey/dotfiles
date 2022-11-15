@@ -1,3 +1,15 @@
+" =============================================================================
+"  To err is human, but to really foul things up you need a computer.
+"                                                                Paul Ehrlich
+"
+"  Kostafey's Neovim confik :)
+"  started from 26.08.2022, 19:54:06
+"
+"   ___   _  ___  _____    ______ __ ___  
+"  |   \ | |/ _ \/ _ \ \  / /| | '_ ` _ \ 
+"  | |\ \| |  __/ (_) \ \/ / | | | | | | |
+"  |_| \___|\___|\___/ \__/  |_|_| |_| |_|
+
 "  neovide
 if exists("g:neovide")
     let g:neovide_floating_window_opacity = 1.0
@@ -49,8 +61,8 @@ let g:aniseed#env = v:true
 lua require('plugins')
 lua require('commands')
 
-set guifont=Fira\ Mono\ Medium:h12.5:cDEFAULT
-" set guifont=FiraCode\ Nerd\ Font:h12.0:cDEFAULT
+" set guifont=Fira\ Mono\ Medium:h12.5:cDEFAULT
+set guifont=FiraCode\ Nerd\ Font:h12.0:cDEFAULT
 autocmd BufRead,BufNewFile * syn match parens /[(){}]/ | hi parens ctermfg=red
 
 " Confirm save changes

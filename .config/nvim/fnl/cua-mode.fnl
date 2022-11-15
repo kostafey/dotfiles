@@ -12,6 +12,9 @@
         : insert-mode
         : normal-mode} (require :lib.api))
 
+;; insert-mode on startup
+(insert-mode)
+
 (var current-mode "n")
 
 (fn save-mode []

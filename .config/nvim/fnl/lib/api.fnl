@@ -7,7 +7,8 @@
 (fn command [name impl-fn args-count]
   "Define new command."
   (vim.api.nvim_create_user_command 
-    name impl-fn {:nargs args-count}))
+    name impl-fn {:nargs args-count})
+  (string.format "Defined command %s -> %s" name impl-fn))
 
 (fn nvim-command [command]
   "Executes an Ex command."
@@ -48,7 +49,7 @@ in a string with the internal representation."
 (fn prew-char [] (feed-keys "h"))
 
 (fn normal-mode []
-  ; (save-mode)
+  "Return to normal mode from insert, keep cursor in place."
   (let [mode (get-mode)
         [y x] (vim.api.nvim_win_get_cursor 0)]
     (vim.cmd "stopinsert")
@@ -56,7 +57,7 @@ in a string with the internal representation."
       (next-char))))
  
 (fn insert-mode []
-  ; (save-mode)
+  "Turn to insert from normal mode."
   (vim.cmd "startinsert"))
 
 (fn keymap [modes from to opts?]
@@ -77,6 +78,47 @@ in a string with the internal representation."
   "Set cursor position [y x]."
   (vim.api.nvim_win_set_cursor 0 [y x]))
 
+(fn exchange-point-and-mark []
+  "Put the selection start where cursor is now, and cursor where
+the selection start is now."
+  (let [esc (replace-termcodes "<Esc><C-c>")
+        gv (replace-termcodes "gv<C-g>")]
+    (feed-keys esc "nx")
+    (let [[_ y1 x1 _] (vim.fn.getpos "'<")
+          [_ y2 x2 _] (vim.fn.getpos "'>")
+          [y x] (get-cursor)]
+      (if (or (< y1 y) (and (= y1 y) (< x1 x)))
+        (do
+          (vim.fn.setpos "'<" [0 y2 x2 0])
+          (vim.fn.setpos "'>" [0 y1 x1 0]))
+        (do
+          (vim.fn.setpos "'>" [0 y2 x2 0])
+          (vim.fn.setpos "'<" [0 y1 x1 0]))))
+    (feed-keys gv "nx")))
+
+(fn get-mark []
+  "Get visual mark position [y x]."
+  (let [[_ y x _] (vim.fn.getpos "v")]
+    [y x]))
+
+(fn set-mark [y x]
+  "Get visual mark position [y x]."
+  (vim.fn.setpos "." [0 y x 0]))
+
+(fn get-selection-range []
+  (let [esc (replace-termcodes "<Esc><C-c>")
+        gv (replace-termcodes "gv<C-g>")]
+    (feed-keys esc "nx")
+    (let [[_ y1 x1 _] (vim.fn.getpos "'<")
+          [_ y2 x2 _] (vim.fn.getpos "'>")]
+      (feed-keys gv "nx")
+      [y1 x1 y2 x2])))
+
+(fn pprint [data]
+  (match (type data)
+    "table" (map pprint data)
+    _ (print data)))
+
 (fn line []
   "Get cursor current line text."
   (let [[y x] (get-cursor)]
@@ -89,6 +131,34 @@ in a string with the internal representation."
 (fn set-lines [start end replacement]
   "Sets (replaces) a line-range in the buffer."
   (vim.api.nvim_buf_set_lines 0 start end true replacement))
+
+(fn get-text [start_row start_col end_row end_col]
+  "Gets a range from the buffer."
+  (let [[start_row start_col end_row end_col]
+        (if (<= start_col end_col)
+          [start_row start_col end_row end_col]
+          [end_row end_col start_row start_col])]
+    (vim.api.nvim_buf_get_text 0 
+      (- start_row 1) (- start_col 1) (- end_row 1) (- end_col 1) {})))
+
+(fn set-text [start_row start_col end_row end_col replacement]
+  "Sets (replaces) a range in the buffer."
+  (vim.api.nvim_buf_set_text 0 
+    (- start_row 1) (- start_col 1) 
+    (- end_row 1) (- end_col 1) replacement))
+
+(fn get-selection-text []
+  (let [[y1 x1 y2 x2] (get-selection-range)]
+    (get-text y1 x1 y2 x2)))
+
+(fn wrap-text []
+  (let [[y1 x1 y2 x2] (get-selection-range)
+        text (get-text y1 x1 y2 x2)
+        first 1
+        last (length text)]
+    (tset text first (.. "(" (. text first)))
+    (tset text last (.. (. text last) ")"))
+    (set-text y1 x1 y2 x2 text)))
 
 (fn kill-rest-of-line []
   "Kill the rest of the current line."
@@ -105,6 +175,8 @@ in a string with the internal representation."
 
 (command "KillRestOfLine" kill-rest-of-line 0)
 (command "KillLine" kill-line 0)
+(command "WrapText" wrap-text 0)
+(command "ExchangePointAndMark" exchange-point-and-mark 0)
 
 {: command
  : nvim-command

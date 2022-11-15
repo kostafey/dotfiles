@@ -43,8 +43,34 @@ return require('packer').startup(function(use)
   use {
     'nvim-telescope/telescope.nvim', tag = '0.1.0',
   -- or                            , branch = '0.1.x',
-    requires = { {'nvim-lua/plenary.nvim'} }
-  }  
+    requires = { {'nvim-lua/plenary.nvim'} },
+    config = function()
+        require("telescope").setup {
+          extensions = {
+            file_browser = {
+              theme = "ivy",
+              -- disables netrw and use telescope-file-browser in its place
+              hijack_netrw = true,
+            },
+          },
+        }
+    end
+  }
+
+  use {
+    "nvim-telescope/telescope-file-browser.nvim",
+    config = function()
+      require'telescope-file-browser.nvim'.setup()      
+    end
+  }
+  require("telescope").load_extension "file_browser"
+
+  use {
+    "airblade/vim-rooter",
+    config = function()
+      require'vim-rooter'.setup()
+    end
+  }
 
   use { 
     'TimUntersberger/neogit', 
@@ -120,7 +146,7 @@ return require('packer').startup(function(use)
       require("bufferline").setup {
         options = {
           show_buffer_icons = false, -- disable file type icons
-	  buffer_close_icon = 'x',
+	        buffer_close_icon = 'x',
         }
       }
     end
@@ -149,6 +175,7 @@ return require('packer').startup(function(use)
   use 'norcalli/nvim-colorizer.lua'
   require 'colorizer'.setup()
 
+  -- Hint: run TSUpdate after plugin update (via packer) is required.
   use 'nvim-treesitter/nvim-treesitter'
   use 'p00f/nvim-ts-rainbow'
   require("nvim-treesitter.configs").setup {
@@ -175,7 +202,15 @@ return require('packer').startup(function(use)
   use 'kostafey/organicgreen.nvim'
   vim.cmd[[colorscheme organicgreen]]
 
+  use 'RRethy/vim-illuminate'
+  require('illuminate')
+
   use 'neovim/nvim-lspconfig' -- Configurations for Nvim LSP
+
+  require'lspconfig'.metals.setup{}
+  require'lspconfig'.sumneko_lua.setup{}
+  require'lspconfig'.clojure_lsp.setup{}
+
   use 'hrsh7th/cmp-nvim-lsp'
   use 'hrsh7th/cmp-buffer'
   use 'hrsh7th/cmp-path'

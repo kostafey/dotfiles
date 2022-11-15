@@ -70,11 +70,24 @@
 (keymap :i :<C-o> "<C-c>:e " {:silent false})
 ;; Save
 (keymap :inv :<C-s> "<cmd>update<CR>")
+;; Messages
+(keymap :inv :<M-m> (.. "<cmd>redir! > messages<CR>"
+                        "<cmd>messages<CR>"
+                        "<cmd>:redir END<CR>"
+                        "<cmd>:e messages<CR>"))
 ;; Motions
 (keymap :invs :<C-right> "<cmd>WordForward<CR>")
 (keymap :invs :<C-S-right> "<cmd>WordForwardSelect<CR>")
 (keymap :invs :<C-left> "<cmd>WordBackward<CR>")
 (keymap :invs :<C-S-left> "<cmd>WordBackwardSelect<CR>")
+(keymap :s :<left> "<left><cmd>InsertMode<CR>")
+(keymap :s :<right> "<right><cmd>InsertMode<CR>")
+(keymap :s :<up> "<up><cmd>InsertMode<CR>")
+(keymap :s :<down> "<down><cmd>InsertMode<CR>")
+(keymap :s :<del> "<del><cmd>InsertMode<CR>")
+(keymap :vs :<C-e> "<cmd>ExchangePointAndMark<CR>")
+;; Goto definition
+(keymap :invs :<C-d> "<cmd>SaveMode<CR><cmd>NormalMode<CR>gd<cmd>RestoreMode<CR>")
 ;; Reload buffer file
 (keymap :inv :<C-r> "<cmd>e<CR>")
 ;; Next/previous buffer
@@ -82,9 +95,14 @@
 (keymap :inv :<C-PageDown> "<cmd>bn<CR>")
 ;; Close buffer
 (keymap :inv :<C-w> "<cmd>bd<CR>")
-;; Buffer switcher
+;; Telescope keybindings
 (keymap :in :<F1> "<cmd>lua require('telescope.builtin').buffers()<CR>")
 (keymap :in :<F2> "<cmd>lua require('telescope.builtin').treesitter()<CR>")
+(keymap :in :<F3> "<cmd>Telescope file_browser hidden=true<CR>")
+(keymap :in :<C-M-x> "<cmd>Telescope commands<CR>")
+(keymap :in :<C-M-n> "<cmd>Telescope find_files hidden=true<CR>")
+(keymap :in :<C-M-f> "<cmd>Telescope live_grep<CR>")
+(keymap :in :<C-M-h> "<cmd>Telescope help_tags<CR>")
 ;; Search
 (keymap :n :<C-f> "/" {:silent false})
 (keymap :iv :<C-f> "<Esc>/" {:silent false})
@@ -103,6 +121,8 @@
 (keymap :i :<C-M-right> "<cmd>NormalMode<CR>%a")
 (keymap :i :<S-C-M-left> "<cmd>NormalMode<CR>v%<C-g>")
 (keymap :i :<S-C-M-right> "<cmd>NormalMode<CR>v%<C-g>")
+;; WrapText (Surround)
+(keymap :vs "(" "<cmd>WrapText<CR>")
 ;; Version control
 (keymap :inv :<M-w> "<cmd>NeogitCWD<CR><C-c>")
 ;; Cancel / Disable highlight
@@ -126,7 +146,7 @@
 (keymap :inv "<M-Left>"  "<cmd>SaveMode<CR><cmd>NormalMode<CR><C-w><Left><cmd>RestoreMode<CR>")
 (keymap :inv "<M-Right>" "<cmd>SaveMode<CR><cmd>NormalMode<CR><C-w><Right><cmd>RestoreMode<CR>")
 ;; Conjure
-(keymap :invs "<C-e>" "<cmd>ConjureEvalCurrentForm<CR>")
+(keymap :in "<C-e>" "<cmd>ConjureEvalCurrentForm<CR>")
 (keymap :invs "<M-e>" "<cmd>ConjureEval<CR>")
 (keymap :invs "<C-S-e>" "<cmd>ConjureEvalBuf<CR>")
 
