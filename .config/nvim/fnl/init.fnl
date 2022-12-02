@@ -2,4 +2,5 @@
 
 (require :cua-mode)
 (require :keybindings)
+(require :custom)
 

@@ -5,6 +5,7 @@
 
 (local {: keymap} (require :lib.api))
 
+(keymap :n "co" "<cmd>OpenConfig<CR>")
 ;; Fix cursor
 (keymap :i :<C-c> "<cmd>NormalMode<CR>")
 (keymap :i :<Esc> "<cmd>NormalMode<CR><cmd>noh<CR>i")
@@ -23,6 +24,8 @@
 (keymap :n :<C-v> "P<right>")
 (keymap :i :<C-v> " <BS><cmd>NormalMode<CR>Pa")
 (keymap :v :<C-v> "\"_dPi")
+; Select
+(keymap :invs :<C-a> "<cmd>NormalMode<CR>ggVG")
 ; Paste from clipboard into command line
 (keymap :c :<C-v> "<C-R>+" {:noremap false :silent false})
 (keymap :c :<S-Insert> "<C-R>+" {:noremap false :silent false})
@@ -32,6 +35,7 @@
 (keymap :v :<Delete> "\"_d")
 (keymap :v :<S-Delete> "\"_d")
 (keymap :v :<Backspace> "\"_d")
+(keymap :s :<Delete> "<Delete><cmd>NormalMode<CR>i")
 ;; Undo/redo
 (keymap :n   :<C-z> "<cmd>undo<CR><right>")
 (keymap :iv  :<C-z> "<cmd>undo<CR>")
@@ -63,6 +67,11 @@
 (keymap :n :<C-M-Down> "g*:let @/ = \"\"<CR>")
 (keymap :v :<C-M-Down> "<C-C>g*:let @/ = \"\"<CR>v")
 (keymap :i :<C-M-Down> "<C-C>g*:let @/ = \"\"<CR>i")
+;; Highlighter
+(vim.api.nvim_command "let HiClear = '<M-F3>'")
+(keymap :in :<F3> "<cmd>Hi +<CR>")
+(keymap :in :<C-F3> "<cmd>Hi -<CR>")
+(keymap :s :<F3> "<C-g>f<CR><C-g>")
 ;; Copy current buffer file path
 (keymap :n :cp "<cmd>let @+=expand('%:p')<CR><cmd>echo @<CR>")
 ;; Open file
@@ -86,6 +95,9 @@
 (keymap :s :<down> "<down><cmd>InsertMode<CR>")
 (keymap :s :<del> "<del><cmd>InsertMode<CR>")
 (keymap :vs :<C-e> "<cmd>ExchangePointAndMark<CR>")
+;; Block selection
+(keymap :in :<C-S-Down> "<cmd>NormalMode<CR><C-q><S-Down>")
+(keymap :in :<C-S-Up> "<cmd>NormalMode<CR><C-q><S-Up>")
 ;; Goto definition
 (keymap :invs :<C-d> "<cmd>SaveMode<CR><cmd>NormalMode<CR>gd<cmd>RestoreMode<CR>")
 ;; Reload buffer file
@@ -98,7 +110,7 @@
 ;; Telescope keybindings
 (keymap :in :<F1> "<cmd>lua require('telescope.builtin').buffers()<CR>")
 (keymap :in :<F2> "<cmd>lua require('telescope.builtin').treesitter()<CR>")
-(keymap :in :<F3> "<cmd>Telescope file_browser hidden=true<CR>")
+(keymap :in :<F4> "<cmd>Telescope file_browser hidden=true<CR>")
 (keymap :in :<C-M-x> "<cmd>Telescope commands<CR>")
 (keymap :in :<C-M-n> "<cmd>Telescope find_files hidden=true<CR>")
 (keymap :in :<C-M-f> "<cmd>Telescope live_grep<CR>")

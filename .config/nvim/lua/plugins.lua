@@ -3,13 +3,16 @@ vim.cmd [[packadd packer.nvim]]
 return require('packer').startup(function(use)
   -- Packer can manage itself
   use 'wbthomason/packer.nvim'
-  
+
   use 'Olical/aniseed'
   use 'Olical/conjure'
   vim.cmd[[let g:conjure#client#fennel#aniseed#aniseed_module_prefix = "aniseed."]]
 
   use 'Shatur/neovim-session-manager'
 
+  -----------------------------------------------------------------------------
+  -- Navigation
+  -----------------------------------------------------------------------------
   use {
     'phaazon/hop.nvim',
     branch = 'v2', -- optional but strongly recommended
@@ -20,32 +23,18 @@ return require('packer').startup(function(use)
   }
 
   use {
-    'nvim-lualine/lualine.nvim',
-    -- requires = { 'kyazdani42/nvim-web-devicons', opt = true }
-  }
-  require ('lualine').setup{
-    options = {
-        icons_enabled = false,
-        theme = 'auto',
-        -- options = { theme  = organicgreen },
-        disabled_filetypes = { 'packer' }
-    },
-    sections = {
-      lualine_a = {'mode'},
-      lualine_b = {'branch', 'diff', 'diagnostics'},
-      lualine_c = {'filename'},
-      lualine_x = {'encoding', 'fileformat', 'filetype'},
-      lualine_y = {'progress'},
-      lualine_z = {'location'}
-    },
-  }
-
-  use {
     'nvim-telescope/telescope.nvim', tag = '0.1.0',
   -- or                            , branch = '0.1.x',
     requires = { {'nvim-lua/plenary.nvim'} },
     config = function()
         require("telescope").setup {
+          defaults = {
+            mappings = {
+              i = {
+                ["<Esc>"] = require('telescope.actions').close,
+              },
+            },
+          },
           extensions = {
             file_browser = {
               theme = "ivy",
@@ -60,11 +49,12 @@ return require('packer').startup(function(use)
   use {
     "nvim-telescope/telescope-file-browser.nvim",
     config = function()
-      require'telescope-file-browser.nvim'.setup()      
+      require'telescope-file-browser.nvim'.setup()
     end
   }
   require("telescope").load_extension "file_browser"
 
+  -- Project management
   use {
     "airblade/vim-rooter",
     config = function()
@@ -72,12 +62,15 @@ return require('packer').startup(function(use)
     end
   }
 
-  use { 
-    'TimUntersberger/neogit', 
-    requires = 'nvim-lua/plenary.nvim', 
+  -----------------------------------------------------------------------------
+  -- Version control
+  -----------------------------------------------------------------------------
+  use {
+    'TimUntersberger/neogit',
+    requires = 'nvim-lua/plenary.nvim',
     config = function()
       local neogit = require('neogit')
-      neogit.setup {}   
+      neogit.setup {}
     end
   }
 
@@ -85,7 +78,7 @@ return require('packer').startup(function(use)
     'lewis6991/gitsigns.nvim',
     config = function()
       require('gitsigns').setup{
-	
+
         signs = {
           add          = {hl = 'GitSignsAdd'   , text = '▐', numhl='GitSignsAddNr'   , linehl='GitSignsAddLn'},
           change       = {hl = 'GitSignsChange', text = '▐', numhl='GitSignsChangeNr', linehl='GitSignsChangeLn'},
@@ -93,7 +86,7 @@ return require('packer').startup(function(use)
           topdelete    = {hl = 'GitSignsDelete', text = '▐', numhl='GitSignsDeleteNr', linehl='GitSignsDeleteLn'},
           changedelete = {hl = 'GitSignsChange', text = '▐', numhl='GitSignsChangeNr', linehl='GitSignsChangeLn'},
         },
-	signcolumn = true,  -- Toggle with `:Gitsigns toggle_signs`
+        signcolumn = true,  -- Toggle with `:Gitsigns toggle_signs`
         numhl      = false, -- Toggle with `:Gitsigns toggle_numhl`
         linehl     = false, -- Toggle with `:Gitsigns toggle_linehl`
         word_diff  = false, -- Toggle with `:Gitsigns toggle_word_diff`
@@ -136,8 +129,10 @@ return require('packer').startup(function(use)
     end
   }
 
-  use 'andymass/vim-matchup'
-
+  -----------------------------------------------------------------------------
+  -- GUI
+  -----------------------------------------------------------------------------  
+  -- Tabs
   use {
     'akinsho/bufferline.nvim',
     tag = "v2.*",
@@ -147,11 +142,43 @@ return require('packer').startup(function(use)
         options = {
           show_buffer_icons = false, -- disable file type icons
 	        buffer_close_icon = 'x',
-        }
+          tab_size = 8,
+          max_name_length = 24,
+        },
+        highlights = {
+          buffer_selected = {
+                fg = '#444d56',
+                bg = "#f0fff0",
+                bold = false,
+                italic = false,
+            },
+          }
       }
     end
   }
   vim.opt.termguicolors = true
+
+  -- Mode-line
+  use {
+    'nvim-lualine/lualine.nvim',
+    -- requires = { 'kyazdani42/nvim-web-devicons', opt = true }
+  }
+  require ('lualine').setup{
+    options = {
+        icons_enabled = false,
+        theme = 'auto',
+        -- options = { theme  = organicgreen },
+        disabled_filetypes = { 'packer' }
+    },
+    sections = {
+      lualine_a = {'mode'},
+      lualine_b = {'branch', 'diff', 'diagnostics'},
+      lualine_c = {'filename'},
+      lualine_x = {'encoding', 'fileformat', 'filetype'},
+      lualine_y = {'progress'},
+      lualine_z = {'location'}
+    },
+  }
 
   use {
     "vigoux/notifier.nvim",
@@ -172,16 +199,16 @@ return require('packer').startup(function(use)
     end
   }
 
-  use 'norcalli/nvim-colorizer.lua'
-  require 'colorizer'.setup()
-
+  -----------------------------------------------------------------------------
+  -- Tree-sitter
+  -----------------------------------------------------------------------------  
   -- Hint: run TSUpdate after plugin update (via packer) is required.
   use 'nvim-treesitter/nvim-treesitter'
   use 'p00f/nvim-ts-rainbow'
   require("nvim-treesitter.configs").setup {
      ensure_installed = { "c", "lua", "rust", "java", "clojure", "fennel"},
       -- Automatically install missing parsers when entering buffer
-     auto_install = true,  
+     auto_install = true,
     highlight = {
        enable = true,
        additional_vim_regex_highlighting = false,
@@ -202,19 +229,66 @@ return require('packer').startup(function(use)
   use 'kostafey/organicgreen.nvim'
   vim.cmd[[colorscheme organicgreen]]
 
-  use 'RRethy/vim-illuminate'
-  require('illuminate')
+  use 'norcalli/nvim-colorizer.lua'
+  require 'colorizer'.setup()
 
+  -----------------------------------------------------------------------------
+  -- Highlight
+  -----------------------------------------------------------------------------  
+  -- Highlight word under cursor
+  use 'RRethy/vim-illuminate'
+  require('illuminate').configure({
+    delay = 0,
+  })
+  -- Highlight selected words and expressions
+  use 'azabiong/vim-highlighter'
+  -- Highlight matching parenthesis
+  use 'andymass/vim-matchup'
+
+  -----------------------------------------------------------------------------
+  -- LSP
+  -----------------------------------------------------------------------------
   use 'neovim/nvim-lspconfig' -- Configurations for Nvim LSP
 
   require'lspconfig'.metals.setup{}
-  require'lspconfig'.sumneko_lua.setup{}
+  require'lspconfig'.sumneko_lua.setup{
+    settings = {
+      Lua = {
+        diagnostics = {
+          -- Get the language server to recognize the `vim` global
+          globals = {'vim'},
+        },
+      },
+    },
+  }
   require'lspconfig'.clojure_lsp.setup{}
+  vim.lsp.handlers['textDocument/publishDiagnostics'] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
+    underline = true,
+    virtual_text = false,
+    signs = true,
+    update_in_insert = true,
+  })
+
+  local lspconfig = require('lspconfig')
+  -- inform lspconfig about fennel-ls
+  require("lspconfig.configs")["fennel-ls"] = {
+    default_config = {
+        cmd = {"fennel-ls"}, -- path
+        filetypes = {"fennel"},
+        root_dir = function(dir) return lspconfig.util.find_git_ancestor(dir) end,
+        settings = {}
+    }
+  }
+  -- setup fennel-ls
+  -- If you're using a completion system like nvim-cmp, you probably need to modify this line.
+  lspconfig["fennel-ls"].setup(
+    vim.lsp.protocol.make_client_capabilities()
+  )
 
   use 'hrsh7th/cmp-nvim-lsp'
   use 'hrsh7th/cmp-buffer'
   use 'hrsh7th/cmp-path'
-  use 'hrsh7th/cmp-cmdline'  
+  use 'hrsh7th/cmp-cmdline'
 
   use 'hrsh7th/cmp-vsnip'
   use 'hrsh7th/vim-vsnip'

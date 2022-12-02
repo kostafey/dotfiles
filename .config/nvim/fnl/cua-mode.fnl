@@ -15,7 +15,7 @@
 ;; insert-mode on startup
 (insert-mode)
 
-(var current-mode "n")
+(var current-mode "i")
 
 (fn save-mode []
   (set current-mode (get-mode)))
@@ -73,6 +73,7 @@
 
 (fn word-backward []
   (nvim-command "set iskeyword-=.") ; Add dot as word separator
+  (nvim-command "set iskeyword-=_") ; Add dot as word separator
   (let [esc (replace-termcodes "<Esc>")
         C-c (replace-termcodes "<C-c>")]
     (match (mode-name (get-mode))
@@ -88,6 +89,7 @@
 
 (fn word-backward-select []
   (nvim-command "set iskeyword-=.") ; Add dot as word separator
+  (nvim-command "set iskeyword-=_") ; Add dot as word separator
   (let [C-g (replace-termcodes "<C-g>")]
     (match (mode-name (get-mode))
     :insert (do

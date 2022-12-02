@@ -173,6 +173,12 @@ the selection start is now."
   "Kill current line."
   (vim.api.nvim_del_current_line))
 
+(fn find-file [file-path]
+  "Edit file file-path.
+Switch to a buffer visiting file file-path,
+creating one if none already exists."
+  (vim.cmd (string.format "e %s" file-path)))
+
 (command "KillRestOfLine" kill-rest-of-line 0)
 (command "KillLine" kill-line 0)
 (command "WrapText" wrap-text 0)
@@ -195,4 +201,5 @@ the selection start is now."
  : get-lines
  : set-lines
  : kill-rest-of-line
- : kill-line}
+ : kill-line
+ : find-file}
