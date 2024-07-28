@@ -4,7 +4,7 @@
     <command alias="open" value="xdg-open $f" type="system"/>
     <command alias="openEXE" value="$f" type="system"/>
     <command alias="openURL" value="xdg-open $f" type="system"/>
-    <!-- <command alias="edit" value="switch-to-emacsclient -n $f" type="system"/> -->
+    <command alias="edit" value="switch-to-emacsclient -n $f" type="system"/>
     <!-- <command alias="edit" value="code $f" type="system"/> -->
-    <command alias="edit" value="vscode_maximize.sh $f" type="system"/>
+    <!-- <command alias="edit" value="vscode_maximize.sh $f" type="system"/> -->
 </commands>
