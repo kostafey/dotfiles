@@ -69,7 +69,7 @@
     // Set plain text copy
     "editor.copyWithSyntaxHighlighting": false,
     "editor.fontFamily": "'Fira Mono Medium', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
-    "editor.fontSize": 16,
+    "editor.fontSize": 8,
     "workbench.editorAssociations": {
         "*.ipynb": "jupyter-notebook"
     },
@@ -213,5 +213,5 @@
     "gitlens.codeLens.recentChange.enabled": false,
     "gitlens.codeLens.authors.enabled": false,
     "gitlens.currentLine.enabled": false,
-    "workbench.activityBar.visible": false
+    "window.zoomLevel": 4
 }
