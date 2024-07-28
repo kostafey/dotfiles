@@ -290,11 +290,11 @@ colors:
    black:   '#24292e'
   #  black:   '#2e3436'
    red:     '#ce5c00'
-   green:   '#22aa22'
+   green:   '#119911'
    yellow:  '#b8860b'
-   blue:    '#268bd2'
-   magenta: '#3063EA'
-   cyan:    '#009292'
+   blue:    '#0065CC'
+   magenta: '#5544EE'
+   cyan:    '#008888'
    white:   '#912CEE'
 
   # Bright colors
