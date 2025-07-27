@@ -11,7 +11,7 @@ if [ "$active_win_id" == "0" ]; then
 fi
 
 # get next window to focus on, removing id active
-switch_to=$(echo $win_list | sed s/.*$active_win_id// | awk '{print $1}')
+switch_to=$(echo $win_list | "sed s/.*$active_win_id//" | awk '{print $1}')
 
 # if the current window is the last in the list ... take the first one
 if [ "$switch_to" == '' ];then
