@@ -1,0 +1,34 @@
+[colors.normal]
+black = "#24292e"
+blue = "#0065CC"
+cyan = "#008888"
+green = "#119911"
+magenta = "#5544EE"
+red = "#ce5c00"
+white = "#912CEE"
+yellow = "#b8860b"
+
+[colors.primary]
+background = "#F0FFF0"
+foreground = "#326B6B"
+
+[font]
+size = 13.5
+
+[font.bold]
+style = "Normal"
+
+[font.normal]
+family = "Fira Mono Medium"
+
+[window]
+dynamic_title = true
+startup_mode = "Maximized"
+
+[window.class]
+general = "Alacritty"
+instance = "alacritty.alacritty@assume-uinq"
+
+[window.position]
+x = 0
+y = 0
