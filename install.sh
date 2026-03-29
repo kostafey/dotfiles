@@ -38,7 +38,7 @@ ln -sf ~/dotfiles/.IdeaIC2017.2/config/keymaps/"Default for XWin copy.xml" \
 
 # alacritty
 mkdir ~/.config/alacritty
-ln -sf /data/dotfiles/.config/alacritty/alacritty.yml ~/.config/alacritty/alacritty.yml
+ln -sf /data/dotfiles/.config/alacritty/alacritty.toml ~/.config/alacritty/alacritty.toml
 ln -sf /data/dotfiles/.tmux.conf ~/.tmux.conf
 
 # ------------------------------------------------------------
