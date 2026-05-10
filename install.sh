@@ -10,10 +10,14 @@
 # * glances [gl] - system monitoring tool written in Python
 
 # ------------------------------------------------------------
+#opencode
+mkdir -p ~/.config/opencode/themes
+ln -sf /data/dotfiles/.config/opencode/themes/organic-green.json ~/.config/opencode/themes/organic-green.json
+
 # mucommander
 # sudo apt-get install wmctrl
-ln -sf ~/dotfiles/.mucommander/action_keymap.xml ~/.mucommander/action_keymap.xml
-ln -sf ~/dotfiles/.mucommander/commands.xml ~/.mucommander/commands.xml
+ln -sf /data/dotfiles/.config/mucommander/action_keymap.xml ~/.config/mucommander/action_keymap.xml
+ln -sf /data/dotfiles/.config/mucommander/commands.xml ~/.config/mucommander/commands.xml
 
 # emacs
 sudo ln -sf ~/.emacs.d/eframe-jack-in/linux/current-winid /bin/current-winid
