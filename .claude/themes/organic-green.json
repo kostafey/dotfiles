@@ -1,0 +1,44 @@
+{
+  "name": "Organic Green",
+  "base": "light",
+  "overrides": {
+    "text": "#326B6B",
+    "inverseText": "#F0FFF0",
+    "subtle": "#7F7F7F",
+    "inactive": "#5F5F5F",
+    "inactiveShimmer": "#326B6B",
+    "background": "#F0FFF0",
+
+    "claude": "#119911",
+    "claudeShimmer": "#27A745",
+    "claudeBlue_FOR_SYSTEM_SPINNER": "#0065CC",
+    "claudeBlueShimmer_FOR_SYSTEM_SPINNER": "#2188FF",
+
+    "suggestion": "#119911",
+    "ide": "#0065CC",
+    "remember": "#008888",
+    "planMode": "#5544EE",
+    "autoAccept": "#119911",
+
+    "permission": "#CE5C00",
+    "permissionShimmer": "#B8860B",
+
+    "promptBorder": "#D3E0D3",
+    "promptBorderShimmer": "#666666",
+    "bashBorder": "#D3E0D3",
+
+    "success": "#999900",
+    "error": "#EF2929",
+    "warning": "#CE5C00",
+    "warningShimmer": "#B8860B",
+
+    "diffAdded": "#27A745",
+    "diffRemoved": "#D73A49",
+    "diffAddedDimmed": "#C1F3CA",
+    "diffRemovedDimmed": "#FFA39E",
+    "diffAddedWord": "#119911",
+    "diffRemovedWord": "#EF2929",
+    "diffAddedWordDimmed": "#B7EB8F",
+    "diffRemovedWordDimmed": "#FFD5D5"
+  }
+}

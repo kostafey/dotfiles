@@ -10,9 +10,14 @@
 # * glances [gl] - system monitoring tool written in Python
 
 # ------------------------------------------------------------
+# claudecode
+mkdir -p ~/.claude/themes
+ln /data/dotfiles/.claude/themes/organic-green-light.json ~/.claude/themes/organic-green-light.json
+
 #opencode
 mkdir -p ~/.config/opencode/themes
 ln -sf /data/dotfiles/.config/opencode/themes/organic-green.json ~/.config/opencode/themes/organic-green.json
+ln -sf /data/dotfiles/.config/opencode/opencode.jsonc ~/.config/opencode/opencode.jsonc
 
 # mucommander
 # sudo apt-get install wmctrl

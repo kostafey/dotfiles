@@ -1,0 +1,22 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "llama.cpp/bartowski_Qwen2.5-Coder-7B-Instruct-GGUF_Qwen2.5-Coder-7B-Instruct-Q4_K_M.gguf",
+  "provider": {
+    "llama.cpp": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "llama-server (local)",
+      "options": {
+        "baseURL": "http://127.0.0.1:8080/v1"
+      },
+      "models": {
+        "bartowski_Qwen2.5-Coder-7B-Instruct-GGUF_Qwen2.5-Coder-7B-Instruct-Q4_K_M.gguf": {
+          "name": "Qwen2.5-Coder 7B (local)",
+          "limit": {
+            "context": 20480,
+            "output": 8192
+          }
+        }
+      }
+    }
+  }
+}
