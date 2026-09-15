@@ -2,11 +2,11 @@
 black = "#24292e"
 blue = "#0065CC"
 cyan = "#008888"
-green = "#119911"
+green = "#119011"
 magenta = "#5544EE"
 red = "#ce5c00"
 white = "#912CEE"
-yellow = "#b8860b"
+yellow = "#AD7C2E"
 
 [colors.primary]
 background = "#F0FFF0"
@@ -32,3 +32,8 @@ instance = "alacritty.alacritty@assume-uinq"
 [window.position]
 x = 0
 y = 0
+
+[[keyboard.bindings]]
+key = "Return"
+mods = "Shift"
+chars = "\u001B\r"
