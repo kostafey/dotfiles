@@ -25,9 +25,7 @@ ln -sf /data/dotfiles/.config/mucommander/action_keymap.xml ~/.config/mucommande
 ln -sf /data/dotfiles/.config/mucommander/commands.xml ~/.config/mucommander/commands.xml
 
 # emacs
-sudo ln -sf ~/.emacs.d/eframe-jack-in/linux/current-winid /bin/current-winid
-sudo ln -sf ~/.emacs.d/eframe-jack-in/linux/switch-to-emacsclient /bin/switch-to-emacsclient
-sudo chmod +x /bin/current-winid
+sudo ln -sf /data/dotfiles/xorg/switch-to-emacsclient /bin/switch-to-emacsclient
 sudo chmod +x /bin/switch-to-emacsclient
 
 # vscode

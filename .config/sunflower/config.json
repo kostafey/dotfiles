@@ -12,8 +12,8 @@
     }, 
     "editor": {
         "application": null, 
-        "default_editor": "/home/kostafey/.emacs.d/launcher/switch-to-emacsclient -n %U", 
-        "external_command": "/home/kostafey/.emacs.d/launcher/switch-to-emacsclient -n %U", 
+        "default_editor": "switch-to-emacsclient -n %U",
+        "external_command": "switch-to-emacsclient -n %U",
         "terminal_command": false, 
         "type": 1
     }, 

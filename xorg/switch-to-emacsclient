@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# Open the file(s) in Emacs and bring the Emacs frame to the foreground.
+wmctrl -xa emacs
+emacsclient -a fe "$@"
+
+/data/dotfiles/xorg/emacs.sh
