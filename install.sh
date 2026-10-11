@@ -12,7 +12,7 @@
 # ------------------------------------------------------------
 # claudecode
 mkdir -p ~/.claude/themes
-ln /data/dotfiles/.claude/themes/organic-green-light.json ~/.claude/themes/organic-green-light.json
+ln -sf /data/dotfiles/.claude/themes/organic-green.json ~/.claude/themes/organic-green.json
 
 #opencode
 mkdir -p ~/.config/opencode/themes
