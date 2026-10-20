@@ -1,0 +1,9 @@
+{
+  "effortLevel": "xhigh",
+  "autoUpdatesChannel": "latest",
+  "theme": "custom:organic-green",
+  "statusLine": {
+    "type": "command",
+    "command": "node ~/.claude/statusline.js"
+  }
+}
