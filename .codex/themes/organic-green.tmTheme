@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>name</key>
+  <string>Organic Green</string>
+  <key>settings</key>
+  <array>
+    <dict>
+      <key>settings</key>
+      <dict>
+        <key>background</key><string>#F0FFF0</string>
+        <key>foreground</key><string>#326B6B</string>
+        <key>caret</key><string>#119011</string>
+        <key>selection</key><string>#DFF3DF</string>
+        <key>lineHighlight</key><string>#EAF4EA</string>
+        <key>gutter</key><string>#7F7F7F</string>
+        <key>gutterForeground</key><string>#5F5F5F</string>
+      </dict>
+    </dict>
+    <dict>
+      <key>scope</key><string>comment</string>
+      <key>settings</key><dict><key>foreground</key><string>#7F7F7F</string><key>fontStyle</key><string>italic</string></dict>
+    </dict>
+    <dict>
+      <key>scope</key><string>keyword, storage</string>
+      <key>settings</key><dict><key>foreground</key><string>#119011</string></dict>
+    </dict>
+    <dict>
+      <key>scope</key><string>string, constant.character</string>
+      <key>settings</key><dict><key>foreground</key><string>#008888</string></dict>
+    </dict>
+    <dict>
+      <key>scope</key><string>constant.numeric, constant.language</string>
+      <key>settings</key><dict><key>foreground</key><string>#0065CC</string></dict>
+    </dict>
+    <dict>
+      <key>scope</key><string>entity.name.function, support.function</string>
+      <key>settings</key><dict><key>foreground</key><string>#5544EE</string></dict>
+    </dict>
+    <dict>
+      <key>scope</key><string>entity.name.type, entity.name.class, support.type</string>
+      <key>settings</key><dict><key>foreground</key><string>#119011</string></dict>
+    </dict>
+    <dict>
+      <key>scope</key><string>variable, identifier</string>
+      <key>settings</key><dict><key>foreground</key><string>#326B6B</string></dict>
+    </dict>
+    <dict>
+      <key>scope</key><string>markup.inserted, diff.inserted</string>
+      <key>settings</key><dict><key>foreground</key><string>#326B6B</string><key>background</key><string>#DFF3DF</string></dict>
+    </dict>
+    <dict>
+      <key>scope</key><string>markup.deleted, diff.deleted</string>
+      <key>settings</key><dict><key>foreground</key><string>#326B6B</string><key>background</key><string>#FBE3E3</string></dict>
+    </dict>
+    <dict>
+      <key>scope</key><string>markup.inserted markup.bold, markup.deleted markup.bold</string>
+      <key>settings</key><dict><key>fontStyle</key><string>bold</string></dict>
+    </dict>
+  </array>
+  <key>uuid</key><string>4e6fd41c-08c2-4da2-90f3-5d2d9fb6681a</string>
+  <key>colorSpaceName</key><string>sRGB</string>
+</dict>
+</plist>
