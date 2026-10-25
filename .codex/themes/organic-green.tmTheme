@@ -35,8 +35,12 @@
       <key>settings</key><dict><key>foreground</key><string>#0065CC</string></dict>
     </dict>
     <dict>
-      <key>scope</key><string>entity.name.function, support.function</string>
-      <key>settings</key><dict><key>foreground</key><string>#5544EE</string></dict>
+      <key>scope</key><string>entity.name.function</string>
+      <key>settings</key><dict><key>foreground</key><string>#444D56</string></dict>
+    </dict>
+    <dict>
+      <key>scope</key><string>support.function</string>
+      <key>settings</key><dict><key>foreground</key><string>#444D56</string></dict>
     </dict>
     <dict>
       <key>scope</key><string>entity.name.type, entity.name.class, support.type</string>
@@ -48,11 +52,11 @@
     </dict>
     <dict>
       <key>scope</key><string>markup.inserted, diff.inserted</string>
-      <key>settings</key><dict><key>foreground</key><string>#326B6B</string><key>background</key><string>#DFF3DF</string></dict>
+      <key>settings</key><dict><key>foreground</key><string>#119011</string><key>background</key><string>#DFF3DF</string></dict>
     </dict>
     <dict>
       <key>scope</key><string>markup.deleted, diff.deleted</string>
-      <key>settings</key><dict><key>foreground</key><string>#326B6B</string><key>background</key><string>#FBE3E3</string></dict>
+      <key>settings</key><dict><key>foreground</key><string>#EF2929</string><key>background</key><string>#FBE3E3</string></dict>
     </dict>
     <dict>
       <key>scope</key><string>markup.inserted markup.bold, markup.deleted markup.bold</string>
