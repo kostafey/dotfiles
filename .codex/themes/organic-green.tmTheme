@@ -5,12 +5,17 @@
   <key>name</key>
   <string>Organic Green</string>
   <key>settings</key>
+  <!-- Codex chooses thread colors from standalone syntax foregrounds plus
+       accent. Keep only #444D56 in that palette. A #00000001 background
+       means terminal default; it excludes a syntax color from the thread
+       palette without painting a background behind code or list markers. -->
   <array>
     <dict>
       <key>settings</key>
       <dict>
         <key>background</key><string>#F0FFF0</string>
         <key>foreground</key><string>#326B6B</string>
+        <key>accent</key><string>#444D56</string>
         <key>caret</key><string>#119011</string>
         <key>selection</key><string>#DFF3DF</string>
         <key>lineHighlight</key><string>#EAF4EA</string>
@@ -24,15 +29,15 @@
     </dict>
     <dict>
       <key>scope</key><string>keyword, storage</string>
-      <key>settings</key><dict><key>foreground</key><string>#119011</string></dict>
+      <key>settings</key><dict><key>foreground</key><string>#119011</string><key>background</key><string>#00000001</string></dict>
     </dict>
     <dict>
       <key>scope</key><string>string, constant.character</string>
-      <key>settings</key><dict><key>foreground</key><string>#008888</string></dict>
+      <key>settings</key><dict><key>foreground</key><string>#008888</string><key>background</key><string>#00000001</string></dict>
     </dict>
     <dict>
       <key>scope</key><string>constant.numeric, constant.language</string>
-      <key>settings</key><dict><key>foreground</key><string>#0065CC</string></dict>
+      <key>settings</key><dict><key>foreground</key><string>#0065CC</string><key>background</key><string>#00000001</string></dict>
     </dict>
     <dict>
       <key>scope</key><string>entity.name.function</string>
@@ -44,11 +49,15 @@
     </dict>
     <dict>
       <key>scope</key><string>entity.name.type, entity.name.class, support.type</string>
-      <key>settings</key><dict><key>foreground</key><string>#119011</string></dict>
+      <key>settings</key><dict><key>foreground</key><string>#119011</string><key>background</key><string>#00000001</string></dict>
     </dict>
     <dict>
       <key>scope</key><string>variable, identifier</string>
       <key>settings</key><dict><key>foreground</key><string>#326B6B</string></dict>
+    </dict>
+    <dict>
+      <key>scope</key><string>markup.list.numbered.markdown</string>
+      <key>settings</key><dict><key>foreground</key><string>#2E3436</string><key>background</key><string>#00000001</string></dict>
     </dict>
     <dict>
       <key>scope</key><string>markup.inserted, diff.inserted</string>
