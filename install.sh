@@ -11,8 +11,12 @@
 
 # ------------------------------------------------------------
 # claudecode
-mkdir -p ~/.claude/themes
+mkdir -p ~/.claude/themes ~/.claude/skills
 ln -sf /data/dotfiles/.claude/themes/organic-green.json ~/.claude/themes/organic-green.json
+ln -sfn /data/dotfiles/.claude/skills/local-delegate ~/.claude/skills/local-delegate
+for f in CLAUDE.md settings.json statusline.js; do
+    ln -sf /data/dotfiles/.claude/$f ~/.claude/$f
+done
 
 #opencode
 mkdir -p ~/.config/opencode/themes
@@ -25,6 +29,9 @@ ln -sfn /data/dotfiles/.pi/agent/themes ~/.pi/agent/themes
 for f in settings.json models.json mcp.json AGENTS.md; do
     ln -sf /data/dotfiles/.pi/agent/$f ~/.pi/agent/$f
 done
+# pi-delegate: Claude Code hands long-output commands to the local model
+mkdir -p ~/.local/bin
+ln -sf /data/dotfiles/pi-delegate/pi-delegate ~/.local/bin/pi-delegate
 
 # mucommander
 # sudo apt-get install wmctrl

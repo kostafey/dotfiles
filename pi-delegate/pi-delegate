@@ -1,0 +1,872 @@
+#!/usr/bin/env python3
+"""pi-delegate: hand noisy work to the local model and print a short summary.
+
+  pi-delegate run [--timeout S] -- COMMAND...   run COMMAND, summarize its log
+  pi-delegate ask [--timeout S] [--session] "TASK"
+                                                let the local model investigate
+  pi-delegate reset                             drop this project's ask session
+
+Only the summary goes to stdout; diagnostics go to stderr.  Exit codes: 0 a
+summary was printed, 2 usage error, 3 the local model is unavailable (Pi
+missing, llama-server down, timeout).  In `run' mode the STATUS line carries
+the outcome of COMMAND, the exit code only that of the delegate.
+
+See README.md next to the real path of this script.
+"""
+
+import argparse
+import fcntl
+import hashlib
+import json
+import os
+import re
+import select
+import shlex
+import shutil
+import signal
+import subprocess
+import sys
+import time
+import urllib.request
+from datetime import datetime, timezone
+from pathlib import Path
+
+PROVIDER = "local"
+MODEL = "qwen3.5-4b"
+DEFAULT_BASE_URL = "http://127.0.0.1:8012"
+PIN_FLAGS = ["--provider", PROVIDER, "--model", MODEL, "--thinking", "off",
+             "-ne", "-ns", "-np", "--no-mcp", "--no-approve"]
+SESSION_ID = "claude-delegate"
+SESSION_MAX_BYTES = 2 * 1024 * 1024
+SHORT_LOG_LINES = 40
+KEEP_LOGS = 30
+MAX_FAILURES = 15
+FALLBACK_LOG_CHARS = 24_000
+MAX_LOG_CHARS = 96_000
+HEAD_CHARS = 2_000
+ANSWER_MAX_LINES = 40
+ANSWER_MAX_CHARS = 6_000
+
+EXIT_OK, EXIT_USAGE, EXIT_UNAVAILABLE = 0, 2, 3
+
+STATE_DIR = Path(os.environ.get("XDG_STATE_HOME")
+                 or Path.home() / ".local/state") / "pi-delegate"
+CACHE_DIR = Path(os.environ.get("XDG_CACHE_HOME")
+                 or Path.home() / ".cache") / "pi-delegate"
+ASK_PROMPT = Path(os.path.realpath(__file__)).with_name("pi-delegate-ask.md")
+
+ANSI = re.compile(r"\x1b\[[0-?]*[ -/]*[@-~]"
+                  r"|\x1b\][^\x07\x1b]*(?:\x07|\x1b\\)"
+                  r"|\x1b[@-Z\\-_]")
+
+
+class Unavailable(Exception):
+    """The local model can't be used; the message says why."""
+
+
+def warn(message):
+    print(f"pi-delegate: {message}", file=sys.stderr)
+
+
+# Project
+
+def project_root():
+    try:
+        out = subprocess.run(["git", "rev-parse", "--show-toplevel"],
+                             capture_output=True, text=True, timeout=5)
+        if out.returncode == 0 and out.stdout.strip():
+            return Path(out.stdout.strip())
+    except (OSError, subprocess.TimeoutExpired):
+        pass
+    cwd = Path.cwd()
+    for directory in (cwd, *cwd.parents):
+        if (directory / ".pijul").is_dir():
+            return directory
+    return cwd
+
+
+def project_key(root):
+    name = re.sub(r"[^A-Za-z0-9._-]", "_", root.name) or "root"
+    digest = hashlib.sha1(str(root).encode()).hexdigest()[:8]
+    return f"{name}-{digest}"
+
+
+class ProjectLock:
+    """One delegate at a time per project: the ask session and the GPU are
+    shared, and two builds in one tree trip over each other."""
+
+    def __init__(self, key, deadline):
+        self.path = STATE_DIR / "locks" / f"{key}.lock"
+        self.deadline = deadline
+        self.file = None
+
+    def __enter__(self):
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        self.file = open(self.path, "w")
+        waiting = False
+        while True:
+            try:
+                fcntl.flock(self.file, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                return self
+            except BlockingIOError:
+                if not waiting:
+                    warn("waiting for another pi-delegate in this project")
+                    waiting = True
+                if time.monotonic() >= self.deadline:
+                    raise Unavailable("timed out waiting for another "
+                                      "pi-delegate in this project")
+                time.sleep(0.5)
+
+    def __exit__(self, *_):
+        self.file.close()
+
+
+# Local model
+
+def base_url():
+    """The llama-server root, from the provider in Pi's models.json."""
+    agent_dir = Path(os.environ.get("PI_CODING_AGENT_DIR")
+                     or Path.home() / ".pi/agent")
+    try:
+        models = json.loads((agent_dir / "models.json").read_text())
+        url = models["providers"][PROVIDER]["baseUrl"]
+        return re.sub(r"/v1/?$", "", url.rstrip("/"))
+    except (OSError, ValueError, KeyError, TypeError):
+        return DEFAULT_BASE_URL
+
+
+def preflight():
+    """Return the server context size (or None); raise Unavailable fast."""
+    if not shutil.which("pi"):
+        raise Unavailable("`pi' is not on PATH")
+    url = base_url()
+    try:
+        with urllib.request.urlopen(f"{url}/health", timeout=0.5) as reply:
+            if reply.status != 200:
+                raise Unavailable(f"llama-server at {url} is not ready "
+                                  f"(HTTP {reply.status})")
+    except (OSError, ValueError) as error:
+        raise Unavailable(f"llama-server at {url} is not reachable "
+                          f"({getattr(error, 'reason', error)})")
+    try:
+        with urllib.request.urlopen(f"{url}/props", timeout=0.5) as reply:
+            props = json.load(reply)
+        return int(props["default_generation_settings"]["n_ctx"])
+    except (OSError, ValueError, KeyError, TypeError):
+        return None
+
+
+def kill_group(proc):
+    for sig, grace in ((signal.SIGTERM, 5), (signal.SIGKILL, 5)):
+        try:
+            os.killpg(proc.pid, sig)
+        except ProcessLookupError:
+            return
+        try:
+            proc.wait(timeout=grace)
+            return
+        except subprocess.TimeoutExpired:
+            continue
+
+
+def pi(args, cwd, deadline, stdin_text=None):
+    """Run Pi pinned to the local model; return its stdout."""
+    command = ["pi", "-p", *PIN_FLAGS, *args]
+    proc = subprocess.Popen(
+        command, cwd=cwd, text=True, start_new_session=True,
+        stdin=subprocess.PIPE if stdin_text is not None else subprocess.DEVNULL,
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    try:
+        out, err = proc.communicate(stdin_text,
+                                    timeout=max(1, deadline - time.monotonic()))
+    except subprocess.TimeoutExpired:
+        kill_group(proc)
+        raise Unavailable("the local model timed out")
+    if proc.returncode != 0 or not out.strip():
+        lines = [line for line in err.splitlines()
+                 if line.strip() and not line.startswith("Warning:")]
+        reason = lines[-1] if lines else f"exit {proc.returncode}, no output"
+        raise Unavailable(f"pi failed: {reason}")
+    return out.strip()
+
+
+# run
+
+def clean(raw):
+    """Output as a terminal would leave it: no escapes, no overwritten
+    progress lines."""
+    text = ANSI.sub("", raw.decode("utf-8", errors="replace"))
+    return "\n".join(line.rstrip("\r").rsplit("\r", 1)[-1]
+                     for line in text.split("\n"))
+
+
+def log_path(key, command):
+    directory = CACHE_DIR / key
+    directory.mkdir(parents=True, exist_ok=True)
+    stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    slug = re.sub(r"[^A-Za-z0-9]+", "-", command).strip("-")[:40] or "command"
+    path = directory / f"{stamp}-{slug}.log"
+    n = 2
+    while path.exists():
+        path = directory / f"{stamp}-{slug}-{n}.log"
+        n += 1
+    return path
+
+
+def prune_logs(directory):
+    logs = sorted(directory.glob("*.log"),
+                  key=lambda p: (p.stat().st_mtime, p.name))
+    for old in logs[:-KEEP_LOGS]:
+        old.unlink(missing_ok=True)
+
+
+def log_header(command):
+    return f"# pi-delegate: $ {command}\n"
+
+
+def run_command(command, cwd, log, deadline):
+    """Run COMMAND in bash, merged output teed to LOG.
+    Return (raw output, exit code or None on timeout, seconds)."""
+    start = time.monotonic()
+    chunks = []
+    proc = subprocess.Popen(["bash", "-lc", command], cwd=cwd,
+                            stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
+                            stderr=subprocess.STDOUT, start_new_session=True)
+    fd = proc.stdout.fileno()
+    exited_at = None
+    with open(log, "wb") as out:
+        out.write(log_header(command).encode())
+        while True:
+            now = time.monotonic()
+            if now >= deadline:
+                kill_group(proc)
+                return b"".join(chunks), None, now - start
+            if exited_at is None and proc.poll() is not None:
+                exited_at = now
+            # A background child may hold the pipe open after COMMAND exits.
+            if exited_at is not None and now - exited_at > 2:
+                break
+            ready, _, _ = select.select([fd], [], [], 0.2)
+            if ready:
+                chunk = os.read(fd, 65536)
+                if not chunk:
+                    break
+                chunks.append(chunk)
+                out.write(chunk)
+        code = proc.wait()
+        seconds = time.monotonic() - start
+        out.write(f"\n# pi-delegate: exit {code} after {seconds:.1f}s\n"
+                  .encode())
+    proc.stdout.close()
+    return b"".join(chunks), code, seconds
+
+
+def fit(text, n_ctx, reserve=0):
+    """Cut the middle out of TEXT so that it fits the model's context, with
+    RESERVE characters of it left for what goes along with the log."""
+    if n_ctx:
+        # Half of the context for the log; ~3 characters per token of a log.
+        limit = min(MAX_LOG_CHARS, max(FALLBACK_LOG_CHARS, n_ctx // 2 * 3))
+    else:
+        limit = FALLBACK_LOG_CHARS
+    limit = max(2 * HEAD_CHARS, limit - reserve)
+    if len(text) <= limit:
+        return text, 0
+    head = text[:HEAD_CHARS].rsplit("\n", 1)[0]
+    tail = text[-(limit - len(head)):].split("\n", 1)[-1]
+    omitted = text.count("\n") - head.count("\n") - tail.count("\n")
+    return f"{head}\n[... {omitted} lines omitted ...]\n{tail}", omitted
+
+
+# The model sees neither the exit code nor the fields the script fills in: a
+# small model told that a command failed invents a failure to report.
+SUMMARY_PROMPT = """\
+You are a build-log summarizer. The text above is the output of the command \
+`{command}`.{cut}{pick_intro} Report only what the text shows. Output exactly \
+this block and nothing else:
+```
+SUMMARY: <one line: the test counts if the text reports them, e.g. \
+"128 passed, 2 failed, 1 ignored"; otherwise what the text shows, in a few \
+words>
+FAILURES:
+- <suite/test name>: <one-line reason> (<file:line> if present)
+NOTES: <warnings or anomalies worth knowing, or "none">{pick_line}
+```
+FAILURES lists only failed tests and error messages that appear in the text, \
+each under the name the text gives it. If the text shows none, write \
+"FAILURES: none". Never paste stack traces. At most {max_failures} FAILURES \
+lines; if more, add "- ... and N more". Do not invent anything that is not in \
+the text.{pick_rule}"""
+
+# Added to the prompt when the script lists CANDIDATES (see candidates()).
+PICK_INTRO = (' After the output comes a CANDIDATES list: lines of that '
+              'output picked by keywords such as "error" and "fail", each as '
+              '"<number>: <line>". Most of them are noise.')
+PICK_LINE = ('\nERROR_LINES: <the numbers of the CANDIDATES that are real '
+             'errors or failures, comma-separated, or "none">')
+PICK_RULE = (' ERROR_LINES takes numbers from CANDIDATES only, up to '
+             '{max_picked}: the line of EVERY failed test that gives its '
+             'reason, every compile error, the exception that stopped a '
+             'program. Prefer the line that names the test or the file over '
+             'a summary line that only counts or lists them. Leave out '
+             'warnings, errors that were handled, and test names that merely '
+             'contain such words.')
+
+NONE_ITEM = re.compile(r"^[-*]\s*(none|n/a|\(none\)|no failures)\.?$", re.I)
+# The model writes the ellipsis either way.
+MORE_ITEM = re.compile(r"^[-*]\s*(?:\u2026|\.\.\.)\s*and (\d+) more")
+MORE_PREFIX = "- ... and "
+GENERIC_WORDS = {"test", "tests", "error", "errors", "failed", "failure",
+                 "fail", "exit", "code", "status", "command", "should", "with",
+                 "from", "that", "this", "none", "line", "file"}
+
+
+def grounded(item, text):
+    """Whether a FAILURES item names something that occurs in TEXT."""
+    name = item[2:].split(": ", 1)[0]
+    words = [w for w in re.findall(r"[A-Za-z0-9_.$/-]{4,}", name)
+             if w.lower() not in GENERIC_WORDS]
+    return any(w in text for w in words)
+
+
+def line_numbers(value):
+    """The numbers in an ERROR_LINES value: a list of numbers, or a line that
+    opens with one, as in "29: [info] ..."."""
+    if re.fullmatch(r"[\s,;Ll\d-]*", value):
+        return [int(n) for n in re.findall(r"\d+", value)]
+    first = re.match(r"^[-*\s]*L?(\d+)", value)
+    return [int(first.group(1))] if first else []
+
+
+def parse_summary(answer):
+    """Take SUMMARY, FAILURES, NOTES and ERROR_LINES from the model's
+    answer."""
+    summary, notes, failures, more, picks = None, None, [], None, []
+    section = None
+    for line in answer.replace("```", "").splitlines():
+        line = line.strip()
+        key = re.match(r"^([A-Z_]+):\s*(.*)$", line)
+        if key:
+            section, value = key.group(1), key.group(2).strip()
+            if section == "SUMMARY":
+                summary = value
+            elif section == "NOTES":
+                notes = value
+            elif section == "ERROR_LINES":
+                picks += line_numbers(value)
+            elif section == "FAILURES" and value and \
+                    value.lower() not in ("none", "-"):
+                failures.append(f"- {value}")
+            continue
+        if section == "ERROR_LINES":
+            picks += line_numbers(line)
+            continue
+        if section == "FAILURES" and re.match(r"^[-*]\s", line):
+            if NONE_ITEM.match(line):
+                continue
+            m = MORE_ITEM.match(line)
+            if m:
+                more = f"{MORE_PREFIX}{m.group(1)} more"
+                continue
+            failures.append("- " + line[1:].strip()[:240])
+    if len(failures) > MAX_FAILURES:
+        more = f"{MORE_PREFIX}{len(failures) - MAX_FAILURES} more"
+        failures = failures[:MAX_FAILURES]
+    if more:
+        failures.append(more)
+    return summary, failures, notes, picks
+
+
+def add_note(notes, note):
+    return note if not notes or notes.lower() == "none" else f"{notes}; {note}"
+
+
+# The model reads a log that may have lost its middle and retells an error in
+# one line, while fixing code takes the exact message and its place.  So for a
+# failed command the script also cuts an excerpt out of the whole log by
+# pattern and quotes it as is, each line with its line number in the LOG.
+
+MAX_EXCERPT_LINES = 30
+EXCERPT_LINE_CHARS = 240
+FOLDED_NAMES = 3
+# ScalaTest: "- should x *** FAILED ***",
+# "com.example.SomeTest *** ABORTED ***".
+TEST_MARKER = re.compile(r"\s\*\*\* (FAILED|ABORTED) \*\*\*")
+# The reason ScalaTest prints under a marker is indented past the "[info]".
+TEST_REASON = re.compile(r"^(?:\[\w+\])?\s{2,}\S")
+# A JVM stack frame, with "at" or without it (JUnit's console launcher).
+STACK_FRAME = re.compile(
+    r"^(?:\[\w+\])?\s+(?:(?:at\s+)?[\w$.<>/]+"
+    r"\((?:[\w$]+\.\w+:\d+|Native Method|Unknown Source)\)\s*$"
+    r"|at \S+\(|\.\.\. \d+ more|\[\.\.\.\]\s*$)")
+LOG_PREFIX = re.compile(r"^(?:\[\w+\])?\s*")
+# A test runner's word that tests failed: sbt whatever the framework, JUnit's
+# console launcher, Maven Surefire, Gradle, pytest, jest, go test, cargo test,
+# clojure.test (webpack's "ERROR in ./src/..." is a compile error), ERT.
+TESTS_FAILED = re.compile(
+    r"sbt\.TestsFailedException"
+    r"|^\[error\] (?:Failed tests:|Error during tests:)"
+    r"|\b[1-9]\d* tests? failed\b"
+    r"|Tests run: \d+, Failures: (?:[1-9]|0, Errors: [1-9])"
+    r"|\btests? completed, [1-9]\d* failed\b"
+    r"|^=+ .*\b[1-9]\d* failed\b"
+    r"|^Tests:\s+[1-9]\d* failed\b"
+    r"|^--- FAIL: |^test result: FAILED"
+    r"|^(?:FAIL|ERROR) in \("
+    r"|^Ran \d+ tests?, \d+ results? as expected, [1-9]\d* unexpected")
+# Build errors of sbt and scalac.  The code under test logs "[error]" lines
+# of its own, even in a green run, so they count only for a failed command
+# with no failed test in it.
+BUILD_ERROR = re.compile(r"^\[error\]\s*\S")
+BUILD_NOISE = re.compile(r"^\[error\] Total time: ")
+# react-scripts says "Failed to compile." and gives the reason after it.
+BLOCK_START = re.compile(r"^Failed to compile\.")
+BLOCK_LINES = 8
+PY_TRACEBACK = re.compile(r"^Traceback \(most recent call last\):")
+PY_FRAME = re.compile(r'^\s+File "[^"]*", line \d+')
+# Frames of the JDK, Scala, Kotlin, test frameworks and build tools: a trace
+# shows where the project's own code was by its first frame of none of them.
+LIBRARY_FRAME = re.compile(
+    r"^(?:java|javax|jdk|sun|com\.sun|scala|kotlin|org\.junit|junit"
+    r"|org\.opentest4j|org\.scalatest|munit|org\.apache\.maven|org\.gradle)\.")
+FRAME_NAME = re.compile(r"^(?:at\s+)?(?:\S*?/+)?([\w$.<>]+)\(")
+
+
+def tests_failed(lines):
+    return any(TEST_MARKER.search(line) or TESTS_FAILED.search(line)
+               for line in lines)
+
+
+def own_frame(lines, start):
+    """Index of the first frame of the project's own code in the stack trace
+    that starts at START, or START when the trace shows none."""
+    j = start
+    while j < len(lines) and STACK_FRAME.match(lines[j]):
+        name = FRAME_NAME.search(LOG_PREFIX.sub("", lines[j]))
+        if name and not LIBRARY_FRAME.match(name.group(1)):
+            return j
+        j += 1
+    return start
+
+
+def traceback_end(lines, start):
+    """Of the Python traceback at START: the last frame, its source line, and
+    the exception line that closes the traceback."""
+    last_frame = None
+    for j in range(start + 1, len(lines)):
+        if PY_FRAME.match(lines[j]):
+            last_frame = j
+        elif lines[j].strip() and indent(lines[j]) == 0:
+            if last_frame is None:
+                return [j]
+            source = [k for k in range(last_frame + 1, j)
+                      if lines[k].strip(" ~^\t")][:1]
+            return [last_frame, *source, j]
+    return [start]
+
+
+def quote(lines, i, first_line):
+    """Line I of the output as an excerpt line, numbered as in the LOG."""
+    text = lines[i].rstrip()
+    if len(text) > EXCERPT_LINE_CHARS:
+        text = text[:EXCERPT_LINE_CHARS] + "..."
+    return f"L{i + first_line}: {text}"
+
+
+def failed_tests(lines, first_line):
+    """ScalaTest's failed tests and aborted suites, each with the reason line
+    under it.  Entries of one kind with the same reason fold into one, so a
+    mass failure takes three lines rather than one per suite."""
+    groups = {}
+    for i, line in enumerate(lines):
+        marker = TEST_MARKER.search(line)
+        if not marker:
+            continue
+        reason = None
+        for j in range(i + 1, min(i + 4, len(lines))):
+            if not TEST_REASON.match(lines[j]):
+                break
+            if not STACK_FRAME.match(lines[j]):
+                reason = j
+                break
+        key = (marker.group(1),
+               None if reason is None else LOG_PREFIX.sub("", lines[reason]))
+        name = LOG_PREFIX.sub("", line[:marker.start()])
+        groups.setdefault(key, []).append((i, reason, name))
+    excerpt = []
+    for (kind, _), entries in groups.items():
+        i, reason, _ = entries[0]
+        excerpt.append(quote(lines, i, first_line))
+        if reason is not None:
+            excerpt.append(quote(lines, reason, first_line))
+        if len(entries) > 1:
+            names = ", ".join(f"{name} (L{k + first_line})"
+                              for k, _, name in entries[1:1 + FOLDED_NAMES])
+            if len(entries) > 1 + FOLDED_NAMES:
+                names += ", ..."
+            excerpt.append(f"  + {len(entries) - 1} more {kind} with the "
+                           f"same reason: {names}"[:EXCERPT_LINE_CHARS])
+    return excerpt
+
+
+def build_errors(lines, first_line):
+    """Error lines of sbt, scalac and react-scripts, and the end of each
+    Python traceback, in log order."""
+    chosen, block = set(), 0
+    for i, line in enumerate(lines):
+        if PY_TRACEBACK.match(line):
+            chosen.update(traceback_end(lines, i))
+            continue
+        if BLOCK_START.match(line):
+            block = BLOCK_LINES
+        elif block and line.strip():
+            block -= 1
+        elif not (BUILD_ERROR.match(line) and not STACK_FRAME.match(line)
+                  and not BUILD_NOISE.match(line)):
+            continue
+        chosen.add(i)
+    return [quote(lines, i, first_line) for i in sorted(chosen)]
+
+
+def limit_excerpt(excerpt):
+    if len(excerpt) <= MAX_EXCERPT_LINES:
+        return excerpt
+    rest = len(excerpt) - (MAX_EXCERPT_LINES - 1)
+    return excerpt[:MAX_EXCERPT_LINES - 1] + [
+        f"... and {rest} more such lines in the LOG"]
+
+
+def error_excerpt(lines, first_line):
+    """Return (excerpt, whether tests failed) for the output LINES of a
+    failed command.  The excerpt is empty when no pattern here applies."""
+    excerpt = failed_tests(lines, first_line)
+    if excerpt:
+        return limit_excerpt(excerpt), True
+    if any(TESTS_FAILED.search(line) for line in lines):
+        # Tests failed under a framework not known here; sbt's own [error]
+        # lines carry only the suite names, not the reasons.
+        return [], True
+    return limit_excerpt(build_errors(lines, first_line)), False
+
+
+# Logs in no format known above: the script casts a wide net by keyword, the
+# model picks the lines that matter out of it by number, and the script
+# quotes those lines.  The model chooses but never writes the text, and a
+# number it gives outside the net is dropped.
+
+MAX_CANDIDATES = 120
+CANDIDATE_CHARS = 200
+MAX_PICKED = 12
+CONTEXT_LINES = 4
+CANDIDATE = re.compile(
+    r"(?i)\w*(?:error|exception)s?\b|\bfail(?:s|ed|ure|ures|ing)?\b"
+    r"|\bfatal\b|\bpanic(?:ked)?\b|\bassert\w*|\bexpected\b|\btraceback\b"
+    r"|\bcannot\b|\bundefined\b|\bnot found\b|\bunresolved\b|\bdenied\b"
+    r"|\brefused\b|\btimed out\b")
+# "0 errors", "Failures: 0", "failed 0": counts that say nothing went wrong.
+ZERO_COUNT = re.compile(
+    r"(?i)\b(?:0|no) (?:errors?|failures?|failed|exceptions?)\b"
+    r"|\b(?:errors?|failures?|failed|exceptions?)\s*[:=]?\s*0\b")
+# Lines that differ only in a timestamp are one candidate.
+TIMESTAMP = re.compile(r"\d{1,4}[-./]\d{1,2}[-./]\d{1,4}"
+                       r"|\d{1,2}:\d{2}:\d{2}(?:[.,]\d+)?")
+
+
+def candidates(lines):
+    """Lines that may tell why the command failed, by keyword: groups of the
+    indexes of identical lines, in log order.  When there are too many, the
+    first and the last of them stay."""
+    groups = {}
+    for i, line in enumerate(lines):
+        if STACK_FRAME.match(line) \
+                or not CANDIDATE.search(ZERO_COUNT.sub("", line)):
+            continue
+        groups.setdefault(TIMESTAMP.sub("", line).strip(), []).append(i)
+    found = list(groups.values())
+    if len(found) > MAX_CANDIDATES:
+        half = MAX_CANDIDATES // 2
+        found = found[:half] + found[-half:]
+    return found
+
+
+def candidate_listing(lines, first_line, groups):
+    rows = []
+    for group in groups:
+        text = lines[group[0]].strip()[:CANDIDATE_CHARS]
+        more = (f"  (and {len(group) - 1} more like it)"
+                if len(group) > 1 else "")
+        rows.append(f"{group[0] + first_line}: {text}{more}")
+    return "\n".join(rows)
+
+
+def indent(line):
+    rest = re.sub(r"^\[\w+\]", "", line).expandtabs(4)
+    return len(rest) - len(rest.lstrip())
+
+
+def shape(line):
+    """The line up to its first keyword, each run of word characters, dots
+    and slashes masked as one "w".  Two errors of one compiler, or two failed
+    tests of one runner, share it: "w:w: w", "    => w"."""
+    text = ZERO_COUNT.sub("", line)
+    keyword = CANDIDATE.search(text)
+    return re.sub(r"[\w$./\\-]+", "w", text[:keyword.end()] if keyword
+                  else text)
+
+
+def block(lines, i, starts):
+    """Line I and the lines after it that carry on its message: indented
+    deeper, as compilers and test runners write it, up to CONTEXT_LINES and
+    short of the next of STARTS.  Of a stack trace only the frame of the
+    project's own code, which says where."""
+    out = [i]
+    for j in range(i + 1, min(i + 1 + CONTEXT_LINES, len(lines))):
+        if j in starts or not lines[j].strip() \
+                or indent(lines[j]) <= indent(lines[i]):
+            break
+        if STACK_FRAME.match(lines[j]):
+            out.append(own_frame(lines, j))
+            break
+        out.append(j)
+    return out
+
+
+def picked_excerpt(lines, first_line, groups, picks):
+    """The candidates the model picked, each in its block, quoted from the
+    log in log order.  The model misses some lines of a kind it has found,
+    so every candidate of the same shape as a candidate in those blocks
+    joins them."""
+    by_index = {group[0]: group for group in groups}
+    chosen = []
+    for n in picks:
+        if n - first_line in by_index and n - first_line not in chosen:
+            chosen.append(n - first_line)
+    chosen = chosen[:MAX_PICKED]
+    shown = {j for i in chosen for j in block(lines, i, set(chosen))}
+    # A shape of bare words, such as "w w" of "Build failed", says nothing
+    # about the kind of line.
+    shapes = {s for s in (shape(lines[i]) for i in shown if i in by_index)
+              if re.search(r"[^\w\s]", s)}
+    alike = [i for i in by_index
+             if i not in shown and shape(lines[i]) in shapes]
+    starts = sorted(set(chosen) | set(alike[:MAX_PICKED]))
+    excerpt, done = [], set()
+    for i in starts:
+        if i in done:
+            continue
+        for j in block(lines, i, set(starts)):
+            excerpt.append(quote(lines, j, first_line))
+            done.add(j)
+        group = by_index[i]
+        if len(group) > 1:
+            others = ", ".join(f"L{k + first_line}"
+                               for k in group[1:1 + FOLDED_NAMES])
+            if len(group) > 1 + FOLDED_NAMES:
+                others += ", ..."
+            excerpt.append(f"  + {len(group) - 1} more like it: {others}")
+    return limit_excerpt(excerpt)
+
+
+def summarize(command, text, lines, first_line, code, seconds, log, cwd,
+              n_ctx, deadline):
+    """Summarize the output TEXT of COMMAND.  LINES is the same output split
+    with its leading blank lines kept, and FIRST_LINE the LOG line number of
+    its first line."""
+    excerpt, tests = error_excerpt(lines, first_line) if code else ([], False)
+    groups = candidates(lines) if code and not excerpt else []
+    listing = candidate_listing(lines, first_line, groups) if groups else ""
+    body, omitted = fit(text, n_ctx, reserve=len(listing))
+    cut = (f" The middle of the output ({omitted} lines) was cut out."
+           if omitted else "")
+    prompt = SUMMARY_PROMPT.format(
+        command=command, cut=cut, max_failures=MAX_FAILURES,
+        pick_intro=PICK_INTRO if groups else "",
+        pick_line=PICK_LINE if groups else "",
+        pick_rule=PICK_RULE.format(max_picked=MAX_PICKED) if groups else "")
+    stdin = f"{body}\n\nCANDIDATES:\n{listing}" if groups else body
+    answer = pi(["--no-session", "--no-tools", prompt], cwd, deadline,
+                stdin_text=stdin)
+    summary, failures, notes, picks = parse_summary(answer)
+    if not summary:
+        summary = "(the local model gave no summary; read the LOG)"
+        notes = " ".join(answer.split())[:240]
+    kept = [f for f in failures if f.startswith(MORE_PREFIX)
+            or grounded(f, text)]
+    if len(kept) < len(failures):
+        notes = add_note(notes, f"pi-delegate dropped "
+                         f"{len(failures) - len(kept)} FAILURES lines "
+                         "naming nothing in the log")
+        failures = [] if all(f.startswith(MORE_PREFIX) for f in kept) else kept
+    picked = picked_excerpt(lines, first_line, groups, picks) if groups else []
+    # The status is the script's alone: the exit code, and for a failed
+    # command whether a test runner says that tests failed.
+    if code == 0:
+        # A FAILURES line in a passing run is the model's misreading, or an
+        # error that a passing test logged.
+        status = "PASS"
+        found = [f for f in failures if not f.startswith(MORE_PREFIX)]
+        if found:
+            notes = add_note(notes, f"the local model listed {len(found)} "
+                             "FAILURES lines despite exit 0, the first: "
+                             f"{found[0][2:][:160]}")
+        failures = []
+    else:
+        status = "FAIL" if tests else "ERROR"
+    out = [f"STATUS: {status}", f"COMMAND: {command}",
+           f"EXIT: {code}  DURATION: {seconds:.1f}s", f"SUMMARY: {summary}"]
+    if excerpt:
+        out += ["ERRORS (verbatim from the LOG):", *excerpt]
+    elif picked:
+        out += ["ERRORS (verbatim from the LOG, lines picked by the local "
+                "model):", *picked]
+    else:
+        out += ["FAILURES:", *failures] if failures else ["FAILURES: none"]
+    out += [f"NOTES: {notes or 'none'}", f"LOG: {log}"]
+    return "\n".join(out)
+
+
+def cmd_run(args):
+    words = args.command[1:] if args.command[:1] == ["--"] else args.command
+    if not words:
+        warn("usage: pi-delegate run [--timeout S] -- COMMAND...")
+        return EXIT_USAGE
+    # One word is a shell command line as is (pipes, &&); several are argv.
+    command = words[0] if len(words) == 1 else shlex.join(words)
+    deadline = time.monotonic() + args.timeout
+    root = project_root()
+    key = project_key(root)
+    try:
+        n_ctx, unavailable = preflight(), None
+    except Unavailable as error:
+        n_ctx, unavailable = None, str(error)
+    try:
+        return run_locked(command, root, key, n_ctx, unavailable, deadline,
+                          args.timeout)
+    except Unavailable as error:
+        warn(str(error))
+        return EXIT_UNAVAILABLE
+
+
+def run_locked(command, root, key, n_ctx, unavailable, deadline, timeout):
+    with ProjectLock(key, deadline):
+        log = log_path(key, command)
+        raw, code, seconds = run_command(command, root, log, deadline)
+        prune_logs(log.parent)
+        if code is None:
+            warn(f"timed out after {timeout}s, killed; "
+                 f"partial output: {log}")
+            return EXIT_UNAVAILABLE
+        cleaned = clean(raw)
+        text = cleaned.strip("\n")
+        lines = text.split("\n") if text else []
+        if len(lines) < SHORT_LOG_LINES:
+            status = ("PASS" if code == 0
+                      else "FAIL" if tests_failed(lines) else "ERROR")
+            print(f"STATUS: {status}\n"
+                  f"COMMAND: {command}\n"
+                  f"EXIT: {code}  DURATION: {seconds:.1f}s\n"
+                  f"LOG: {log}\n"
+                  f"OUTPUT:{'' if lines else ' (empty)'}")
+            if lines:
+                print(text)
+            return EXIT_OK
+        if unavailable:
+            warn(f"{unavailable}; {len(lines)} lines of output saved "
+                 f"unsummarized: {log}")
+            return EXIT_UNAVAILABLE
+        try:
+            print(summarize(command, text, cleaned.split("\n"),
+                            log_header(command).count("\n") + 1, code,
+                            seconds, log, root, n_ctx, deadline))
+        except Unavailable as error:
+            warn(f"{error}; raw output: {log}")
+            return EXIT_UNAVAILABLE
+    return EXIT_OK
+
+
+# ask
+
+def session_dir(key):
+    return STATE_DIR / "sessions" / key
+
+
+def cap(answer):
+    lines = answer.splitlines()
+    text = "\n".join(lines[:ANSWER_MAX_LINES])[:ANSWER_MAX_CHARS]
+    if len(lines) > ANSWER_MAX_LINES or len(answer) > ANSWER_MAX_CHARS:
+        text += "\n[pi-delegate: answer cut to its first lines]"
+    return text
+
+
+def session_args(key):
+    """Pi's flags for the project's ask session, dropped first when it has
+    outgrown SESSION_MAX_BYTES."""
+    sessions = session_dir(key)
+    files = list(sessions.glob(f"*_{SESSION_ID}.jsonl"))
+    if any(f.stat().st_size > SESSION_MAX_BYTES for f in files):
+        shutil.rmtree(sessions)
+        warn(f"the session outgrew {SESSION_MAX_BYTES >> 20} MB; "
+             "started a fresh one")
+    sessions.mkdir(parents=True, exist_ok=True)
+    return ["--session-id", SESSION_ID, "--session-dir", str(sessions)]
+
+
+def cmd_ask(args):
+    task = " ".join(args.task).strip()
+    if not task:
+        warn('usage: pi-delegate ask [--timeout S] [--session] "TASK"')
+        return EXIT_USAGE
+    deadline = time.monotonic() + args.timeout
+    root = project_root()
+    key = project_key(root)
+    try:
+        preflight()
+        with ProjectLock(key, deadline):
+            # Without --session every ask starts clean: a small model holds
+            # on to what it concluded before, wrong conclusions included.
+            session = session_args(key) if args.session else ["--no-session"]
+            answer = pi([*session,
+                         "--tools", "read,bash",
+                         "--append-system-prompt", str(ASK_PROMPT), task],
+                        root, deadline)
+    except Unavailable as error:
+        warn(str(error))
+        return EXIT_UNAVAILABLE
+    print(cap(answer))
+    return EXIT_OK
+
+
+def cmd_reset(_args):
+    root = project_root()
+    sessions = session_dir(project_key(root))
+    if sessions.exists():
+        shutil.rmtree(sessions)
+        print(f"pi-delegate: dropped the ask session of {root}")
+    else:
+        print(f"pi-delegate: {root} has no ask session")
+    return EXIT_OK
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        prog="pi-delegate",
+        description="Offload noisy work to the local model through Pi.")
+    commands = parser.add_subparsers(dest="mode", required=True)
+    run = commands.add_parser("run", help="run a command, summarize its log")
+    run.add_argument("--timeout", type=int, default=600,
+                     help="seconds for the whole operation (default 600)")
+    run.add_argument("command", nargs=argparse.REMAINDER)
+    ask = commands.add_parser("ask", help="let the local model investigate")
+    ask.add_argument("--timeout", type=int, default=600,
+                     help="seconds for the whole operation (default 600)")
+    ask.add_argument("--session", action="store_true",
+                     help="go on in the project's session, with what the "
+                          "earlier --session asks found")
+    ask.add_argument("task", nargs=argparse.REMAINDER)
+    commands.add_parser("reset", help="drop this project's ask session")
+    args = parser.parse_args()
+    return {"run": cmd_run, "ask": cmd_ask, "reset": cmd_reset}[args.mode](args)
+
+
+if __name__ == "__main__":
+    sys.exit(main())

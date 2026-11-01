@@ -1,9 +1,27 @@
 {
+  "attribution": {
+    "commit": "",
+    "pr": "",
+    "sessionUrl": false
+  },
+  "model": "opus",
   "effortLevel": "xhigh",
-  "autoUpdatesChannel": "latest",
+  "autoUpdatesChannel": "stable",
+  "modelSettings": {
+    "claude-opus-5-5": {
+      "effortLevel": "xhigh"
+    }
+  },
   "theme": "custom:organic-green",
+  "switchModelsOnFlag": false,
   "statusLine": {
     "type": "command",
     "command": "node ~/.claude/statusline.js"
-  }
+  },
+  "permissions": {"allow": [
+    "mcp__ejc-sql__list_connections",
+    "mcp__ejc-sql__list_tables",
+    "mcp__ejc-sql__describe_table",
+    "mcp__ejc-sql__query"],
+    "ask": ["mcp__ejc-sql__execute"]}
 }
