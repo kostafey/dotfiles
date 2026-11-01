@@ -19,6 +19,10 @@ mkdir -p ~/.config/opencode/themes
 ln -sf /data/dotfiles/.config/opencode/themes/organic-green.json ~/.config/opencode/themes/organic-green.json
 ln -sf /data/dotfiles/.config/opencode/opencode.jsonc ~/.config/opencode/opencode.jsonc
 
+# pi: a link to the whole directory, since Pi watches it to hot-reload a theme
+mkdir -p ~/.pi/agent
+ln -sfn /data/dotfiles/.pi/agent/themes ~/.pi/agent/themes
+
 # mucommander
 # sudo apt-get install wmctrl
 ln -sf /data/dotfiles/.config/mucommander/action_keymap.xml ~/.config/mucommander/action_keymap.xml
