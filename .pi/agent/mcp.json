@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "ejc-sql": {
+      "url": "http://127.0.0.1:8765/mcp",
+      "headers": {
+        "Authorization": "!sed -n 's/.*:token *\"\\([^\"]*\\)\".*/Bearer \\1/p' ~/.ejc-sql/mcp.edn"
+      },
+      "exposure": "direct",
+      "toolExposure": {
+        "execute": "hidden"
+      },
+      "description": "Databases connected in Emacs with ejc-sql: schema lookup and read-only SQL"
+    }
+  }
+}

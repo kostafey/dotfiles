@@ -1,0 +1,6 @@
+{
+  "lastChangelogVersion": "1.4.0",
+  "defaultProvider": "local",
+  "defaultModel": "qwen3.5-4b",
+  "theme": "organic-green"
+}

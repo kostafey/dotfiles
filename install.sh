@@ -22,6 +22,9 @@ ln -sf /data/dotfiles/.config/opencode/opencode.jsonc ~/.config/opencode/opencod
 # pi: a link to the whole directory, since Pi watches it to hot-reload a theme
 mkdir -p ~/.pi/agent
 ln -sfn /data/dotfiles/.pi/agent/themes ~/.pi/agent/themes
+for f in settings.json models.json mcp.json AGENTS.md; do
+    ln -sf /data/dotfiles/.pi/agent/$f ~/.pi/agent/$f
+done
 
 # mucommander
 # sudo apt-get install wmctrl
