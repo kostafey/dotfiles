@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
-"""pi-delegate: hand noisy work to the local model and print a short summary.
+"""pi-delegate: run noisy commands and print a short report of their log, or
+hand an investigation to the local model.
 
-  pi-delegate run [--timeout S] -- COMMAND...   run COMMAND, summarize its log
+  pi-delegate run [--timeout S] [--model] -- COMMAND...
+                                                run COMMAND, report on its log
   pi-delegate ask [--timeout S] [--session] "TASK"
                                                 let the local model investigate
   pi-delegate reset                             drop this project's ask session
 
-Only the summary goes to stdout; diagnostics go to stderr.  Exit codes: 0 a
-summary was printed, 2 usage error, 3 the local model is unavailable (Pi
-missing, llama-server down, timeout).  In `run' mode the STATUS line carries
-the outcome of COMMAND, the exit code only that of the delegate.
+Only the report goes to stdout; diagnostics go to stderr.  Exit codes: 0 a
+report was printed, 2 usage error, 3 COMMAND timed out, or the local model is
+unavailable (Pi missing, llama-server down, timeout) for `ask' or `run
+--model'.  In `run' mode the STATUS line carries the outcome of COMMAND, the
+exit code only that of the delegate.
 
 See README.md next to the real path of this script.
 """
@@ -528,6 +531,85 @@ def build_errors(lines, first_line):
     return [quote(lines, i, first_line) for i in sorted(chosen)]
 
 
+# Maven names the causes of a failure in a few places of its own.  Surefire
+# and Failsafe close with a "Results" section of the failed tests, each as
+# "Class.method:line message" (Surefire 2.x without the "[ERROR]" prefix and
+# with "Failed tests:" and "Tests in error:").  The compiler plugins print
+# every source error twice, before BUILD FAILURE and after it, the second
+# copy prefixed "[ERROR]" line by line.  And the goal that failed, or the
+# project that could not be read, comes with its cause in the lines under it.
+MAVEN_LOG = re.compile(
+    r"^\[INFO\] (?:Scanning for projects|BUILD (?:SUCCESS|FAILURE))"
+    r"|^\[ERROR\] (?:\[ERROR\] )?(?:Failed to execute goal "
+    r"|The build could not read |Some problems were encountered )")
+MAVEN_PREFIX = re.compile(r"^(?:\[(?:ERROR|WARNING|FATAL|INFO)\] ?)+")
+MAVEN_RESULTS = re.compile(r"^(?:\[(?:ERROR|WARNING)\] )?(?:Failures|Errors"
+                           r"|Flakes|Failed tests|Tests in error): ?$")
+MAVEN_RESULTS_PREFIX = re.compile(r"^\[(?:ERROR|WARNING)\]")
+MAVEN_TESTS_RUN = re.compile(r"^(?:\[\w+\] )?Tests run: \d+")
+# javac's "Foo.java:[3,25]", scalac's "Foo.scala:3:", kotlinc's "Foo.kt:3:5".
+MAVEN_SOURCE_ERROR = re.compile(
+    r"^\[ERROR\] (?:\[Error\] )?\S+\.(?:java|scala|kt|kts|groovy)"
+    r"(?::\[\d+,\d+\]|:\d+)")
+MAVEN_CAUSE = re.compile(r"^\[ERROR\] (?:\[ERROR\] )?(?:Failed to execute "
+                         r"goal |The build could not read |Some problems "
+                         r"were encountered )")
+MAVEN_CAUSE_LINE = re.compile(r"^\[(?:ERROR|FATAL)\]")
+# Maven's advice after the cause: how to rerun it, where the reports are.
+MAVEN_CAUSE_END = re.compile(r"^\[ERROR\] (?:-> \[Help |To see the full stack "
+                             r"trace |After correcting the problems)")
+MAVEN_ADVICE = re.compile(r"^\[ERROR\] Please refer to ")
+MAVEN_CAUSE_LINES = 12
+
+
+def maven_errors(lines, first_line):
+    """Of a Maven log: the failed tests of the Results sections, the source
+    errors once each, and the cause under the goal that failed, in log
+    order.  Empty for a log that is not Maven's."""
+    if not any(MAVEN_LOG.search(line) for line in lines):
+        return []
+    chosen, seen = [], set()
+
+    def take(j):
+        key = MAVEN_PREFIX.sub("", lines[j]).strip()
+        if key and key not in seen:
+            seen.add(key)
+            chosen.append(j)
+
+    sources = {i for i, line in enumerate(lines)
+               if MAVEN_SOURCE_ERROR.match(line)}
+    for i, line in enumerate(lines):
+        if MAVEN_RESULTS.match(line):
+            chosen.append(i)
+            prefix = MAVEN_RESULTS_PREFIX.match(line)
+            for j in range(i + 1, len(lines)):
+                rest = lines[j]
+                if prefix:
+                    if not rest.startswith(prefix.group(0)):
+                        break
+                    rest = rest[prefix.end():]
+                elif not re.match(r"\s{2,}\S", rest):
+                    break
+                if not rest.strip() or MAVEN_RESULTS.match(lines[j]) \
+                        or MAVEN_TESTS_RUN.match(lines[j]):
+                    break
+                chosen.append(j)
+        elif i in sources:
+            if MAVEN_PREFIX.sub("", line).strip() not in seen:
+                for j in block(lines, i, sources):
+                    take(j)
+        elif MAVEN_CAUSE.match(line):
+            take(i)
+            for j in range(i + 1, min(len(lines), i + 1 + MAVEN_CAUSE_LINES)):
+                if not MAVEN_CAUSE_LINE.match(lines[j]) \
+                        or MAVEN_CAUSE.match(lines[j]) \
+                        or MAVEN_CAUSE_END.match(lines[j]):
+                    break
+                if not MAVEN_ADVICE.match(lines[j]):
+                    take(j)
+    return [quote(lines, i, first_line) for i in sorted(set(chosen))]
+
+
 def limit_excerpt(excerpt):
     if len(excerpt) <= MAX_EXCERPT_LINES:
         return excerpt
@@ -542,7 +624,11 @@ def error_excerpt(lines, first_line):
     excerpt = failed_tests(lines, first_line)
     if excerpt:
         return limit_excerpt(excerpt), True
-    if any(TESTS_FAILED.search(line) for line in lines):
+    tests = any(TESTS_FAILED.search(line) for line in lines)
+    excerpt = maven_errors(lines, first_line)
+    if excerpt:
+        return limit_excerpt(excerpt), tests
+    if tests:
         # Tests failed under a framework not known here; sbt's own [error]
         # lines carry only the suite names, not the reasons.
         return [], True
@@ -657,14 +743,207 @@ def picked_excerpt(lines, first_line, groups, picks):
         for j in block(lines, i, set(starts)):
             excerpt.append(quote(lines, j, first_line))
             done.add(j)
-        group = by_index[i]
-        if len(group) > 1:
-            others = ", ".join(f"L{k + first_line}"
-                               for k in group[1:1 + FOLDED_NAMES])
-            if len(group) > 1 + FOLDED_NAMES:
-                others += ", ..."
-            excerpt.append(f"  + {len(group) - 1} more like it: {others}")
+        excerpt += more_like_it(by_index[i], first_line)
     return limit_excerpt(excerpt)
+
+
+def more_like_it(group, first_line):
+    """The line that folds the identical lines of GROUP after its first."""
+    if len(group) < 2:
+        return []
+    others = ", ".join(f"L{k + first_line}" for k in group[1:1 + FOLDED_NAMES])
+    if len(group) > 1 + FOLDED_NAMES:
+        others += ", ..."
+    return [f"  + {len(group) - 1} more like it: {others}"]
+
+
+# The report, which `run' prints unless asked for the model: every line of it
+# is the script's, the outcome by the exit code and the rest quoted from the
+# log by pattern.  The model's summary retells what such lines say, and a
+# retelling has to be checked against the log anyway.
+
+MAX_SUMMARY_LINES = 8
+TAIL_LINES = 8
+# A command that goes on past the last summary line, as a script of several
+# builds does, gets its tail shown too.  Lines already quoted, their copies,
+# and an epilogue don't count.
+LINES_AFTER_SUMMARY = 2
+# Lines a tool prints after its outcome that say nothing of it: Maven's
+# separators, its advice to rerun with -e or -X and its help links.
+EPILOGUE = re.compile(
+    r"^\[(?:INFO|ERROR)\]\s*$|^\[INFO\] (?:-{8,}\s*$|Finished at: )"
+    r"|^\[ERROR\] (?:-> \[Help \d+\]|To see the full stack trace |Re-run "
+    r"Maven using |For more information about the errors |\[Help \d+\] "
+    r"|After correcting the problems|\s+mvn <args> |Please refer to )")
+QUOTED = re.compile(r"^L(\d+): ")
+MAX_LOGGED_KINDS = 5
+# The closing lines of test runners and build tools: counts and outcomes.
+SUMMARY_LINE = re.compile(
+    # ScalaTest under sbt, and sbt's own test interface (munit and others).
+    r"^\[info\] (?:Run completed in |Total number of tests run: "
+    r"|Suites: completed |Tests: succeeded |All tests passed\."
+    r"|\*\*\* \d+ (?:TESTS?|SUITES?) (?:FAILED|ABORTED) \*\*\*"
+    r"|No tests (?:were executed|to run))"
+    r"|^\[(?:info|error)\] (?:Passed|Failed): Total \d+"
+    # sbt: the task that failed, the error count of scalac, the end.
+    r"|^\[error\] \([^)]+\) \S"
+    r"|^\[(?:error|warn)\] (?:one|two|three|four|\d+) (?:errors?|warnings?) "
+    r"found"
+    r"|^\[(?:success|error)\] Total time: "
+    # JUnit's console launcher.
+    r"|^\[\s*\d+ tests (?:successful|failed)\s*\]"
+    # Maven: the totals of Surefire (2.x unprefixed), the module that failed
+    # in the reactor summary, the outcome, the end.
+    r"|^(?:\[(?:INFO|ERROR|WARNING)\] )?Tests run: \d+, Failures: \d+, "
+    r"Errors: \d+, Skipped: \d+\s*$"
+    r"|^\[INFO\] \S.* \.{2,} FAILURE \["
+    r"|^\[(?:INFO|ERROR)\] BUILD (?:SUCCESS|FAILURE)"
+    r"|^\[INFO\] Total time: "
+    # Gradle.
+    r"|^BUILD (?:SUCCESSFUL|FAILED) in "
+    r"|\btests? completed, \d+ failed\b"
+    # pytest, unittest, jest.
+    r"|^=+ .*\b(?:passed|failed|errors?|skipped|no tests ran)\b.* in [\d.]+s"
+    r"|^Ran \d+ tests? in [\d.]+s$"
+    r"|^OK(?: \([^)]*\))?$|^FAILED \((?:failures|errors)="
+    r"|^Test(?:s| Suites):\s+\d+"
+    # go test, cargo test.
+    r"|^(?:ok|FAIL)\s+\S+\s+(?:[\d.]+s|\(cached\))"
+    r"|^test result: "
+    # clojure.test (lein test), ERT.
+    r"|^Ran \d+ tests containing \d+ assertions\."
+    r"|^\d+ failures, \d+ errors\."
+    r"|^Ran \d+ tests?, \d+ results? as expected"
+    # react-scripts, webpack.
+    r"|^(?:Compiled successfully|Compiled with warnings|Failed to compile)\."
+    r"|^The build folder is ready to be deployed\."
+    r"|\bwebpack [\d.]+ compiled "
+    r"(?:successfully|with \d+ (?:errors?|warnings?))")
+# A line a logger marked as an error or a warning: sbt's "[error]", Maven's
+# "[ERROR]", logback's and log4j's level between the time and the logger.
+LOGGED_ERROR = re.compile(r"^\[error\]|\[(?:ERROR|FATAL|SEVERE)\]"
+                          r"|(?:^|\s)(?:ERROR|FATAL|SEVERE)(?=[\s:])")
+LOGGED_WARNING = re.compile(r"^\[warn\]|\[WARN(?:ING)?\]"
+                            r"|(?:^|\s)WARN(?:ING)?(?=[\s:])")
+
+
+def summary_lines(lines, first_line):
+    """The summary lines of the output, the last of each kind with the
+    earlier ones of that kind folded under it, and the index of the last of
+    them all.  A kind is the line up to its first digit: sbt prints "Total
+    time" after every task, react-scripts "Compiled successfully." after
+    every build."""
+    groups = {}
+    for i, line in enumerate(lines):
+        if SUMMARY_LINE.search(line):
+            groups.setdefault(re.split(r"\d", line, maxsplit=1)[0] or line,
+                              []).append(i)
+    kinds = sorted(groups.values(),
+                   key=lambda group: group[-1])[-MAX_SUMMARY_LINES:]
+    quoted = []
+    for group in kinds:
+        quoted += [quote(lines, group[-1], first_line),
+                   *more_like_it([group[-1], *group[:-1]], first_line)]
+    return quoted, kinds[-1][-1] if kinds else None
+
+
+def count(n, what):
+    return f"{n} {what}" + ("" if n == 1 else "s")
+
+
+def logged_errors(lines, first_line):
+    """Of a passing command, the lines its loggers marked as errors: the code
+    under test logs them in a green run too.  Return their number and up to
+    MAX_LOGGED_KINDS kinds of them quoted, the lines that differ only in
+    their numbers folded."""
+    groups = {}
+    for i, line in enumerate(lines):
+        if LOGGED_ERROR.search(line) and not STACK_FRAME.match(line):
+            kind = re.sub(r"\d+", "N", TIMESTAMP.sub("", line)).strip()
+            groups.setdefault(kind, []).append(i)
+    excerpt = []
+    for group in list(groups.values())[:MAX_LOGGED_KINDS]:
+        excerpt += [quote(lines, group[0], first_line),
+                    *more_like_it(group, first_line)]
+    if len(groups) > MAX_LOGGED_KINDS:
+        excerpt.append(f"... and {len(groups) - MAX_LOGGED_KINDS} more kinds "
+                       "in the LOG")
+    return sum(len(group) for group in groups.values()), excerpt
+
+
+def keyword_excerpt(lines, first_line):
+    """Of a failed command in a format no pattern above knows: the keyword
+    lines (see candidates()), each with the lines that carry on its message,
+    identical lines folded.  When they don't fit, a third of the excerpt goes
+    to the first of them and the rest to the last: a compiler's first error
+    is the cause, a program's last one is where it stopped."""
+    groups = candidates(lines)
+    starts = {group[0] for group in groups}
+    entries = [[quote(lines, j, first_line)
+                for j in block(lines, group[0], starts)]
+               + more_like_it(group, first_line) for group in groups]
+    if sum(len(entry) for entry in entries) <= MAX_EXCERPT_LINES:
+        return [line for entry in entries for line in entry]
+    head, used = [], 0
+    for entry in entries:
+        if used + len(entry) > MAX_EXCERPT_LINES // 3:
+            break
+        head.append(entry)
+        used += len(entry)
+    tail = []
+    for entry in reversed(entries[len(head):]):
+        if used + len(entry) > MAX_EXCERPT_LINES - 1:
+            break
+        tail.insert(0, entry)
+        used += len(entry)
+    left = len(entries) - len(head) - len(tail)
+    return [*(line for entry in head for line in entry),
+            f"... and {left} more keyword lines in the LOG",
+            *(line for entry in tail for line in entry)]
+
+
+def report(command, lines, first_line, code, seconds, log):
+    """The report on the output LINES of COMMAND, FIRST_LINE being the LOG
+    line number of the first of them."""
+    excerpt, tests = error_excerpt(lines, first_line) if code else ([], False)
+    by_keyword = code != 0 and not excerpt
+    if by_keyword:
+        excerpt = keyword_excerpt(lines, first_line)
+    summary, last = summary_lines(lines, first_line)
+    excerpt = [line for line in excerpt if line not in summary]
+    status = "PASS" if code == 0 else "FAIL" if tests else "ERROR"
+    out = [f"STATUS: {status}", f"COMMAND: {command}",
+           f"EXIT: {code}  DURATION: {seconds:.1f}s"]
+    if summary:
+        out += ["SUMMARY (verbatim from the LOG):", *summary]
+    else:
+        out.append("SUMMARY: none (no closing line of a known test runner "
+                   "or build tool)")
+    if excerpt:
+        out += ["ERRORS (keyword lines from the LOG, not all of them errors):"
+                if by_keyword else "ERRORS (verbatim from the LOG):", *excerpt]
+    if code == 0:
+        n, logged = logged_errors(lines, first_line)
+        if n:
+            out += [f"LOGGED ERRORS: {count(n, 'line')}, though the command "
+                    "passed:", *logged]
+    shown = {int(m.group(1)) - first_line
+             for m in map(QUOTED.match, summary + excerpt) if m}
+    copies = {MAVEN_PREFIX.sub("", lines[i]).strip() for i in shown}
+    filled = [i for i, line in enumerate(lines)
+              if line.strip() and not EPILOGUE.match(line)]
+    new = [i for i in filled if last is not None and i > last
+           and i not in shown
+           and MAVEN_PREFIX.sub("", lines[i]).strip() not in copies]
+    if last is None or len(new) > LINES_AFTER_SUMMARY:
+        out += ["TAIL (the last lines of the LOG):",
+                *(quote(lines, i, first_line) for i in filled[-TAIL_LINES:])]
+    warnings = sum(1 for line in lines if LOGGED_WARNING.search(line)
+                   and not STACK_FRAME.match(line))
+    if warnings:
+        out.append(f"WARNINGS: {count(warnings, 'line')}")
+    out.append(f"LOG: {log}")
+    return "\n".join(out)
 
 
 def summarize(command, text, lines, first_line, code, seconds, log, cwd,
@@ -735,19 +1014,22 @@ def cmd_run(args):
     deadline = time.monotonic() + args.timeout
     root = project_root()
     key = project_key(root)
+    n_ctx, unavailable = None, None
+    if args.model:
+        try:
+            n_ctx = preflight()
+        except Unavailable as error:
+            unavailable = str(error)
     try:
-        n_ctx, unavailable = preflight(), None
-    except Unavailable as error:
-        n_ctx, unavailable = None, str(error)
-    try:
-        return run_locked(command, root, key, n_ctx, unavailable, deadline,
-                          args.timeout)
+        return run_locked(command, root, key, args.model, n_ctx, unavailable,
+                          deadline, args.timeout)
     except Unavailable as error:
         warn(str(error))
         return EXIT_UNAVAILABLE
 
 
-def run_locked(command, root, key, n_ctx, unavailable, deadline, timeout):
+def run_locked(command, root, key, model, n_ctx, unavailable, deadline,
+               timeout):
     with ProjectLock(key, deadline):
         log = log_path(key, command)
         raw, code, seconds = run_command(command, root, log, deadline)
@@ -770,14 +1052,18 @@ def run_locked(command, root, key, n_ctx, unavailable, deadline, timeout):
             if lines:
                 print(text)
             return EXIT_OK
+        first_line = log_header(command).count("\n") + 1
+        if not model:
+            print(report(command, cleaned.split("\n"), first_line, code,
+                         seconds, log))
+            return EXIT_OK
         if unavailable:
             warn(f"{unavailable}; {len(lines)} lines of output saved "
                  f"unsummarized: {log}")
             return EXIT_UNAVAILABLE
         try:
-            print(summarize(command, text, cleaned.split("\n"),
-                            log_header(command).count("\n") + 1, code,
-                            seconds, log, root, n_ctx, deadline))
+            print(summarize(command, text, cleaned.split("\n"), first_line,
+                            code, seconds, log, root, n_ctx, deadline))
         except Unavailable as error:
             warn(f"{error}; raw output: {log}")
             return EXIT_UNAVAILABLE
@@ -850,11 +1136,15 @@ def cmd_reset(_args):
 def main():
     parser = argparse.ArgumentParser(
         prog="pi-delegate",
-        description="Offload noisy work to the local model through Pi.")
+        description="Report on noisy commands; offload investigations to the "
+                    "local model through Pi.")
     commands = parser.add_subparsers(dest="mode", required=True)
-    run = commands.add_parser("run", help="run a command, summarize its log")
+    run = commands.add_parser("run", help="run a command, report on its log")
     run.add_argument("--timeout", type=int, default=600,
                      help="seconds for the whole operation (default 600)")
+    run.add_argument("--model", action="store_true",
+                     help="have the local model write SUMMARY, FAILURES and "
+                          "NOTES instead of the report")
     run.add_argument("command", nargs=argparse.REMAINDER)
     ask = commands.add_parser("ask", help="let the local model investigate")
     ask.add_argument("--timeout", type=int, default=600,
