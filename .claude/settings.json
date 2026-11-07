@@ -18,10 +18,13 @@
     "type": "command",
     "command": "node ~/.claude/statusline.js"
   },
-  "permissions": {"allow": [
-    "mcp__ejc-sql__list_connections",
-    "mcp__ejc-sql__list_tables",
-    "mcp__ejc-sql__describe_table",
-    "mcp__ejc-sql__query"],
-    "ask": ["mcp__ejc-sql__execute"]}
+  "permissions": {
+    "allow": [
+      "mcp__ejc-sql__list_connections",
+      "mcp__ejc-sql__list_tables",
+      "mcp__ejc-sql__describe_table",
+      "mcp__ejc-sql__query"],
+    "ask": [
+      "mcp__ejc-sql__execute"
+      ]}
 }
