@@ -1,3 +1,11 @@
+## Reply language
+
+I write in Russian or in English; always answer me in Russian, whatever the
+language of my message. This covers chat replies only: code, comments, commit
+messages, logs and documentation follow the conventions of the project.
+Technical terms inside Russian text stay in English (`iframe`, `commit`), not
+calques.
+
 ## Databases
 
 Reach databases only through the `ejc-sql` MCP server, never by other means
