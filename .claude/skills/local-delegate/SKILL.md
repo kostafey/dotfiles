@@ -49,10 +49,11 @@ around `L<n>` when you need the context.
   last of each kind. `none` when the log has no such line.
 - ERRORS, for a failed command. `ERRORS (verbatim from the LOG):` comes from
   patterns (ScalaTest; Maven's failed tests, compiler errors and the cause of
-  a failed goal; sbt/scalac; react-scripts; Python tracebacks) and is
-  complete. `ERRORS (keyword lines from the LOG, not all of them errors):`
-  is every line with a word like error, fail or expected, for formats the
-  patterns don't know; over 30 lines it keeps the first and the last ones.
+  a failed goal; Zig's compiler errors and failed tests; sbt/scalac;
+  react-scripts; Python tracebacks) and is complete.
+  `ERRORS (keyword lines from the LOG, not all of them errors):` is every
+  line with a word like error, fail or expected, for formats the patterns
+  don't know; over 30 lines it keeps the first and the last ones.
 - LOGGED ERRORS, for a passing command: lines a logger marked as errors. The
   code under test logs them in a green run too, so they are worth a glance,
   not a failure.

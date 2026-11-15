@@ -405,7 +405,8 @@ STACK_FRAME = re.compile(
 LOG_PREFIX = re.compile(r"^(?:\[\w+\])?\s*")
 # A test runner's word that tests failed: sbt whatever the framework, JUnit's
 # console launcher, Maven Surefire, Gradle, pytest, jest, go test, cargo test,
-# clojure.test (webpack's "ERROR in ./src/..." is a compile error), ERT.
+# clojure.test (webpack's "ERROR in ./src/..." is a compile error), ERT,
+# `zig build test' and `zig test'.
 TESTS_FAILED = re.compile(
     r"sbt\.TestsFailedException"
     r"|^\[error\] (?:Failed tests:|Error during tests:)"
@@ -416,7 +417,11 @@ TESTS_FAILED = re.compile(
     r"|^Tests:\s+[1-9]\d* failed\b"
     r"|^--- FAIL: |^test result: FAILED"
     r"|^(?:FAIL|ERROR) in \("
-    r"|^Ran \d+ tests?, \d+ results? as expected, [1-9]\d* unexpected")
+    r"|^Ran \d+ tests?, \d+ results? as expected, [1-9]\d* unexpected"
+    r"|^Build Summary: .*\btests passed \(.*\b[1-9]\d* (?:failed|crashed)\b"
+    r"|^error: '[^']+' (?:failed|terminated)\b"
+    r"|^\d+ passed; \d+ skipped; [1-9]\d* failed\."
+    r"|^error: the following test command (?:failed|terminated)\b")
 # Build errors of sbt and scalac.  The code under test logs "[error]" lines
 # of its own, even in a green run, so they count only for a failed command
 # with no failed test in it.
@@ -610,6 +615,69 @@ def maven_errors(lines, first_line):
     return [quote(lines, i, first_line) for i in sorted(set(chosen))]
 
 
+# Zig's compiler writes an error as "file.zig:L:C: error: message", the
+# source line and a caret under the column after it, and its notes in the
+# same three lines with "note:".  A failed test of `zig build test' starts
+# "error: 'name' failed:" (or "terminated with signal ..."), the reason and
+# a stack trace indented under it; `zig test' prints "N/M name...", the
+# reason, "FAIL (Error)" and the trace unindented.  A frame of the trace is
+# "file.zig:L:C: 0xADDR in function (unit)" with its source line and caret.
+ZIG_DIAGNOSTIC = re.compile(r"^\S+\.zig(?:\.zon)?:\d+:\d+: (?:error|note): ")
+ZIG_CARET = re.compile(r"^\s*\^~*\s*$")
+ZIG_TEST_FAILED = re.compile(r"^error: '[^']+' (?:failed|terminated)\b")
+ZIG_TEST_RUN = re.compile(r"^\d+/\d+ \S+?\.\.\.(?!(?:OK|SKIP)\s*$)")
+ZIG_TEST_FAIL = re.compile(r"^FAIL \(\w+\)\s*$")
+ZIG_FRAME = re.compile(r"^\s*(\S+\.zig):\d+:\d+: 0x[0-9a-f]+ in ")
+# Frames of Zig's own library and test runner, and of fetched packages.
+ZIG_LIBRARY = re.compile(r"/lib/(?:std|compiler|compiler_rt)/|/zig/p/"
+                         r"|/zig-pkg/")
+# What follows a failed test: the next one, or the runners' closing lines.
+ZIG_TEST_END = re.compile(r"^(?:error: |failed command: |Build Summary: "
+                          r"|\d+ passed; |\d+/\d+ \S)")
+ZIG_TEST_LINES = 200
+
+
+def zig_source(lines, i):
+    """Line I, a Zig diagnostic or frame, with the source line and the caret
+    line under it."""
+    if i + 2 < len(lines) and ZIG_CARET.match(lines[i + 2]):
+        return [i, i + 1, i + 2]
+    return [i]
+
+
+def zig_test_failure(lines, i):
+    """The failed test at line I: the line, up to CONTEXT_LINES lines of the
+    reason under it and the "FAIL (Error)" line, and the first frame of the
+    project's own code in the trace (the first frame when every frame is the
+    library's), with its source line."""
+    end = next((j for j in range(i + 1, min(len(lines), i + ZIG_TEST_LINES))
+                if ZIG_TEST_END.match(lines[j])),
+               min(len(lines), i + ZIG_TEST_LINES))
+    frames = [j for j in range(i + 1, end) if ZIG_FRAME.match(lines[j])]
+    reason_end = frames[0] if frames else end
+    reason = [j for j in range(i + 1, reason_end) if lines[j].strip()
+              and not ZIG_TEST_FAIL.match(lines[j])][:CONTEXT_LINES]
+    fail = [j for j in range(i + 1, reason_end)
+            if ZIG_TEST_FAIL.match(lines[j])][:1]
+    own = [j for j in frames
+           if not ZIG_LIBRARY.search(ZIG_FRAME.match(lines[j]).group(1))]
+    where = zig_source(lines, (own or frames)[0]) if frames else []
+    return [i, *reason, *fail, *where]
+
+
+def zig_errors(lines, first_line):
+    """Of Zig's output: each compiler error and note with its source line and
+    caret, and each failed test with its reason and where it failed, in log
+    order.  Empty for output that is not Zig's."""
+    chosen = set()
+    for i, line in enumerate(lines):
+        if ZIG_DIAGNOSTIC.match(line):
+            chosen.update(zig_source(lines, i))
+        elif ZIG_TEST_FAILED.match(line) or ZIG_TEST_RUN.match(line):
+            chosen.update(zig_test_failure(lines, i))
+    return [quote(lines, i, first_line) for i in sorted(chosen)]
+
+
 def limit_excerpt(excerpt):
     if len(excerpt) <= MAX_EXCERPT_LINES:
         return excerpt
@@ -625,7 +693,7 @@ def error_excerpt(lines, first_line):
     if excerpt:
         return limit_excerpt(excerpt), True
     tests = any(TESTS_FAILED.search(line) for line in lines)
-    excerpt = maven_errors(lines, first_line)
+    excerpt = maven_errors(lines, first_line) or zig_errors(lines, first_line)
     if excerpt:
         return limit_excerpt(excerpt), tests
     if tests:
@@ -769,12 +837,15 @@ TAIL_LINES = 8
 # and an epilogue don't count.
 LINES_AFTER_SUMMARY = 2
 # Lines a tool prints after its outcome that say nothing of it: Maven's
-# separators, its advice to rerun with -e or -X and its help links.
+# separators, its advice to rerun with -e or -X and its help links; the tree
+# of steps Zig's build runner draws under its Build Summary.
 EPILOGUE = re.compile(
     r"^\[(?:INFO|ERROR)\]\s*$|^\[INFO\] (?:-{8,}\s*$|Finished at: )"
     r"|^\[ERROR\] (?:-> \[Help \d+\]|To see the full stack trace |Re-run "
     r"Maven using |For more information about the errors |\[Help \d+\] "
-    r"|After correcting the problems|\s+mvn <args> |Please refer to )")
+    r"|After correcting the problems|\s+mvn <args> |Please refer to )"
+    r"|^\s*(?:\+-|└─|├─) "
+    r"|^[\w.-]+ (?:transitive failure|failure|success)$")
 QUOTED = re.compile(r"^L(\d+): ")
 MAX_LOGGED_KINDS = 5
 # The closing lines of test runners and build tools: counts and outcomes.
@@ -814,6 +885,13 @@ SUMMARY_LINE = re.compile(
     r"|^Ran \d+ tests containing \d+ assertions\."
     r"|^\d+ failures, \d+ errors\."
     r"|^Ran \d+ tests?, \d+ results? as expected"
+    # Zig: the build runner's summary, the compiler's error count, the test
+    # runner's totals, and its word on a test binary that failed or crashed.
+    r"|^Build Summary: \d+/\d+ steps succeeded"
+    r"|^error: \d+ compilation errors?$"
+    r"|^\d+ passed; \d+ skipped; \d+ failed\."
+    r"|^All \d+ tests passed\."
+    r"|^error: the following test command (?:failed|terminated)\b"
     # react-scripts, webpack.
     r"|^(?:Compiled successfully|Compiled with warnings|Failed to compile)\."
     r"|^The build folder is ready to be deployed\."

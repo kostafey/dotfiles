@@ -48,7 +48,8 @@ the LOG, cut at 240 characters. The blocks:
 - SUMMARY: the closing lines of test runners and build tools (ScalaTest and
   sbt, JUnit's console launcher, Maven with Surefire's totals and the module
   that failed in the reactor, Gradle, pytest, unittest, jest, go test, cargo
-  test, clojure.test, ERT, react-scripts, webpack), at most 8 kinds. A kind
+  test, clojure.test, ERT, Zig's build and test runners, react-scripts,
+  webpack), at most 8 kinds. A kind
   is the line up to its first digit: of each kind the last line is quoted
   and the earlier ones fold under it, since sbt prints `Total time` after
   every task and react-scripts `Compiled successfully.` after every build.
@@ -62,7 +63,8 @@ the LOG, cut at 240 characters. The blocks:
   output goes on for more than 2 lines past the last one, as a script of
   several builds does. Lines already quoted, their copies and a tool's
   epilogue (Maven's separators, its advice to rerun with `-e` or `-X`, its
-  help links) neither count nor show.
+  help links; the tree of steps under Zig's `Build Summary`) neither count
+  nor show.
 - WARNINGS: the number of lines a logger marked as warnings.
 
 For a failed command ERRORS are cut from the whole log by the first of these
@@ -86,12 +88,27 @@ that yields any:
    BUILD FAILURE; and the cause under `Failed to execute goal`, `The build
    could not read` and `Some problems were encountered` (an unresolvable
    dependency, a broken POM), without Maven's advice after it.
-3. When no test runner says that tests failed (see STATUS below), build
+3. Zig: each compiler `error:` and `note:` (`file.zig:L:C:`) with its
+   source line and caret, and each failed test, of `zig build test`
+   (`error: 'name' failed:` or `terminated with signal`) and of `zig test`
+   (`N/M name...` and `FAIL (Error)`), with up to 4 lines of its reason and
+   the first frame of its stack trace outside Zig's library and fetched
+   packages, that frame's source line and caret:
+
+   ```
+   ERRORS (verbatim from the LOG):
+   L36: error: 'main.test.panics' terminated with signal ABRT with stderr:
+   L37:        thread 20034 panic: index out of bounds: index 5, len 2
+   L38:        <dir>/src/main.zig:28:6: 0x12545d5 in test.panics (main.zig)
+   L39:            a[i] = 3;
+   L40:             ^
+   ```
+4. When no test runner says that tests failed (see STATUS below), build
    errors: sbt/scalac `[error]` lines (no stack frames, no `Total time`),
    react-scripts' `Failed to compile.` with the 8 non-blank lines after it,
    and of each Python traceback its last frame, that frame's source line and
    the exception.
-4. Any log: candidate lines by keyword (`error`, `exception`, `fail`,
+5. Any log: candidate lines by keyword (`error`, `exception`, `fail`,
    `assert`, `expected`, `cannot`, `not found`, ...; no stack frames, no zero
    counts such as `Errors: 0`), identical lines folded, under `ERRORS
    (keyword lines from the LOG, not all of them errors):`. Each comes with up
@@ -108,7 +125,10 @@ runner's word that tests failed: the ScalaTest markers, sbt's
 Surefire's `Tests run: ..., Failures: N`, Gradle's `tests completed, N
 failed`, pytest's `=== N failed`, jest's `Tests: N failed`, go's `--- FAIL:`,
 cargo's `test result: FAILED`, clojure.test's `FAIL in (...)` and
-`ERROR in (...)` (`lein test`), ERT's `N unexpected`. ERROR: any other
+`ERROR in (...)` (`lein test`), ERT's `N unexpected`, Zig's `Build Summary:
+... tests passed (N failed, M crashed)` and `error: 'name' failed`, and
+`zig test`'s `N passed; M skipped; K failed.` and `the following test
+command failed` (or `terminated`, on a crash). ERROR: any other
 nonzero exit, e.g. a compile error or a crash. Short output, printed
 verbatim, gets its STATUS the same way.
 
@@ -118,7 +138,10 @@ Maven 3.9.9 builds made for the purpose (javac errors, Surefire 3.2.5 and
 2.19.1 failures, a multi-module reactor with and without `-fae`, `-q`, an
 unresolvable dependency, a broken POM): every quoted line matched its line
 in the LOG, and the longest report took 30 lines (ERT, 4 failed tests with
-their conditions). scalac and kotlinc under Maven were not run.
+their conditions). scalac and kotlinc under Maven were not run. The Zig
+patterns were checked on 2026-11-15 on Zig 0.17.0 output made for the
+purpose (compiler errors with a note, `zig build test` and `zig test` with
+failed and crashed tests, a passing `--summary all`).
 
 ### `run --model`
 
